@@ -1,4 +1,4 @@
-# KMPSample — Kotlin Multiplatform Component Showcase
+# kmp-showcase — Kotlin Multiplatform Component Showcase
 
 A **KMP portfolio app** demonstrating multiplatform capabilities with **shared business/UI code** and **native shells** for Android and iOS.
 Serves as a living reference for KMP features: device APIs, UI components, storage, networking, and platform integrations.

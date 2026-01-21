@@ -14,7 +14,7 @@ plugins {
 kotlin {
     androidLibrary {
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
-        namespace = "mk.digital.kmpsample.shared"
+        namespace = "mk.digital.kmpshowcase.shared"
         minSdk = libs.versions.androidMinSdk.get().toInt()
 
         compilerOptions {
@@ -36,7 +36,7 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
-            freeCompilerArgs += listOf("-Xbinary=bundleId=mk.digital.kmpsample.shared")
+            freeCompilerArgs += listOf("-Xbinary=bundleId=mk.digital.kmpshowcase.shared")
             isStatic = true
         }
     }

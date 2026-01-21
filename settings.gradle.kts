@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KMPSample"
+rootProject.name = "kmp-showcase"
 include(":shared", ":androidApp", ":iosApp")

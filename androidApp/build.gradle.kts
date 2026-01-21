@@ -7,10 +7,10 @@ plugins {
 
 android {
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
-    namespace = "mk.digital.kmpsample"
+    namespace = "mk.digital.kmpshowcase"
 
     defaultConfig {
-        applicationId = "mk.digital.kmpsample"
+        applicationId = "mk.digital.kmpshowcase"
         minSdk = libs.versions.androidMinSdk.get().toInt()
         targetSdk = libs.versions.androidTargetSdk.get().toInt()
         versionCode = 1
