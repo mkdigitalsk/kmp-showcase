@@ -17,6 +17,8 @@ internal val BackgroundLight: Color = Neutral0Light
 internal val SurfaceLight: Color = Neutral0Light
 internal val ErrorLight: Color = Color(0xFFFF1A1A)
 internal val ErrorContainerLight: Color = Color(0xFFF9DEDC)
+internal val SuccessLight: Color = Color(0xFF4CAF50)
+internal val WarningLight: Color = Color(0xFFFF9800)
 internal val Transparent: Color = Color(0x00)
 
 
@@ -26,7 +28,10 @@ data class AppColors(
     val neutral20: Color,
     val neutral80: Color,
     val neutral100: Color,
+    val success: Color,
+    val warning: Color,
     val transparent: Color = Transparent,
 ) {
     val primary: Color get() = material.primary
+    val error: Color get() = material.error
 }

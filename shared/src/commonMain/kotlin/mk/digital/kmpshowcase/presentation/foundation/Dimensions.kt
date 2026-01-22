@@ -22,3 +22,6 @@ val defaultIconSize = space6
 val cardElevation: Dp = 6.dp
 val cardCornerRadius6: Dp = 6.dp
 
+/** Bottom padding for scrollable content to account for floating nav bar */
+val floatingNavBarSpace: Dp = 100.dp
+

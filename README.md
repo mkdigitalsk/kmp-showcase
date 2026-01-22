@@ -14,15 +14,17 @@ Serves as a living reference for KMP features: device APIs, UI components, stora
 
 ## Features
 
-- ✅ **Bottom bar** navigation (tabs) with `Navigation3`
+- ✅ **Floating nav bar** (M3 Expressive style) with `Navigation3`
 - ✅ **Safe area / edge‑to‑edge** paddings handled for both Android & iOS
 - ✅ **Koin** modules for easy dependency wiring
 - ✅ **Ktor 3** client with ContentNegotiation(JSON), Logging
 - ✅ **Coil 3** image loading (with Ktor network integration + SVG support)
 - ✅ **Resource/version catalog** via `libs.versions.toml`
 - ✅ **Unit tests** in commonTest (kotlin.test + Mokkery + coroutines-test)
-- ✅ **Reusable UI components** (buttons, cards, text styles, dialogs, toolbars)
+- ✅ **40+ reusable UI components** with App prefix convention
+- ✅ **Global snackbar** with theming (Default, Success, Error, Warning)
 - ✅ **Platform routers** (share, dial, external links) via expect/actual
+- ✅ **String resources** for localization-ready UI
 
 ---
 
@@ -73,10 +75,12 @@ root
 
 | Screen | Description |
 |--------|-------------|
-| Home | Feature list / Component showcase menu |
-| Explore | Discovery/browse screen |
-| Profile | User profile screen |
-| Detail | Feature demo detail view |
+| Home | Feature catalog with cards linking to each showcase |
+| UI Components | Comprehensive component showcase (buttons, inputs, feedback, etc.) |
+| Networking | Ktor HTTP client demo (placeholder) |
+| Storage | DataStore/Preferences demo (placeholder) |
+| Platform APIs | Share, dial, external links demo (placeholder) |
+| Settings | App settings screen |
 
 ---
 
@@ -142,11 +146,13 @@ This app serves as a **KMP components portfolio** — a living demo of multiplat
 
 ### Core Architecture
 - [x] Compose Multiplatform UI
-- [x] Navigation3 with bottom bar
+- [x] Navigation3 with floating nav bar (M3 Expressive)
 - [x] Koin dependency injection
 - [x] Safe area / edge-to-edge handling
 - [x] Platform logging (expect/actual)
 - [x] Unit tests (kotlin.test + Mokkery)
+- [x] String resources for localization
+- [x] Global snackbar state management
 
 ### Networking
 - [x] Ktor HTTP client
@@ -157,24 +163,35 @@ This app serves as a **KMP components portfolio** — a living demo of multiplat
 - [ ] Offline-first sync
 
 ### UI Components
-- [x] Buttons (contained, outlined, text)
-- [x] Cards
-- [x] Dialogs / Alerts
-- [x] Toolbar
-- [x] Text styles (typography)
-- [x] Spacers
-- [x] Loading indicators
-- [x] Checkbox
-- [x] Dividers
-- [x] Coil image loading (+ SVG)
-- [ ] Bottom sheets
-- [ ] Snackbars / Toasts
+- [x] Buttons (ContainedButton, OutlinedButton, AppTextButton)
+- [x] Floating Action Button (AppFloatingActionButton)
+- [x] Cards (AppCard, AppElevatedCard with click support)
+- [x] Dialogs (AppAlertDialog, AppConfirmDialog)
+- [x] Bottom Sheet (AppBottomSheet)
+- [x] Snackbar with theming (AppSnackbar - Default, Success, Error, Warning)
+- [x] TextField with clear button (AppTextField)
+- [x] Switch (AppSwitch)
+- [x] Radio buttons (AppRadioButton)
+- [x] Checkbox (AppCheckbox)
+- [x] Chips (AppFilterChip, AppAssistChip, AppInputChip, AppSuggestionChip)
+- [x] Slider (AppSlider)
+- [x] Progress indicators (CircularProgress, AppLinearProgress)
+- [x] Dividers (AppDividerPrimary)
+- [x] Toolbar (TopAppBar)
+- [x] Floating Nav Bar (AppFloatingNavBar - M3 Expressive style)
+- [x] Text styles / Typography (TextHeadlineMedium, TextTitleLarge, TextBodyLarge, TextBodyMedium, etc.)
+- [x] Spacers (ColumnSpacer, RowSpacer)
+- [x] Image loading with Coil 3 (+ SVG support)
+- [x] Segmented Button (AppSegmentedButton)
+- [ ] Badge
+- [ ] TabBar
+- [ ] Menu / Dropdown
+- [ ] ListTile
 - [ ] Pull to refresh
 - [ ] Swipe actions
 - [ ] Animations & transitions
 - [ ] Charts / Graphs
 - [ ] Skeleton loaders
-- [ ] Onboarding / Tutorial screens
 
 ### Platform Routers
 - [x] Share content
@@ -207,8 +224,8 @@ This app serves as a **KMP components portfolio** — a living demo of multiplat
 - [ ] Maps integration
 
 ### Data & Storage
+- [x] DataStore / Preferences (infrastructure ready)
 - [ ] Local database (SQLDelight)
-- [ ] DataStore / Preferences
 - [ ] File storage
 - [ ] Encrypted storage
 - [ ] Caching strategies
@@ -219,10 +236,15 @@ This app serves as a **KMP components portfolio** — a living demo of multiplat
 - [ ] Biometric auth gate
 
 ### Forms & Input
+- [x] TextField with clear button (AppTextField)
+- [x] Switch toggle (AppSwitch)
+- [x] Radio button groups (AppRadioButton)
+- [x] Checkbox (AppCheckbox)
+- [x] Filter/Input/Assist/Suggestion chips
+- [x] Slider (AppSlider)
 - [ ] Form validation patterns
 - [ ] Text field types (email, phone, password, OTP)
 - [ ] Search with debounce
-- [ ] Filters & sorting
 - [ ] Date/Time pickers
 - [ ] Dropdown / Spinner
 - [ ] Copy to clipboard

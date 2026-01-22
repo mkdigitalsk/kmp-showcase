@@ -1,7 +1,6 @@
 package mk.digital.kmpshowcase.presentation.component.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,10 +19,9 @@ fun ContainedButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-
     Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         contentPadding = PaddingValues(space4),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,

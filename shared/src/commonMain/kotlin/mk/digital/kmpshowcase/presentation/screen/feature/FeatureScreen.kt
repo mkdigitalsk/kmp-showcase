@@ -10,14 +10,8 @@ import mk.digital.kmpshowcase.shared.generated.resources.Res
 import mk.digital.kmpshowcase.shared.generated.resources.screen_networking
 import mk.digital.kmpshowcase.shared.generated.resources.screen_platform_apis
 import mk.digital.kmpshowcase.shared.generated.resources.screen_storage
-import mk.digital.kmpshowcase.shared.generated.resources.screen_ui_components
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-
-@Composable
-fun UiComponentsScreen() {
-    PlaceholderScreen(Res.string.screen_ui_components)
-}
 
 @Composable
 fun NetworkingScreen() {
@@ -35,7 +29,7 @@ fun PlatformApisScreen() {
 }
 
 @Composable
-private fun PlaceholderScreen(titleRes: StringResource) {
+internal fun PlaceholderScreen(titleRes: StringResource) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

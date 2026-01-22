@@ -8,6 +8,10 @@
     <string name="button_ok">OK</string>
     <string name="detail_format">Detail: %1$d</string>
 
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_settings">Settings</string>
+
     <!-- Screen Titles -->
     <string name="screen_home">KMP Showcase</string>
     <string name="screen_ui_components">UI Components</string>
@@ -25,4 +29,59 @@
     <string name="feature_storage_subtitle">DataStore, NSUserDefaults</string>
     <string name="feature_platform_apis_title">Platform APIs</string>
     <string name="feature_platform_apis_subtitle">Share, Dial, External Links</string>
+
+    <!-- UI Components Showcase -->
+    <string name="section_buttons">Buttons</string>
+    <string name="section_typography">Typography</string>
+    <string name="section_cards">Cards</string>
+    <string name="section_controls">Controls</string>
+    <string name="section_feedback">Feedback</string>
+    <string name="button_contained">Contained Button</string>
+    <string name="button_outlined">Outlined Button</string>
+    <string name="button_text">Text Button</string>
+    <string name="checkbox_label">Checkbox option</string>
+    <string name="dialog_title">Dialog Title</string>
+    <string name="dialog_message">This is a sample dialog message.</string>
+    <string name="show_dialog">Show Dialog</string>
+    <string name="card_content">This is an elevated card component.</string>
+    <string name="card_flat_content">This is a flat card component.</string>
+    <string name="section_loading">Loading Indicators</string>
+    <string name="section_snackbar">Snackbar</string>
+    <string name="section_bottom_sheet">Bottom Sheet</string>
+    <string name="show_snackbar_default">Default</string>
+    <string name="show_snackbar_success">Success</string>
+    <string name="show_snackbar_error">Error</string>
+    <string name="show_snackbar_warning">Warning</string>
+    <string name="show_bottom_sheet">Show Bottom Sheet</string>
+    <string name="snackbar_message_default">This is a default snackbar</string>
+    <string name="snackbar_message_success">Operation completed successfully!</string>
+    <string name="snackbar_message_error">Something went wrong!</string>
+    <string name="snackbar_message_warning">Please check your input</string>
+    <string name="bottom_sheet_title">Bottom Sheet</string>
+    <string name="bottom_sheet_content">This is sample content inside a bottom sheet.</string>
+    <string name="close">Close</string>
+    <string name="section_dividers">Dividers</string>
+    <string name="section_images">Images</string>
+    <string name="image_description">Sample image loaded with Coil</string>
+    <string name="section_text_fields">Text Fields</string>
+    <string name="text_field_label">Label</string>
+    <string name="text_field_placeholder">Enter text...</string>
+    <string name="section_switches">Switches</string>
+    <string name="switch_label">Enable feature</string>
+    <string name="section_radio_buttons">Radio Buttons</string>
+    <string name="radio_option_1">Option 1</string>
+    <string name="radio_option_2">Option 2</string>
+    <string name="radio_option_3">Option 3</string>
+    <string name="section_chips">Chips</string>
+    <string name="chip_filter">Filter</string>
+    <string name="chip_assist">Assist</string>
+    <string name="chip_input">Input</string>
+    <string name="chip_suggestion">Suggestion</string>
+    <string name="section_fab">Floating Action Button</string>
+    <string name="fab_content_description">Add</string>
+    <string name="section_sliders">Sliders</string>
+    <string name="section_segmented_button">Segmented Button</string>
+    <string name="segment_day">Day</string>
+    <string name="segment_week">Week</string>
+    <string name="segment_month">Month</string>
 </resources>

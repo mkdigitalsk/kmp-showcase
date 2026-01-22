@@ -2,7 +2,6 @@ package mk.digital.kmpshowcase.presentation.component.buttons
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
@@ -28,7 +27,7 @@ fun OutlinedButton(
 ) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         border = BorderStroke(
             width = outlineButtonBorderSize,
             color = MaterialTheme.appColorScheme.primary,

@@ -61,4 +61,6 @@ private val LightColorPalette = AppColors(
     neutral20 = Neutral20Light,
     neutral80 = Neutral80Light,
     neutral100 = Neutral100Light,
+    success = SuccessLight,
+    warning = WarningLight,
 )
