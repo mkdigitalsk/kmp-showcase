@@ -184,5 +184,6 @@
     <string name="settings_theme_system">Systémová</string>
     <string name="settings_language">Jazyk</string>
     <string name="settings_language_value">Slovenčina</string>
+    <string name="settings_version">Verzia %1$s (%2$s)</string>
 
 </resources>

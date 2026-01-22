@@ -13,7 +13,9 @@ class App : Application() {
 
     private val appConfig by lazy {
         AppConfig(
-            buildType = if (BuildConfig.DEBUG) BuildType.DEBUG else BuildType.RELEASE
+            buildType = if (BuildConfig.DEBUG) BuildType.DEBUG else BuildType.RELEASE,
+            versionName = BuildConfig.VERSION_NAME,
+            versionCode = BuildConfig.VERSION_CODE.toString()
         )
     }
 

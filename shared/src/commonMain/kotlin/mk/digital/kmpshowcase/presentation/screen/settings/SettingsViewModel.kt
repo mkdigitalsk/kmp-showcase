@@ -1,7 +1,7 @@
 package mk.digital.kmpshowcase.presentation.screen.settings
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import mk.digital.kmpshowcase.BuildType
+import mk.digital.kmpshowcase.AppConfig
 import mk.digital.kmpshowcase.domain.useCase.base.invoke
 import mk.digital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
 import mk.digital.kmpshowcase.domain.useCase.settings.SetThemeModeUseCase
@@ -23,6 +23,8 @@ data class SettingsState(
     val currentLanguage: LanguageState = LanguageState.EN,
     val showThemeDialog: Boolean = false,
     val showCrashButton: Boolean,
+    val versionName: String,
+    val versionCode: String,
 )
 
 enum class ThemeModeState(val textId: StringResource, val mode: ThemeMode) {
@@ -39,9 +41,15 @@ enum class ThemeModeState(val textId: StringResource, val mode: ThemeMode) {
 class SettingsViewModel(
     private val getThemeModeUseCase: GetThemeModeUseCase,
     private val setThemeModeUseCase: SetThemeModeUseCase,
-    buildType: BuildType,
+    appConfig: AppConfig,
     private val onThemeChanged: (ThemeMode) -> Unit,
-) : BaseViewModel<SettingsState>(SettingsState(showCrashButton = buildType.isDebug)) {
+) : BaseViewModel<SettingsState>(
+    SettingsState(
+        showCrashButton = appConfig.buildType.isDebug,
+        versionName = appConfig.versionName,
+        versionCode = appConfig.versionCode
+    )
+) {
 
     override fun loadInitialData() {
         loadThemeMode()

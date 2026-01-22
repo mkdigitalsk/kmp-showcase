@@ -10,9 +10,19 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject {
         Bundle.main.object(forInfoDictionaryKey: "BuildType") as? String ?? "debug"
     }
 
+    private var versionName: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+    }
+
+    private var versionCode: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+    }
+
     private lazy var appConfig: AppConfig = {
         return AppConfig(
-            buildType: BuildType.companion.from(name: buildTypeString)
+            buildType: BuildType.companion.from(name: buildTypeString),
+            versionName: versionName,
+            versionCode: versionCode
         )
     }()
 

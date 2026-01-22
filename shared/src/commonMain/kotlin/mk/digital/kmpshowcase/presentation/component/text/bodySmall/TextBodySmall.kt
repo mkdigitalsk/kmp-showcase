@@ -1,4 +1,4 @@
-package mk.digital.kmpshowcase.presentation.component.text.bodyMedium
+package mk.digital.kmpshowcase.presentation.component.text.bodySmall
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 
 @Composable
-fun TextBodyMedium(
+fun TextBodySmall(
     text: String,
     color: Color,
     modifier: Modifier = Modifier,
@@ -25,7 +25,7 @@ fun TextBodyMedium(
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.bodyMedium,
+        style = MaterialTheme.typography.bodySmall,
         color = { color },
         fontWeight = fontWeight,
         modifier = modifier,

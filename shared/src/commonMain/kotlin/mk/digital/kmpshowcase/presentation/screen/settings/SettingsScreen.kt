@@ -30,6 +30,7 @@ import mk.digital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer
 import mk.digital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLargeNeutral100
 import mk.digital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLargePrimary
 import mk.digital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
+import mk.digital.kmpshowcase.presentation.component.text.bodySmall.TextBodySmallNeutral80
 import mk.digital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargePrimary
 import mk.digital.kmpshowcase.presentation.foundation.floatingNavBarSpace
 import mk.digital.kmpshowcase.presentation.foundation.space4
@@ -39,6 +40,7 @@ import mk.digital.kmpshowcase.shared.generated.resources.settings_profile
 import mk.digital.kmpshowcase.shared.generated.resources.settings_profile_photo
 import mk.digital.kmpshowcase.shared.generated.resources.settings_profile_photo_hint
 import mk.digital.kmpshowcase.shared.generated.resources.settings_theme
+import mk.digital.kmpshowcase.shared.generated.resources.settings_version
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -129,6 +131,13 @@ fun SettingsScreen(
                     )
                 }
             }
+        }
+
+        item {
+            VersionFooter(
+                versionName = state.versionName,
+                versionCode = state.versionCode
+            )
         }
     }
 
@@ -224,6 +233,18 @@ private fun ThemeOption(
         AppRadioButton(selected = selected, onClick = onClick)
         TextBodyLargeNeutral100(title)
     }
+}
+
+@Composable
+private fun VersionFooter(
+    versionName: String,
+    versionCode: String,
+) {
+    TextBodySmallNeutral80(
+        text = stringResource(Res.string.settings_version, versionName, versionCode),
+        modifier = Modifier.fillMaxWidth(),
+        textAlign = androidx.compose.ui.text.style.TextAlign.End,
+    )
 }
 
 @Composable

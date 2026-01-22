@@ -203,7 +203,7 @@ This app serves as a **KMP components portfolio** — a living demo of multiplat
 - [ ] Open maps
 
 ### Device Features
-- [ ] Camera (photo/video capture)
+- [x] Camera (photo capture for avatar)
 - [x] QR code &amp; barcode generator (ZXing / CoreImage)
 - [x] QR code &amp; barcode scanner (MLKit / AVFoundation)
 - [ ] Local notifications
@@ -220,7 +220,7 @@ This app serves as a **KMP components portfolio** — a living demo of multiplat
 - [ ] Device info (battery, network state)
 
 ### Media
-- [ ] Image picker & cropper
+- [x] Image picker (Camera & Gallery)
 - [ ] Video player
 - [ ] PDF viewer
 - [ ] WebView
