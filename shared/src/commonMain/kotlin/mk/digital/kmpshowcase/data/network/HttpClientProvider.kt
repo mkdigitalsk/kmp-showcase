@@ -51,7 +51,9 @@ private const val CONNECT_TIME_OUT_MILLIS: Long = 30_000
 
 private object KtorLogger : Logger {
     override fun log(message: String) {
-        message.chunked(4000).forEach { println("HTTP: $it") }
+        message.chunked(LOG_CHUNK_SIZE).forEach { println("HTTP: $it") }
     }
+
+    private const val LOG_CHUNK_SIZE = 4000
 }
 

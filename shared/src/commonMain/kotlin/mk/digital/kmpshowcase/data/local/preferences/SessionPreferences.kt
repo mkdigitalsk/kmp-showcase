@@ -1,24 +1,25 @@
 package mk.digital.kmpshowcase.data.local.preferences
 
 interface SessionPreferences {
-    suspend fun storeRefreshToken(refreshToken: String)
-    suspend fun getRefreshToken(): String?
-    suspend fun clearRefreshToken()
+
+    suspend fun setSessionCounter(value: Int)
+    suspend fun getSessionCounter(): Int
+    suspend fun clear()
 }
 
 class SessionPreferencesImpl(private val preferences: Preferences) : SessionPreferences {
 
-    override suspend fun storeRefreshToken(refreshToken: String) {
-        preferences.putString(REFRESH_TOKEN_KEY, refreshToken)
+    override suspend fun setSessionCounter(value: Int) {
+        preferences.putInt(SESSION_COUNTER_KEY, value)
     }
 
-    override suspend fun getRefreshToken(): String? = preferences.getString(REFRESH_TOKEN_KEY)
+    override suspend fun getSessionCounter(): Int = preferences.getInt(SESSION_COUNTER_KEY) ?: 0
 
-    override suspend fun clearRefreshToken() {
-        preferences.remove(REFRESH_TOKEN_KEY)
+    override suspend fun clear() {
+        preferences.clear()
     }
 
     private companion object {
-        private const val REFRESH_TOKEN_KEY = "refresh_token"
+        private const val SESSION_COUNTER_KEY = "session_counter"
     }
 }

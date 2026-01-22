@@ -24,7 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import mk.digital.kmpshowcase.domain.model.User
 import mk.digital.kmpshowcase.presentation.component.CircularProgress
-import mk.digital.kmpshowcase.presentation.component.buttons.ContainedButton
+import mk.digital.kmpshowcase.presentation.component.ErrorView
+import mk.digital.kmpshowcase.presentation.component.LoadingView
 import mk.digital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import mk.digital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
 import mk.digital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
@@ -34,8 +35,6 @@ import mk.digital.kmpshowcase.presentation.foundation.floatingNavBarSpace
 import mk.digital.kmpshowcase.presentation.foundation.space4
 import mk.digital.kmpshowcase.shared.generated.resources.Res
 import mk.digital.kmpshowcase.shared.generated.resources.networking_empty
-import mk.digital.kmpshowcase.shared.generated.resources.networking_error_title
-import mk.digital.kmpshowcase.shared.generated.resources.networking_retry
 import mk.digital.kmpshowcase.shared.generated.resources.networking_subtitle
 import mk.digital.kmpshowcase.shared.generated.resources.networking_title
 import org.jetbrains.compose.resources.stringResource
@@ -46,9 +45,9 @@ fun NetworkingScreen(viewModel: NetworkingViewModel) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         when {
-            state.isLoading && state.users.isEmpty() -> LoadingContent()
-            state.error != null && state.users.isEmpty() -> ErrorContent(
-                error = state.error!!,
+            state.isLoading && state.users.isEmpty() -> LoadingView()
+            state.error != null && state.users.isEmpty() -> ErrorView(
+                message = state.error!!,
                 onRetry = viewModel::refresh
             )
             state.users.isEmpty() -> EmptyContent()
@@ -58,39 +57,6 @@ fun NetworkingScreen(viewModel: NetworkingViewModel) {
                 onRefresh = viewModel::refresh
             )
         }
-    }
-}
-
-@Composable
-private fun LoadingContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgress()
-    }
-}
-
-@Composable
-private fun ErrorContent(
-    error: String,
-    onRetry: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(space4),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextHeadlineMediumPrimary(stringResource(Res.string.networking_error_title))
-        Spacer2()
-        TextBodyMediumNeutral80(error)
-        Spacer2()
-        ContainedButton(
-            text = stringResource(Res.string.networking_retry),
-            onClick = onRetry
-        )
     }
 }
 

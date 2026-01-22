@@ -28,13 +28,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import mk.digital.kmpshowcase.presentation.foundation.appColorScheme
 
-data class FloatingNavItem(
-    val icon: ImageVector,
-    val label: String,
-    val selected: Boolean,
-    val onClick: () -> Unit
-)
-
 @Composable
 fun AppFloatingNavBar(
     items: List<FloatingNavItem>,
@@ -131,3 +124,10 @@ private fun FloatingNavBarItem(
         }
     }
 }
+
+data class FloatingNavItem(
+    val icon: ImageVector,
+    val label: String,
+    val selected: Boolean,
+    val onClick: () -> Unit
+)

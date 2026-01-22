@@ -6,6 +6,8 @@
     <!-- Common -->
     <string name="content_description_back">Back</string>
     <string name="button_ok">OK</string>
+    <string name="button_retry">Retry</string>
+    <string name="error_title">Error</string>
     <string name="detail_format">Detail: %1$d</string>
 
     <!-- Navigation -->
@@ -91,4 +93,13 @@
     <string name="networking_error_title">Error</string>
     <string name="networking_retry">Retry</string>
     <string name="networking_empty">No users found</string>
+
+    <!-- Storage Screen -->
+    <string name="storage_title">Local Storage</string>
+    <string name="storage_subtitle">Session vs Persistent storage demo</string>
+    <string name="storage_session_label">Session Counter</string>
+    <string name="storage_session_hint">Cleared when you tap "Clear Session"</string>
+    <string name="storage_persistent_label">Persistent Counter</string>
+    <string name="storage_persistent_hint">Persists until app is uninstalled</string>
+    <string name="storage_clear_session">Clear Session</string>
 </resources>

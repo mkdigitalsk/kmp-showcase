@@ -38,10 +38,11 @@ import mk.digital.kmpshowcase.presentation.component.FloatingNavItem
 import mk.digital.kmpshowcase.presentation.component.TopAppBar
 import mk.digital.kmpshowcase.presentation.foundation.AppTheme
 import mk.digital.kmpshowcase.presentation.screen.feature.PlatformApisScreen
-import mk.digital.kmpshowcase.presentation.screen.feature.StorageScreen
 import mk.digital.kmpshowcase.presentation.screen.feature.UiComponentsScreen
 import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingScreen
 import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingViewModel
+import mk.digital.kmpshowcase.presentation.screen.storage.StorageScreen
+import mk.digital.kmpshowcase.presentation.screen.storage.StorageViewModel
 import mk.digital.kmpshowcase.presentation.screen.home.HomeNavEvents
 import mk.digital.kmpshowcase.presentation.screen.home.HomeScreen
 import mk.digital.kmpshowcase.presentation.screen.home.HomeViewModel
@@ -107,7 +108,11 @@ fun MainView() {
                                     NetworkingScreen(viewModel)
                                 }
                             }
-                            entry<HomeSection.Storage> { StorageScreen() }
+                            entry<HomeSection.Storage> {
+                                WithViewModel<StorageViewModel> { viewModel ->
+                                    StorageScreen(viewModel)
+                                }
+                            }
                             entry<HomeSection.PlatformApis> { PlatformApisScreen() }
                             entry<Settings> {
                                 SettingsScreen()
