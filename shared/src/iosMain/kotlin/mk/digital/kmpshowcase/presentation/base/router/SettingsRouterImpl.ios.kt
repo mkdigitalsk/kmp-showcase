@@ -13,4 +13,10 @@ actual class SettingsRouterImpl : SettingsRouter {
             completionHandler = null
         )
     }
+
+    actual override fun openNotificationSettings() {
+        // iOS doesn't have a direct URL for notification settings
+        // Opening app settings where user can navigate to notifications
+        openSettings()
+    }
 }

@@ -34,7 +34,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import mk.digital.kmpshowcase.LocalSnackbarHostState
 import mk.digital.kmpshowcase.data.biometric.BiometricResult
+import mk.digital.kmpshowcase.presentation.base.CollectNavEvents
+import mk.digital.kmpshowcase.presentation.base.router.ExternalRouter
 import mk.digital.kmpshowcase.presentation.component.buttons.OutlinedButton
+import org.koin.compose.koinInject
 import mk.digital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import mk.digital.kmpshowcase.presentation.component.permission.rememberLocationPermissionState
 import mk.digital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
@@ -342,4 +345,21 @@ private fun formatLocationText(lat: Double, lon: Double): String {
         StringFormatter.formatDouble(lat, COORDINATE_DECIMAL_PLACES),
         StringFormatter.formatDouble(lon, COORDINATE_DECIMAL_PLACES)
     )
+}
+
+@Composable
+fun PlatformApisNavEvents(
+    viewModel: PlatformApisViewModel,
+    externalRouter: ExternalRouter = koinInject()
+) {
+    CollectNavEvents(navEventFlow = viewModel.navEvent) { event ->
+        if (event !is PlatformApisNavEvent) return@CollectNavEvents
+        when (event) {
+            is PlatformApisNavEvent.Share -> externalRouter.share(event.text)
+            is PlatformApisNavEvent.Dial -> externalRouter.dial(event.number)
+            is PlatformApisNavEvent.OpenLink -> externalRouter.openLink(event.url)
+            is PlatformApisNavEvent.SendEmail -> externalRouter.sendEmail(event.to, event.subject, event.body)
+            is PlatformApisNavEvent.CopyToClipboard -> externalRouter.copyToClipboard(event.text)
+        }
+    }
 }

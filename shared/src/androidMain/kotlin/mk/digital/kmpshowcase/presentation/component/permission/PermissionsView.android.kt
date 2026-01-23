@@ -3,6 +3,7 @@ package mk.digital.kmpshowcase.presentation.component.permission
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.runtime.Composable
@@ -37,7 +38,8 @@ actual fun PermissionView(
     when (permission) {
         PermissionType.GALLERY -> content()
         PermissionType.CAMERA,
-        PermissionType.LOCATION -> PermissionContendDefault(
+        PermissionType.LOCATION,
+        PermissionType.NOTIFICATION -> PermissionContendDefault(
             permission = permission,
             onDeniedDialogDismiss = onDeniedDialogDismiss,
             content = content,
@@ -49,6 +51,9 @@ private fun PermissionType.toManifestPermission() = when (this) {
     PermissionType.CAMERA -> Manifest.permission.CAMERA
     PermissionType.GALLERY -> null
     PermissionType.LOCATION -> Manifest.permission.ACCESS_FINE_LOCATION
+    PermissionType.NOTIFICATION -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Manifest.permission.POST_NOTIFICATIONS
+    } else null
 }
 
 @OptIn(ExperimentalPermissionsApi::class)

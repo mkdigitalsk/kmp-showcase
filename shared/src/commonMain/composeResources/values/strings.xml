@@ -26,6 +26,7 @@
     <string name="screen_scanner">Scanner</string>
     <string name="screen_database">Database</string>
     <string name="screen_calendar">Calendar</string>
+    <string name="screen_notifications">Notifications</string>
     <string name="screen_settings">Settings</string>
 
     <!-- Home Screen Features -->
@@ -43,6 +44,8 @@
     <string name="feature_database_subtitle">SQLDelight, local persistence</string>
     <string name="feature_calendar_title">Calendar</string>
     <string name="feature_calendar_subtitle">Date range picker, Airbnb-style</string>
+    <string name="feature_notifications_title">Notifications</string>
+    <string name="feature_notifications_subtitle">Local and push notifications</string>
     <string name="feature_login_title">Login</string>
     <string name="feature_login_subtitle">Email, password validation, biometrics</string>
 
@@ -231,6 +234,32 @@
     <string name="scanner_scanned_result">Scanned Result</string>
     <string name="scanner_scan_again">Scan Again</string>
 
+    <!-- Notifications Screen -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_subtitle">Test local and push notifications</string>
+    <string name="notifications_permission_title">Permission</string>
+    <string name="notifications_permission_granted">Status: Granted</string>
+    <string name="notifications_permission_denied">Status: Denied</string>
+    <string name="notifications_permission_unknown">Status: Not determined</string>
+    <string name="notifications_request_permission">Request Permission</string>
+    <string name="notifications_token_title">Push Token</string>
+    <string name="notifications_token">%1$s</string>
+    <string name="notifications_no_token">Not available yet</string>
+    <string name="notifications_refresh_token">Refresh</string>
+    <string name="notifications_log_token">Log</string>
+    <string name="notifications_send_title">Send Test Notifications</string>
+    <string name="notifications_send_reminder">Reminder</string>
+    <string name="notifications_send_promo">Promo</string>
+    <string name="notifications_reminder_title">Reminder</string>
+    <string name="notifications_reminder_message">Don\'t forget to check your calendar!</string>
+    <string name="notifications_promo_title">Special Offer</string>
+    <string name="notifications_promo_message">Check out our latest deals!</string>
+    <string name="notifications_last_sent">Last sent: %1$s</string>
+    <string name="notifications_cancel_title">Manage Notifications</string>
+    <string name="notifications_cancel_all">Cancel All</string>
+    <string name="notifications_open_settings">Open Settings</string>
+    <string name="notifications_last_received">Last received: %1$s</string>
+
     <!-- Permissions -->
     <string name="permission_required">Permission Required</string>
     <string name="permission_allow">Allow</string>
@@ -241,6 +270,8 @@
     <string name="gallery_permission_rationale">Photo library access is needed to select images.</string>
     <string name="location_permission_denied">Location access was denied. Please enable it in Settings.</string>
     <string name="location_permission_rationale">Location access is needed for this feature.</string>
+    <string name="notification_permission_denied">Notification access was denied. Please enable it in Settings.</string>
+    <string name="notification_permission_rationale">Notification access is needed to receive alerts and updates.</string>
 
     <!-- Image Picker -->
     <string name="imagepicker_title">Select Image Source</string>

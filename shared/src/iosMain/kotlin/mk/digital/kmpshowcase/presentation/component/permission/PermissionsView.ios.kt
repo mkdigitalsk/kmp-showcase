@@ -30,6 +30,15 @@ import platform.Photos.PHPhotoLibrary
 import platform.UIKit.UIApplication
 import platform.UIKit.UIApplicationDidBecomeActiveNotification
 import platform.UIKit.UIApplicationOpenSettingsURLString
+import platform.UserNotifications.UNAuthorizationOptionAlert
+import platform.UserNotifications.UNAuthorizationOptionBadge
+import platform.UserNotifications.UNAuthorizationOptionSound
+import platform.UserNotifications.UNAuthorizationStatusAuthorized
+import platform.UserNotifications.UNAuthorizationStatusDenied
+import platform.UserNotifications.UNAuthorizationStatusEphemeral
+import platform.UserNotifications.UNAuthorizationStatusNotDetermined
+import platform.UserNotifications.UNAuthorizationStatusProvisional
+import platform.UserNotifications.UNUserNotificationCenter
 import platform.darwin.NSObject
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
@@ -73,6 +82,7 @@ private fun permissionGrantedNow(permission: PermissionType) = when (permission)
     PermissionType.CAMERA -> cameraAuthorized
     PermissionType.GALLERY -> galleryAuthorized
     PermissionType.LOCATION -> locationAuthorized
+    PermissionType.NOTIFICATION -> notificationAuthorized
 }
 
 private fun checkPermission(permission: PermissionType, onResult: (Boolean) -> Unit) {
@@ -80,6 +90,7 @@ private fun checkPermission(permission: PermissionType, onResult: (Boolean) -> U
         PermissionType.CAMERA -> checkCameraPermission(onResult)
         PermissionType.GALLERY -> checkGalleryPermission(onResult)
         PermissionType.LOCATION -> checkLocationPermission(onResult)
+        PermissionType.NOTIFICATION -> checkNotificationPermission(onResult)
     }
 }
 
@@ -191,6 +202,47 @@ private val locationAuthorized: Boolean
         return st == kCLAuthorizationStatusAuthorizedAlways ||
                 st == kCLAuthorizationStatusAuthorizedWhenInUse
     }
+
+// ===== Notification =====
+private var notificationAuthorizedCache: Boolean? = null
+
+private val notificationAuthorized: Boolean
+    get() = notificationAuthorizedCache ?: false
+
+private fun checkNotificationPermission(onResult: (Boolean) -> Unit) {
+    UNUserNotificationCenter.currentNotificationCenter().getNotificationSettingsWithCompletionHandler { settings ->
+        if (settings == null) {
+            runOnMain { onResult(false) }
+            return@getNotificationSettingsWithCompletionHandler
+        }
+        when (settings.authorizationStatus) {
+            UNAuthorizationStatusAuthorized,
+            UNAuthorizationStatusProvisional,
+            UNAuthorizationStatusEphemeral -> {
+                notificationAuthorizedCache = true
+                runOnMain { onResult(true) }
+            }
+            UNAuthorizationStatusDenied -> {
+                notificationAuthorizedCache = false
+                runOnMain { onResult(false) }
+            }
+            UNAuthorizationStatusNotDetermined -> requestNotificationPermission(onResult)
+            else -> {
+                notificationAuthorizedCache = false
+                runOnMain { onResult(false) }
+            }
+        }
+    }
+}
+
+private fun requestNotificationPermission(onResult: (Boolean) -> Unit) {
+    UNUserNotificationCenter.currentNotificationCenter().requestAuthorizationWithOptions(
+        options = UNAuthorizationOptionAlert or UNAuthorizationOptionBadge or UNAuthorizationOptionSound
+    ) { granted, _ ->
+        notificationAuthorizedCache = granted
+        runOnMain { onResult(granted) }
+    }
+}
 
 private fun launchSettings() {
     NSURL.URLWithString(UIApplicationOpenSettingsURLString)?.let {

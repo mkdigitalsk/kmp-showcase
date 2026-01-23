@@ -14,6 +14,7 @@ import mk.digital.kmpshowcase.data.repository.BiometricRepositoryImpl
 import mk.digital.kmpshowcase.data.repository.DateRepositoryImpl
 import mk.digital.kmpshowcase.data.repository.LocationRepositoryImpl
 import mk.digital.kmpshowcase.data.repository.SettingsRepositoryImpl
+import mk.digital.kmpshowcase.data.notification.NotificationRepositoryImpl
 import mk.digital.kmpshowcase.data.repository.database.AuthRepositoryImpl
 import mk.digital.kmpshowcase.data.repository.database.NoteRepositoryImpl
 import mk.digital.kmpshowcase.data.repository.storage.StorageRepositoryImpl
@@ -27,6 +28,7 @@ import mk.digital.kmpshowcase.domain.repository.BiometricRepository
 import mk.digital.kmpshowcase.domain.repository.DateRepository
 import mk.digital.kmpshowcase.domain.repository.LocationRepository
 import mk.digital.kmpshowcase.domain.repository.NoteRepository
+import mk.digital.kmpshowcase.domain.repository.NotificationRepository
 import mk.digital.kmpshowcase.domain.repository.SettingsRepository
 import mk.digital.kmpshowcase.domain.repository.StorageRepository
 import mk.digital.kmpshowcase.domain.repository.UserRepository
@@ -53,6 +55,7 @@ val dataModule = module {
     singleOf(::DateRepositoryImpl) { bind<DateRepository>() }
     singleOf(::NoteRepositoryImpl) { bind<NoteRepository>() }
     singleOf(::AuthRepositoryImpl) { bind<AuthRepository>() }
+    singleOf(::NotificationRepositoryImpl) { bind<NotificationRepository>() }
 
     // Database - needs special factory
     single { AppDatabase(get<DatabaseDriverFactory>().createDriver()) }

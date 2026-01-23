@@ -11,6 +11,7 @@ import mk.digital.kmpshowcase.shared.generated.resources.screen_settings
 import mk.digital.kmpshowcase.shared.generated.resources.screen_storage
 import mk.digital.kmpshowcase.shared.generated.resources.screen_calendar
 import mk.digital.kmpshowcase.shared.generated.resources.screen_database
+import mk.digital.kmpshowcase.shared.generated.resources.screen_notifications
 import mk.digital.kmpshowcase.shared.generated.resources.screen_ui_components
 import mk.digital.kmpshowcase.shared.generated.resources.screen_login
 import mk.digital.kmpshowcase.shared.generated.resources.screen_register
@@ -80,6 +81,11 @@ sealed interface Route : NavKey {
         @Serializable
         data object Calendar : HomeSection {
             override val titleRes = Res.string.screen_calendar
+        }
+
+        @Serializable
+        data object Notifications : HomeSection {
+            override val titleRes = Res.string.screen_notifications
         }
     }
 

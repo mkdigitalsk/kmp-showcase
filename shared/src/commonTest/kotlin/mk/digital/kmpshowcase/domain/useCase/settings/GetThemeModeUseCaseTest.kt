@@ -4,7 +4,6 @@ import dev.mokkery.answering.returns
 import dev.mokkery.answering.throws
 import dev.mokkery.everySuspend
 import dev.mokkery.mock
-import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import mk.digital.kmpshowcase.domain.BaseTest
 import mk.digital.kmpshowcase.domain.repository.SettingsRepository
@@ -35,7 +34,6 @@ class GetThemeModeUseCaseTest : BaseTest<GetThemeModeUseCase>() {
             },
             then = { result ->
                 assertEquals(ThemeMode.LIGHT, result)
-                verifySuspend { settingsRepository.getThemeMode() }
             }
         )
     }

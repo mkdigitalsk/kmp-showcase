@@ -9,8 +9,12 @@ import mk.digital.kmpshowcase.data.local.preferences.Preferences
 import mk.digital.kmpshowcase.data.local.preferences.PreferencesImpl
 import mk.digital.kmpshowcase.data.location.LocationClient
 import mk.digital.kmpshowcase.data.location.LocationClientImpl
+import mk.digital.kmpshowcase.data.push.IOSPushNotificationService
+import mk.digital.kmpshowcase.data.service.LocalNotificationServiceImpl
 import mk.digital.kmpshowcase.di.Qualifiers.app
 import mk.digital.kmpshowcase.di.Qualifiers.session
+import mk.digital.kmpshowcase.domain.repository.LocalNotificationService
+import mk.digital.kmpshowcase.domain.repository.PushNotificationService
 import mk.digital.kmpshowcase.presentation.base.router.ExternalRouter
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -29,4 +33,11 @@ actual val platformModule: Module = module {
     singleOf(::LocationClientImpl) { bind<LocationClient>() }
     singleOf(::BiometricClientImpl) { bind<BiometricClient>() }
     singleOf(::IOSAnalyticsClient) { bind<AnalyticsClient>() }
+
+    singleOf(::LocalNotificationServiceImpl) { bind<LocalNotificationService>() }
+    single<PushNotificationService> {
+        IOSPushNotificationService(get()).also {
+            IOSPushNotificationService.setInstance(it)
+        }
+    }
 }

@@ -6,8 +6,8 @@ A **KMP portfolio app** demonstrating multiplatform capabilities with **shared b
 
 - **Purpose**: Portfolio app showcasing KMP capabilities — each feature is a self-contained demo.
 - **KMP shared**: UI (Compose Multiplatform), Navigation3, DI (Koin), networking (Ktor 3), database (SQLDelight), JSON (kotlinx-serialization).
-- **Android**: Material 3, Activity Compose, edge‑to‑edge, Firebase Analytics.
-- **iOS**: Compose MPP UI hosted in Swift/SwiftUI shell, safe‑area support, Darwin HTTP engine, Firebase Analytics.
+- **Android**: Material 3, Activity Compose, edge‑to‑edge, Firebase Analytics, FCM push notifications.
+- **iOS**: Compose MPP UI hosted in Swift/SwiftUI shell, safe‑area support, Darwin HTTP engine, Firebase Analytics, APNs push notifications.
 
 ---
 
@@ -23,6 +23,7 @@ A **KMP portfolio app** demonstrating multiplatform capabilities with **shared b
 | Database | SQLDelight |
 | Images | Coil 3 |
 | Analytics | Firebase Analytics |
+| Push Notifications | FCM (Android) / APNs (iOS) |
 | Testing | kotlin.test + Mokkery |
 | Code Quality | Detekt + Compose rules |
 
@@ -72,6 +73,7 @@ graph LR
 | Platform APIs | Share, dial, links, email, clipboard, location, biometrics |
 | Scanner | QR/barcode generator & scanner |
 | Calendar | Date range picker with disabled dates |
+| Notifications | Push notifications, local notifications, permission handling |
 | Settings | Theme, Language, profile photo picker |
 
 ---
@@ -124,6 +126,12 @@ graph LR
 - ✅ Calendar (date range picker, disabled dates, month navigation)
 - ✅ Typography, Spacers
 
+### Notifications
+- ✅ Push notifications (FCM on Android, APNs on iOS)
+- ✅ Local notifications with channels
+- ✅ Notification permission handling
+- ✅ Open notification settings
+
 ### Quality & Build
 - ✅ Detekt + Compose rules
 - ✅ GitHub Actions CI
@@ -138,8 +146,8 @@ graph LR
 
 - [x] Form validation (Login/Register)
 - [x] Date/Time pickers (Calendar with range selection)
+- [x] Push notifications (FCM/APNs)
 - [ ] Pagination (infinite scroll)
-- [ ] Push notifications
 - [ ] Deep links
 - [ ] Maps integration
 - [ ] Video player

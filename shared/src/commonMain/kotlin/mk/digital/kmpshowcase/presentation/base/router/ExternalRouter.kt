@@ -13,4 +13,5 @@ expect class ExternalRouter :
     override fun copyToClipboard(text: String)
     override fun sendEmail(to: String, subject: String, body: String)
     override fun openSettings()
+    override fun openNotificationSettings()
 }

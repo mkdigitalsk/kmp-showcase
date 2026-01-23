@@ -7,8 +7,10 @@ import mk.digital.kmpshowcase.data.local.preferences.Preferences
 import mk.digital.kmpshowcase.data.local.preferences.PreferencesImpl
 import mk.digital.kmpshowcase.data.location.LocationClient
 import mk.digital.kmpshowcase.data.location.LocationClientImpl
+import mk.digital.kmpshowcase.data.service.LocalNotificationServiceImpl
 import mk.digital.kmpshowcase.di.Qualifiers.app
 import mk.digital.kmpshowcase.di.Qualifiers.session
+import mk.digital.kmpshowcase.domain.repository.LocalNotificationService
 import mk.digital.kmpshowcase.presentation.base.router.ExternalRouter
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
@@ -26,4 +28,6 @@ actual val platformModule: Module = module {
     single<LocationClient> { LocationClientImpl(androidContext()) }
     single<BiometricClient> { BiometricClientImpl(androidContext()) }
     single { DatabaseDriverFactory(androidContext()) }
+
+    single<LocalNotificationService> { LocalNotificationServiceImpl(androidContext()) }
 }

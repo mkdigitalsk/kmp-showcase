@@ -52,6 +52,7 @@ fun HomeNavEvents(
                     FeatureId.PLATFORM_APIS -> router.navigateTo(Route.HomeSection.PlatformApis)
                     FeatureId.SCANNER -> router.navigateTo(Route.HomeSection.Scanner)
                     FeatureId.CALENDAR -> router.navigateTo(Route.HomeSection.Calendar)
+                    FeatureId.NOTIFICATIONS -> router.navigateTo(Route.HomeSection.Notifications)
                 }
             }
         }

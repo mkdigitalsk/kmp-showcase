@@ -11,6 +11,7 @@ import mk.digital.kmpshowcase.presentation.screen.register.RegisterViewModel
 import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingViewModel
 import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisViewModel
 import mk.digital.kmpshowcase.presentation.screen.scanner.ScannerViewModel
+import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsViewModel
 import mk.digital.kmpshowcase.presentation.screen.settings.SettingsViewModel
 import mk.digital.kmpshowcase.presentation.screen.storage.StorageViewModel
 import org.koin.core.module.dsl.factoryOf
@@ -31,6 +32,7 @@ val presentationModule = module {
     viewModelOf(::ImagePickerViewModel)
     viewModelOf(::DatabaseViewModel)
     viewModelOf(::CalendarViewModel)
+    viewModelOf(::NotificationsViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)
 }

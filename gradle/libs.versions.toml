@@ -131,6 +131,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-app-check = { module = "com.google.firebase:firebase-appcheck-debug" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 google-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "googleServicesLocation" }
 
 # Testing & Code Quality

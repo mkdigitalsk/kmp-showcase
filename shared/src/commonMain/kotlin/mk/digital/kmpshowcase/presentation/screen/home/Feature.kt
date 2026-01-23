@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.Dataset
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material.icons.outlined.QrCode2
@@ -15,6 +16,8 @@ import mk.digital.kmpshowcase.shared.generated.resources.feature_calendar_title
 import mk.digital.kmpshowcase.shared.generated.resources.feature_database_subtitle
 import mk.digital.kmpshowcase.shared.generated.resources.feature_database_title
 import mk.digital.kmpshowcase.shared.generated.resources.feature_networking_subtitle
+import mk.digital.kmpshowcase.shared.generated.resources.feature_notifications_subtitle
+import mk.digital.kmpshowcase.shared.generated.resources.feature_notifications_title
 import mk.digital.kmpshowcase.shared.generated.resources.feature_networking_title
 import mk.digital.kmpshowcase.shared.generated.resources.feature_platform_apis_subtitle
 import mk.digital.kmpshowcase.shared.generated.resources.feature_platform_apis_title
@@ -41,6 +44,7 @@ enum class FeatureId {
     PLATFORM_APIS,
     SCANNER,
     CALENDAR,
+    NOTIFICATIONS,
 }
 
 val showcaseFeatures = listOf(
@@ -85,5 +89,11 @@ val showcaseFeatures = listOf(
         titleRes = Res.string.feature_calendar_title,
         subtitleRes = Res.string.feature_calendar_subtitle,
         icon = Icons.Outlined.CalendarMonth,
+    ),
+    Feature(
+        id = FeatureId.NOTIFICATIONS,
+        titleRes = Res.string.feature_notifications_title,
+        subtitleRes = Res.string.feature_notifications_subtitle,
+        icon = Icons.Outlined.Notifications,
     ),
 )

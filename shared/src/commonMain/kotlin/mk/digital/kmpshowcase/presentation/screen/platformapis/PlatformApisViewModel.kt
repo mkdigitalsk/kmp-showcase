@@ -6,10 +6,9 @@ import mk.digital.kmpshowcase.domain.model.Location
 import mk.digital.kmpshowcase.domain.repository.BiometricRepository
 import mk.digital.kmpshowcase.domain.repository.LocationRepository
 import mk.digital.kmpshowcase.presentation.base.BaseViewModel
-import mk.digital.kmpshowcase.presentation.base.router.ExternalRouter
+import mk.digital.kmpshowcase.presentation.base.NavEvent
 
 class PlatformApisViewModel(
-    private val externalRouter: ExternalRouter,
     private val locationRepository: LocationRepository,
     private val biometricRepository: BiometricRepository,
 ) : BaseViewModel<PlatformApisUiState>(PlatformApisUiState()) {
@@ -21,23 +20,23 @@ class PlatformApisViewModel(
     }
 
     fun share() {
-        externalRouter.share(DEMO_SHARE_TEXT)
+        navigate(PlatformApisNavEvent.Share(DEMO_SHARE_TEXT))
     }
 
     fun dial() {
-        externalRouter.dial(DEMO_PHONE_NUMBER)
+        navigate(PlatformApisNavEvent.Dial(DEMO_PHONE_NUMBER))
     }
 
     fun openLink() {
-        externalRouter.openLink(DEMO_URL)
+        navigate(PlatformApisNavEvent.OpenLink(DEMO_URL))
     }
 
     fun sendEmail() {
-        externalRouter.sendEmail(DEMO_EMAIL, DEMO_EMAIL_SUBJECT, DEMO_EMAIL_BODY)
+        navigate(PlatformApisNavEvent.SendEmail(DEMO_EMAIL, DEMO_EMAIL_SUBJECT, DEMO_EMAIL_BODY))
     }
 
     fun copyToClipboard() {
-        externalRouter.copyToClipboard(DEMO_COPY_TEXT)
+        navigate(PlatformApisNavEvent.CopyToClipboard(DEMO_COPY_TEXT))
         newState { it.copy(copiedToClipboard = true) }
     }
 
@@ -123,3 +122,11 @@ data class PlatformApisUiState(
     val biometricsLoading: Boolean = false,
     val biometricsResult: BiometricResult? = null,
 )
+
+sealed interface PlatformApisNavEvent : NavEvent {
+    data class Share(val text: String) : PlatformApisNavEvent
+    data class Dial(val number: String) : PlatformApisNavEvent
+    data class OpenLink(val url: String) : PlatformApisNavEvent
+    data class SendEmail(val to: String, val subject: String, val body: String) : PlatformApisNavEvent
+    data class CopyToClipboard(val text: String) : PlatformApisNavEvent
+}

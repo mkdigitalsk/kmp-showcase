@@ -53,6 +53,7 @@ import mk.digital.kmpshowcase.presentation.foundation.ThemeMode
 import mk.digital.kmpshowcase.presentation.screen.scanner.ScannerScreen
 import mk.digital.kmpshowcase.presentation.screen.scanner.ScannerViewModel
 import mk.digital.kmpshowcase.presentation.screen.feature.UiComponentsScreen
+import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisNavEvents
 import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisScreen
 import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisViewModel
 import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingScreen
@@ -63,6 +64,9 @@ import mk.digital.kmpshowcase.presentation.screen.calendar.CalendarScreen
 import mk.digital.kmpshowcase.presentation.screen.calendar.CalendarViewModel
 import mk.digital.kmpshowcase.presentation.screen.database.DatabaseScreen
 import mk.digital.kmpshowcase.presentation.screen.database.DatabaseViewModel
+import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsNavEvents
+import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsScreen
+import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsViewModel
 import mk.digital.kmpshowcase.presentation.screen.home.HomeNavEvents
 import mk.digital.kmpshowcase.presentation.screen.home.HomeScreen
 import mk.digital.kmpshowcase.presentation.screen.home.HomeViewModel
@@ -101,6 +105,7 @@ private val saveStateConfiguration = SavedStateConfiguration {
             subclass(HomeSection.Scanner.serializer())
             subclass(HomeSection.Database.serializer())
             subclass(HomeSection.Calendar.serializer())
+            subclass(HomeSection.Notifications.serializer())
             subclass(Settings.serializer())
         }
     }
@@ -181,6 +186,7 @@ fun MainView(
                             }
                             entry<HomeSection.PlatformApis> {
                                 WithViewModel<PlatformApisViewModel> { viewModel ->
+                                    PlatformApisNavEvents(viewModel)
                                     PlatformApisScreen(viewModel)
                                 }
                             }
@@ -197,6 +203,12 @@ fun MainView(
                             entry<HomeSection.Calendar> {
                                 WithViewModel<CalendarViewModel> { viewModel ->
                                     CalendarScreen(viewModel)
+                                }
+                            }
+                            entry<HomeSection.Notifications> {
+                                WithViewModel<NotificationsViewModel> { viewModel ->
+                                    NotificationsNavEvents(viewModel)
+                                    NotificationsScreen(viewModel)
                                 }
                             }
                             entry<Settings> {

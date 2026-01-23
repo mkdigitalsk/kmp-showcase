@@ -126,4 +126,5 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.app.check)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.messaging)
 }
