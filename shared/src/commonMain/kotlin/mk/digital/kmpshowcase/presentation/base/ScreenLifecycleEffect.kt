@@ -13,19 +13,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.flow.Flow
 
-/**
- * A composable that provides lifecycle hooks for screens in Navigation 3 pattern.
- *
- * This tracks BOTH:
- * 1. Composition lifecycle - when screen enters/exits composition (navigation between screens)
- * 2. Activity lifecycle - when app goes to background/foreground
- *
- * @param key Unique key for this screen instance (e.g., route or component hashCode)
- * @param onCreate Called when the screen first enters the composition (only once per screen instance)
- * @param onResume Called when the screen becomes visible (composition enter OR app resumes from background)
- * @param onPause Called when the screen becomes invisible (composition exit OR app goes to background)
- * @param onDispose Called when the composable leaves the composition
- */
 @Composable
 private fun ScreenLifecycleEffect(
     key: Any? = Unit,
@@ -41,29 +28,21 @@ private fun ScreenLifecycleEffect(
     val currentOnPause by rememberUpdatedState(onPause)
     val currentOnDispose by rememberUpdatedState(onDispose)
 
-    // Track if we've already called onResume (to avoid double calls)
     var isResumed by remember(key) { mutableStateOf(false) }
-
-    // Track if onCreate was called - resets each time screen enters composition
-    // This ensures loadInitialData() is called every time user navigates to the screen
     var isFirstComposition by remember(key) { mutableStateOf(true) }
 
-    // Handle screen entering composition (navigation)
     LaunchedEffect(key) {
-        // onCreate only on first composition
         if (isFirstComposition) {
             isFirstComposition = false
             currentOnCreate()
         }
 
-        // onResume when entering composition (if not already resumed)
         if (!isResumed && lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             isResumed = true
             currentOnResume()
         }
     }
 
-    // Handle screen leaving composition (navigation away)
     DisposableEffect(key) {
         onDispose {
             if (isResumed) {
@@ -74,7 +53,6 @@ private fun ScreenLifecycleEffect(
         }
     }
 
-    // Handle app background/foreground lifecycle
     DisposableEffect(lifecycleOwner, key) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
@@ -102,11 +80,6 @@ private fun ScreenLifecycleEffect(
     }
 }
 
-/**
- * A composable that connects a ScreenLifecycle to lifecycle events.
- * Uses the viewModel's hashCode as key to properly track each screen instance separately.
- * @param viewModel The ScreenLifecycle instance (typically a ViewModel) to connect to lifecycle
- */
 @Composable
 fun ScreenLifecycleEffect(viewModel: ScreenLifecycle) {
     ScreenLifecycleEffect(
@@ -117,10 +90,6 @@ fun ScreenLifecycleEffect(viewModel: ScreenLifecycle) {
     )
 }
 
-/**
- * Collects navigation events from a Flow and performs actual navigation.
- * Caller is responsible for handling specific event types via when expression.
- */
 @Composable
 fun CollectNavEvents(
     navEventFlow: Flow<NavEvent>,

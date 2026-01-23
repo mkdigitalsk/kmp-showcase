@@ -15,10 +15,6 @@ import org.koin.core.component.inject
 import kotlin.getValue
 import kotlin.reflect.KClass
 
-/**
- * Navigation Router interface for Navigation 3.
- * Works with NavBackStack instead of NavController.
- */
 interface NavRouter<T: NavKey> {
     val backStack: NavBackStack<T>
     fun navigateTo(page: T)
@@ -28,12 +24,12 @@ interface NavRouter<T: NavKey> {
     fun openLink(url: String)
     fun dial(number: String)
     fun share(text: String)
+    fun copyToClipboard(text: String)
+    fun sendEmail(to: String, subject: String, body: String)
+    fun openSettings()
+    fun openNotificationSettings()
 }
 
-/**
- * Implementation of NavRouter for Navigation 3.
- * Wraps NavBackStack which is created in composable scope.
- */
 class NavRouterImpl<T : NavKey>(
     override val backStack: NavBackStack<T>,
 ) : NavRouter<T>, KoinComponent {
@@ -46,11 +42,9 @@ class NavRouterImpl<T : NavKey>(
 
     override fun <R : Any> navigateTo(page: T, popUpTo: KClass<R>?, inclusive: Boolean) {
         if (popUpTo != null) {
-            // Pop items until we reach one of type popUpTo
             while (backStack.lastOrNull()?.let { !popUpTo.isInstance(it) } == true) {
                 backStack.removeLastOrNull()
             }
-            // Now last item is either of type popUpTo, or backstack is empty
             if (inclusive) {
                 backStack.removeLastOrNull()
             }
@@ -63,10 +57,7 @@ class NavRouterImpl<T : NavKey>(
     }
 
     override fun replaceAll(page: T) {
-        // Clear backstack and add new page
-        while (backStack.removeLastOrNull() != null) {
-            // Keep removing until empty
-        }
+        while (backStack.removeLastOrNull() != null) { }
         backStack.add(page)
     }
 
@@ -75,11 +66,16 @@ class NavRouterImpl<T : NavKey>(
     override fun dial(number: String) = externalRouter.dial(number)
 
     override fun share(text: String) = externalRouter.share(text)
+
+    override fun copyToClipboard(text: String) = externalRouter.copyToClipboard(text)
+
+    override fun sendEmail(to: String, subject: String, body: String) = externalRouter.sendEmail(to, subject, body)
+
+    override fun openSettings() = externalRouter.openSettings()
+
+    override fun openNotificationSettings() = externalRouter.openNotificationSettings()
 }
 
-/**
- * Creates and remembers a NavRouter with internal backStack management.
- */
 @Suppress("UNCHECKED_CAST")
 @Composable
 fun <T : NavKey> rememberNavRouter(
@@ -92,10 +88,6 @@ fun <T : NavKey> rememberNavRouter(
     }
 }
 
-/**
- * Returns the standard entry decorators for Navigation 3.
- * Includes SaveableStateHolder for state persistence and ViewModelStore for ViewModel scoping.
- */
 @Composable
 fun <T : NavKey> rememberNavEntryDecorators(): List<NavEntryDecorator<T>> = listOf(
     rememberSaveableStateHolderNavEntryDecorator(),

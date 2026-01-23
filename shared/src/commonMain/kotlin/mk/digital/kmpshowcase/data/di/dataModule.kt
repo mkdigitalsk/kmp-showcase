@@ -5,8 +5,8 @@ import mk.digital.kmpshowcase.data.database.AppDatabase
 import mk.digital.kmpshowcase.data.database.DatabaseDriverFactory
 import mk.digital.kmpshowcase.data.local.StorageLocalStore
 import mk.digital.kmpshowcase.data.local.StorageLocalStoreImpl
-import mk.digital.kmpshowcase.data.local.preferences.AppPreferences
-import mk.digital.kmpshowcase.data.local.preferences.AppPreferencesImpl
+import mk.digital.kmpshowcase.data.local.preferences.PersistentPreferences
+import mk.digital.kmpshowcase.data.local.preferences.PersistentPreferencesImpl
 import mk.digital.kmpshowcase.data.local.preferences.SessionPreferences
 import mk.digital.kmpshowcase.data.local.preferences.SessionPreferencesImpl
 import mk.digital.kmpshowcase.data.network.HttpClientProvider
@@ -45,7 +45,7 @@ val dataModule = module {
 
     // Qualified preferences - need explicit qualifier
     single<SessionPreferences> { SessionPreferencesImpl(get(session)) }
-    single<AppPreferences> { AppPreferencesImpl(get(app)) }
+    single<PersistentPreferences> { PersistentPreferencesImpl(get(app)) }
 
     singleOf(::StorageLocalStoreImpl) { bind<StorageLocalStore>() }
     singleOf(::StorageRepositoryImpl) { bind<StorageRepository>() }

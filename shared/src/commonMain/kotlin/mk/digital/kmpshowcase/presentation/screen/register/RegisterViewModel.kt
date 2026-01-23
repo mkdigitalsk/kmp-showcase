@@ -1,10 +1,11 @@
 package mk.digital.kmpshowcase.presentation.screen.register
 
-import mk.digital.kmpshowcase.domain.model.RegisteredUser
+import mk.digital.kmpshowcase.domain.exceptions.base.BaseException
 import mk.digital.kmpshowcase.domain.useCase.auth.CheckEmailExistsUseCase
 import mk.digital.kmpshowcase.domain.useCase.auth.RegisterUserUseCase
 import mk.digital.kmpshowcase.presentation.base.BaseViewModel
 import mk.digital.kmpshowcase.presentation.base.NavEvent
+import mk.digital.kmpshowcase.presentation.util.ValidationPatterns
 
 class RegisterViewModel(
     private val checkEmailExistsUseCase: CheckEmailExistsUseCase,
@@ -12,39 +13,19 @@ class RegisterViewModel(
 ) : BaseViewModel<RegisterUiState>(RegisterUiState()) {
 
     fun onNameChange(name: String) {
-        newState {
-            it.copy(
-                name = name,
-                nameError = null
-            )
-        }
+        newState { it.copy(name = name, nameError = null) }
     }
 
     fun onEmailChange(email: String) {
-        newState {
-            it.copy(
-                email = email,
-                emailError = null
-            )
-        }
+        newState { it.copy(email = email, emailError = null) }
     }
 
     fun onPasswordChange(password: String) {
-        newState {
-            it.copy(
-                password = password,
-                passwordError = null
-            )
-        }
+        newState { it.copy(password = password, passwordError = null) }
     }
 
     fun onConfirmPasswordChange(confirmPassword: String) {
-        newState {
-            it.copy(
-                confirmPassword = confirmPassword,
-                confirmPasswordError = null
-            )
-        }
+        newState { it.copy(confirmPassword = confirmPassword, confirmPasswordError = null) }
     }
 
     fun register() {
@@ -66,43 +47,34 @@ class RegisterViewModel(
                 return@requireState
             }
 
-            // Check if email already exists and register
-            execute(
-                action = {
-                    val emailExists = checkEmailExistsUseCase(state.email)
-                    if (emailExists) {
-                        Result.failure<RegisteredUser>(Exception("EMAIL_EXISTS"))
-                    } else {
-                        Result.success(
-                            registerUserUseCase(
-                                RegisterUserUseCase.Params(
-                                    name = state.name,
-                                    email = state.email,
-                                    password = state.password
-                                )
-                            )
-                        )
-                    }
-                },
-                onLoading = { newState { it.copy(isLoading = true) } },
-                onSuccess = { result ->
-                    if (result.isFailure) {
-                        newState {
-                            it.copy(
-                                isLoading = false,
-                                emailError = RegisterEmailError.ALREADY_EXISTS
-                            )
-                        }
-                    } else {
-                        newState { it.copy(isLoading = false) }
-                        navigate(RegisterNavEvent.ToHome)
-                    }
-                },
-                onError = {
-                    newState { it.copy(isLoading = false) }
-                }
-            )
+            performRegistration(state.name, state.email, state.password)
         }
+    }
+
+    private fun performRegistration(name: String, email: String, password: String) {
+        execute(
+            action = {
+                val emailExists = checkEmailExistsUseCase(email)
+                if (emailExists) throw EmailAlreadyExistsException()
+
+                registerUserUseCase(RegisterUserUseCase.Params(name, email, password))
+            },
+            onLoading = { newState { it.copy(isLoading = true) } },
+            onSuccess = {
+                newState { it.copy(isLoading = false) }
+                navigate(RegisterNavEvent.ToHome)
+            },
+            onError = { error: BaseException ->
+                newState {
+                    it.copy(
+                        isLoading = false,
+                        emailError = if (error is EmailAlreadyExistsException) {
+                            RegisterEmailError.ALREADY_EXISTS
+                        } else null
+                    )
+                }
+            }
+        )
     }
 
     fun toLogin() {
@@ -120,7 +92,7 @@ class RegisterViewModel(
     private fun validateEmail(email: String): RegisterEmailError? {
         return when {
             email.isBlank() -> RegisterEmailError.EMPTY
-            !EMAIL_REGEX.matches(email) -> RegisterEmailError.INVALID_FORMAT
+            !ValidationPatterns.isValidEmail(email) -> RegisterEmailError.INVALID_FORMAT
             else -> null
         }
     }
@@ -128,8 +100,8 @@ class RegisterViewModel(
     private fun validatePassword(password: String): RegisterPasswordError? {
         return when {
             password.isBlank() -> RegisterPasswordError.EMPTY
-            password.length < MIN_PASSWORD_LENGTH -> RegisterPasswordError.TOO_SHORT
-            !PASSWORD_REGEX.matches(password) -> RegisterPasswordError.WEAK
+            !ValidationPatterns.isPasswordLongEnough(password) -> RegisterPasswordError.TOO_SHORT
+            !ValidationPatterns.isValidPassword(password) -> RegisterPasswordError.WEAK
             else -> null
         }
     }
@@ -144,15 +116,6 @@ class RegisterViewModel(
 
     companion object {
         private const val MIN_NAME_LENGTH = 2
-        private const val MIN_PASSWORD_LENGTH = 8
-
-        private val EMAIL_REGEX = Regex(
-            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-        )
-
-        private val PASSWORD_REGEX = Regex(
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"
-        )
     }
 }
 
@@ -193,4 +156,13 @@ data class RegisterUiState(
 sealed interface RegisterNavEvent : NavEvent {
     data object ToHome : RegisterNavEvent
     data object ToLogin : RegisterNavEvent
+}
+
+private class EmailAlreadyExistsException : BaseException(
+    message = "Email already exists",
+    cause = null
+) {
+    override val errorCode: String = "5001"
+    override val userMessage: String = "This email is already registered"
+    override val shouldReport: Boolean = false
 }

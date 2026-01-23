@@ -5,7 +5,7 @@ import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
-import mk.digital.kmpshowcase.data.local.preferences.AppPreferences
+import mk.digital.kmpshowcase.data.local.preferences.PersistentPreferences
 import mk.digital.kmpshowcase.domain.BaseTest
 import mk.digital.kmpshowcase.domain.test
 import mk.digital.kmpshowcase.presentation.foundation.ThemeMode
@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 class SettingsRepositoryImplTest : BaseTest<SettingsRepositoryImpl>() {
     override lateinit var classUnderTest: SettingsRepositoryImpl
 
-    private val appPreferences: AppPreferences = mock()
+    private val appPreferences: PersistentPreferences = mock()
 
     override fun beforeEach() {
         classUnderTest = SettingsRepositoryImpl(appPreferences)

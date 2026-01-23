@@ -26,8 +26,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import mk.digital.kmpshowcase.domain.repository.PushPermissionStatus
 import mk.digital.kmpshowcase.presentation.base.CollectNavEvents
-import mk.digital.kmpshowcase.presentation.base.router.SettingsRouter
-import org.koin.compose.koinInject
+import mk.digital.kmpshowcase.presentation.base.NavRouter
+import mk.digital.kmpshowcase.presentation.base.Route
 import mk.digital.kmpshowcase.presentation.component.buttons.OutlinedButton
 import mk.digital.kmpshowcase.presentation.component.permission.rememberNotificationPermissionRequester
 import mk.digital.kmpshowcase.presentation.component.cards.AppElevatedCard
@@ -239,13 +239,13 @@ private fun CardButton(
 @Composable
 fun NotificationsNavEvents(
     viewModel: NotificationsViewModel,
-    settingsRouter: SettingsRouter = koinInject()
+    router: NavRouter<Route>,
 ) {
     CollectNavEvents(navEventFlow = viewModel.navEvent) { event ->
         if (event !is NotificationsNavEvent) return@CollectNavEvents
         when (event) {
             is NotificationsNavEvent.OpenSettings -> {
-                settingsRouter.openNotificationSettings()
+                router.openNotificationSettings()
             }
         }
     }

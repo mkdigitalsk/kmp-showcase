@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import mk.digital.kmpshowcase.data.local.preferences.AppPreferences
+import mk.digital.kmpshowcase.data.local.preferences.PersistentPreferences
 import mk.digital.kmpshowcase.data.local.preferences.SessionPreferences
 import mk.digital.kmpshowcase.domain.model.StorageData
 
@@ -19,7 +19,7 @@ interface StorageLocalStore {
 
 class StorageLocalStoreImpl(
     private val sessionPreferences: SessionPreferences,
-    private val appPreferences: AppPreferences
+    private val persistentPreferences: PersistentPreferences
 ) : StorageLocalStore {
 
     private val _data = MutableStateFlow(StorageData())
@@ -28,7 +28,7 @@ class StorageLocalStoreImpl(
     override suspend fun load() {
         _data.value = StorageData(
             sessionCounter = sessionPreferences.getSessionCounter(),
-            persistentCounter = appPreferences.getPersistentCounter()
+            persistentCounter = persistentPreferences.getPersistentCounter()
         )
     }
 
@@ -38,7 +38,7 @@ class StorageLocalStoreImpl(
     }
 
     override suspend fun setPersistentCounter(value: Int) {
-        appPreferences.setPersistentCounter(value)
+        persistentPreferences.setPersistentCounter(value)
         _data.update { it.copy(persistentCounter = value) }
     }
 

@@ -6,6 +6,7 @@ import mk.digital.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometric
 import mk.digital.kmpshowcase.domain.useCase.biometric.IsBiometricEnabledUseCase
 import mk.digital.kmpshowcase.presentation.base.BaseViewModel
 import mk.digital.kmpshowcase.presentation.base.NavEvent
+import mk.digital.kmpshowcase.presentation.util.ValidationPatterns
 
 class LoginViewModel(
     private val isBiometricEnabledUseCase: IsBiometricEnabledUseCase,
@@ -87,7 +88,7 @@ class LoginViewModel(
     private fun validateEmail(email: String): EmailError? {
         return when {
             email.isBlank() -> EmailError.EMPTY
-            !EMAIL_REGEX.matches(email) -> EmailError.INVALID_FORMAT
+            !ValidationPatterns.isValidEmail(email) -> EmailError.INVALID_FORMAT
             else -> null
         }
     }
@@ -95,8 +96,8 @@ class LoginViewModel(
     private fun validatePassword(password: String): PasswordError? {
         return when {
             password.isBlank() -> PasswordError.EMPTY
-            password.length < MIN_PASSWORD_LENGTH -> PasswordError.TOO_SHORT
-            !PASSWORD_REGEX.matches(password) -> PasswordError.WEAK
+            !ValidationPatterns.isPasswordLongEnough(password) -> PasswordError.TOO_SHORT
+            !ValidationPatterns.isValidPassword(password) -> PasswordError.WEAK
             else -> null
         }
     }
@@ -104,16 +105,6 @@ class LoginViewModel(
     companion object {
         const val TEST_EMAIL = "test@example.com"
         const val TEST_PASSWORD = "Test123!"
-
-        private const val MIN_PASSWORD_LENGTH = 8
-
-        private val EMAIL_REGEX = Regex(
-            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-        )
-
-        private val PASSWORD_REGEX = Regex(
-            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"
-        )
     }
 }
 

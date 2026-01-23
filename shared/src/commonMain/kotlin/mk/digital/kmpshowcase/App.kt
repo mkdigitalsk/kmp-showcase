@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
@@ -36,7 +35,6 @@ import mk.digital.kmpshowcase.domain.useCase.base.invoke
 import mk.digital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
 import mk.digital.kmpshowcase.presentation.base.NavRouter
 import mk.digital.kmpshowcase.presentation.base.Route
-import mk.digital.kmpshowcase.presentation.foundation.floatingNavBarSpace
 import mk.digital.kmpshowcase.presentation.base.Route.HomeSection
 import mk.digital.kmpshowcase.presentation.base.Route.Login
 import mk.digital.kmpshowcase.presentation.base.Route.Register
@@ -48,39 +46,40 @@ import mk.digital.kmpshowcase.presentation.component.AppFloatingNavBar
 import mk.digital.kmpshowcase.presentation.component.AppSnackbarHost
 import mk.digital.kmpshowcase.presentation.component.FloatingNavItem
 import mk.digital.kmpshowcase.presentation.component.TopAppBar
+import mk.digital.kmpshowcase.presentation.component.imagepicker.ImagePickerViewModel
 import mk.digital.kmpshowcase.presentation.foundation.AppTheme
 import mk.digital.kmpshowcase.presentation.foundation.ThemeMode
-import mk.digital.kmpshowcase.presentation.screen.scanner.ScannerScreen
-import mk.digital.kmpshowcase.presentation.screen.scanner.ScannerViewModel
-import mk.digital.kmpshowcase.presentation.screen.feature.UiComponentsScreen
-import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisNavEvents
-import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisScreen
-import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisViewModel
-import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingScreen
-import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingViewModel
-import mk.digital.kmpshowcase.presentation.screen.storage.StorageScreen
-import mk.digital.kmpshowcase.presentation.screen.storage.StorageViewModel
+import mk.digital.kmpshowcase.presentation.foundation.floatingNavBarSpace
+import mk.digital.kmpshowcase.presentation.foundation.space4
 import mk.digital.kmpshowcase.presentation.screen.calendar.CalendarScreen
 import mk.digital.kmpshowcase.presentation.screen.calendar.CalendarViewModel
 import mk.digital.kmpshowcase.presentation.screen.database.DatabaseScreen
 import mk.digital.kmpshowcase.presentation.screen.database.DatabaseViewModel
-import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsNavEvents
-import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsScreen
-import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsViewModel
+import mk.digital.kmpshowcase.presentation.screen.feature.UiComponentsScreen
 import mk.digital.kmpshowcase.presentation.screen.home.HomeNavEvents
 import mk.digital.kmpshowcase.presentation.screen.home.HomeScreen
 import mk.digital.kmpshowcase.presentation.screen.home.HomeViewModel
 import mk.digital.kmpshowcase.presentation.screen.login.LoginNavEvents
 import mk.digital.kmpshowcase.presentation.screen.login.LoginScreen
 import mk.digital.kmpshowcase.presentation.screen.login.LoginViewModel
+import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingScreen
+import mk.digital.kmpshowcase.presentation.screen.networking.NetworkingViewModel
+import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsNavEvents
+import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsScreen
+import mk.digital.kmpshowcase.presentation.screen.notifications.NotificationsViewModel
+import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisNavEvents
+import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisScreen
+import mk.digital.kmpshowcase.presentation.screen.platformapis.PlatformApisViewModel
 import mk.digital.kmpshowcase.presentation.screen.register.RegisterNavEvents
 import mk.digital.kmpshowcase.presentation.screen.register.RegisterScreen
 import mk.digital.kmpshowcase.presentation.screen.register.RegisterViewModel
-import mk.digital.kmpshowcase.presentation.component.imagepicker.ImagePickerViewModel
-import mk.digital.kmpshowcase.presentation.foundation.space4
+import mk.digital.kmpshowcase.presentation.screen.scanner.ScannerScreen
+import mk.digital.kmpshowcase.presentation.screen.scanner.ScannerViewModel
 import mk.digital.kmpshowcase.presentation.screen.settings.SettingsNavEvents
 import mk.digital.kmpshowcase.presentation.screen.settings.SettingsScreen
 import mk.digital.kmpshowcase.presentation.screen.settings.SettingsViewModel
+import mk.digital.kmpshowcase.presentation.screen.storage.StorageScreen
+import mk.digital.kmpshowcase.presentation.screen.storage.StorageViewModel
 import mk.digital.kmpshowcase.shared.generated.resources.Res
 import mk.digital.kmpshowcase.shared.generated.resources.nav_home
 import mk.digital.kmpshowcase.shared.generated.resources.nav_settings
@@ -186,7 +185,7 @@ fun MainView(
                             }
                             entry<HomeSection.PlatformApis> {
                                 WithViewModel<PlatformApisViewModel> { viewModel ->
-                                    PlatformApisNavEvents(viewModel)
+                                    PlatformApisNavEvents(viewModel, router)
                                     PlatformApisScreen(viewModel)
                                 }
                             }
@@ -207,7 +206,7 @@ fun MainView(
                             }
                             entry<HomeSection.Notifications> {
                                 WithViewModel<NotificationsViewModel> { viewModel ->
-                                    NotificationsNavEvents(viewModel)
+                                    NotificationsNavEvents(viewModel, router)
                                     NotificationsScreen(viewModel)
                                 }
                             }

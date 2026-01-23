@@ -19,19 +19,12 @@ import mk.digital.kmpshowcase.util.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-/**
- * Screen lifecycle callbacks.
- */
 interface ScreenLifecycle {
     fun onCreated() {}
     fun onResumed() {}
     fun onPaused() {}
 }
 
-/**
- * Base ViewModel for all screens.
- * Provides state management, navigation, error handling, and lifecycle.
- */
 abstract class BaseViewModel<STATE : Any>(
     defaultState: STATE,
 ) : ViewModel(), ScreenLifecycle, KoinComponent {
@@ -50,17 +43,8 @@ abstract class BaseViewModel<STATE : Any>(
 
     private val scope get() = viewModelScope
 
-    /**
-     * Called to load initial data. Override in subclasses.
-     * Only called once per ViewModel lifecycle.
-     */
-    protected open fun loadInitialData() {
-        // Default implementation does nothing
-    }
+    protected open fun loadInitialData() {}
 
-    /**
-     * Called when the screen is first created.
-     */
     override fun onCreated() {
         if (!isInitialized) {
             isInitialized = true
@@ -69,58 +53,28 @@ abstract class BaseViewModel<STATE : Any>(
         }
     }
 
-    /**
-     * Called when the screen is resumed/becomes visible.
-     */
     override fun onResumed() {}
 
-    /**
-     * Called when the screen is paused/becomes invisible.
-     */
     override fun onPaused() {}
 
-    /**
-     * Emits a navigation event to be handled by the UI layer.
-     */
     protected fun navigate(event: NavEvent) {
         viewModelScope.launch { _navEvent.emit(event) }
     }
 
-    /**
-     * Updates the state using a copy function.
-     */
     protected fun newState(stateCopy: (STATE) -> STATE) {
         _state.value = stateCopy(_state.value)
     }
 
-    /**
-     * Executes a block with the current state.
-     */
     protected fun requireState(block: (STATE) -> Unit): Unit = block(_state.value)
 
-    /**
-     * Returns the current state value.
-     */
     protected fun requireState(): STATE = _state.value
 
-    /**
-     * Logs the screen name for analytics.
-     */
     protected fun logScreenName() {
         val screenName = tag?.removeSuffix("ViewModel") ?: return
         logger.d("Screen: $screenName")
         trackScreenUseCase(screenName)
     }
 
-    /**
-     * Executes a suspending action with standardized error handling.
-     *
-     * @param action The suspend function to execute
-     * @param onLoading Called before action starts (use to show loading state)
-     * @param onSuccess Called with the result when action succeeds
-     * @param onError Called with BaseException when action fails
-     * @return Job that can be used to cancel the operation
-     */
     @Suppress("TooGenericExceptionCaught")
     protected fun <T> execute(
         action: suspend () -> T,
@@ -140,15 +94,6 @@ abstract class BaseViewModel<STATE : Any>(
         }
     }
 
-    /**
-     * Observes a Flow with standardized error handling.
-     *
-     * @param onStart Optional suspend action executed before collection (e.g., load initial data)
-     * @param flow The flow to observe
-     * @param onEach Called for each emission
-     * @param onError Called with BaseException when flow or onStart errors
-     * @return Job that can be used to cancel the observation
-     */
     @Suppress("TooGenericExceptionCaught")
     protected fun <T> observe(
         onStart: (suspend () -> Unit)? = null,

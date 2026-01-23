@@ -1,6 +1,6 @@
 package mk.digital.kmpshowcase.data.local.preferences
 
-interface AppPreferences {
+interface PersistentPreferences {
     suspend fun getPersistentCounter(): Int
     suspend fun setPersistentCounter(value: Int)
 
@@ -11,7 +11,7 @@ interface AppPreferences {
     suspend fun setFcmToken(value: String)
 }
 
-class AppPreferencesImpl(private val preferences: Preferences) : AppPreferences {
+class PersistentPreferencesImpl(private val preferences: Preferences) : PersistentPreferences {
 
     override suspend fun getPersistentCounter(): Int = preferences.getInt(PERSISTENT_COUNTER_KEY) ?: 0
     override suspend fun setPersistentCounter(value: Int) = preferences.putInt(PERSISTENT_COUNTER_KEY, value)

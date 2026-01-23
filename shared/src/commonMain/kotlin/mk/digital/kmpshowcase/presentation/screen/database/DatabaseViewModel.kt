@@ -28,15 +28,25 @@ class DatabaseViewModel(
 
     private val searchTrigger = MutableStateFlow(SearchTrigger())
     private var searchJob: Job? = null
+    private var debounceJob: Job? = null
 
     @OptIn(FlowPreview::class)
-    override fun loadInitialData() {
-        searchTrigger
+    override fun onResumed() {
+        super.onResumed()
+        debounceJob = searchTrigger
             .debounce(SEARCH_DEBOUNCE_MS)
             .onEach { trigger -> executeSearch(trigger.query, trigger.sortOption) }
             .launchIn(viewModelScope)
 
         triggerSearch()
+    }
+
+    override fun onPaused() {
+        super.onPaused()
+        debounceJob?.cancel()
+        debounceJob = null
+        searchJob?.cancel()
+        searchJob = null
     }
 
     private fun executeSearch(query: String, sortOption: NoteSortOption) {

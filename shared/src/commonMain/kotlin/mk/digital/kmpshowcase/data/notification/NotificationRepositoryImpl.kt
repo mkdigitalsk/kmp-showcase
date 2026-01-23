@@ -1,13 +1,13 @@
 package mk.digital.kmpshowcase.data.notification
 
-import mk.digital.kmpshowcase.data.local.preferences.AppPreferences
+import mk.digital.kmpshowcase.data.local.preferences.PersistentPreferences
 import mk.digital.kmpshowcase.domain.repository.NotificationRepository
 
 class NotificationRepositoryImpl(
-    private val preferences: AppPreferences,
+    private val persistentPreferences: PersistentPreferences,
 ) : NotificationRepository {
 
-    override suspend fun getToken(): String? = preferences.getFcmToken()
+    override suspend fun getToken(): String? = persistentPreferences.getFcmToken()
 
-    override suspend fun setToken(token: String): Unit = preferences.setFcmToken(token)
+    override suspend fun setToken(token: String): Unit = persistentPreferences.setFcmToken(token)
 }

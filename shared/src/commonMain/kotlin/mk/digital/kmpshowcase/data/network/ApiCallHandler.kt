@@ -12,17 +12,6 @@ import mk.digital.kmpshowcase.domain.exceptions.base.DataException
 import mk.digital.kmpshowcase.domain.exceptions.base.NetworkErrorCode
 import mk.digital.kmpshowcase.domain.exceptions.base.NetworkException
 
-/**
- * Wraps API calls with standardized exception handling.
- * Converts Ktor exceptions to domain-level BaseExceptions.
- *
- * Usage:
- * ```
- * suspend fun fetchUsers(): List<UserDTO> = handleApiCall {
- *     client.get("users").body()
- * }
- * ```
- */
 suspend inline fun <T> handleApiCall(
     crossinline call: suspend () -> T
 ): T = try {
@@ -41,7 +30,6 @@ suspend inline fun <T> handleApiCall(
         errorCode = NetworkErrorCode.NO_CONNECTION
     )
 } catch (e: ClientRequestException) {
-    // 4xx errors
     throw ApiException(
         httpCode = e.response.status.value,
         message = "Client error: ${e.response.status.description}",
@@ -54,7 +42,6 @@ suspend inline fun <T> handleApiCall(
         }
     )
 } catch (e: ServerResponseException) {
-    // 5xx errors
     throw ApiException(
         httpCode = e.response.status.value,
         message = "Server error: ${e.response.status.description}",

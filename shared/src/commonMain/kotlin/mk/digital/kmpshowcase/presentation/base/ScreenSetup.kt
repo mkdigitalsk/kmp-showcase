@@ -4,17 +4,6 @@ import androidx.compose.runtime.Composable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.ParametersDefinition
 
-/**
- * Screen helper that combines ViewModel creation and lifecycle handling.
- * Usage:
- * ```
- * entry<HomeSection.Home> {
- *     Screen<HomeViewModel> { viewModel ->
- *         HomeScreen(viewModel)
- *     }
- * }
- * ```
- */
 @Composable
 inline fun <reified VM : BaseViewModel<*>> WithViewModel(
     content: @Composable (VM) -> Unit
