@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kmp-showcase-db
+    environment:
+      POSTGRES_DB: kmpshowcase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: kmp-showcase-server
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      DATABASE_URL: jdbc:postgresql://db:5432/kmpshowcase
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      JWT_ISSUER: kmp-showcase
+      JWT_AUDIENCE: kmp-showcase-users
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

@@ -1,0 +1,25 @@
+package com.mk.kmpshowcase.server.plugins
+
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.calllogging.CallLogging
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.path
+import org.slf4j.event.Level
+
+//todo pouzit aj v clentovi?
+fun Application.configureCallLogging() {
+    install(CallLogging) {
+        level = Level.INFO
+        format { call ->
+            val status = call.response.status()
+            val method = call.request.httpMethod.value
+            val path = call.request.path()
+            "$method $path -> $status"
+        }
+        filter { call ->
+            // Log only API calls, skip health checks etc.
+            call.request.path().startsWith("/api")
+        }
+    }
+}
