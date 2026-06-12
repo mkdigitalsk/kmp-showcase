@@ -149,8 +149,6 @@ kotlin {
             implementation(libs.sqldelight.sqlite.driver)
         }
     }
-
-    jvmToolchain(21)
 }
 
 compose.resources {
