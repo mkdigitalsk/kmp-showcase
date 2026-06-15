@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.mk.kmpshowcase.domain.model.Address
 import com.mk.kmpshowcase.domain.model.User
 import com.mk.kmpshowcase.presentation.foundation.AppTheme
 
@@ -27,14 +26,8 @@ internal class NetworkingScreenPreviewParams : PreviewParameterProvider<Networki
         NetworkingUiState(
             users = listOf(
                 User(
-                    address = Address(
-                        city = "city",
-                        street = "street",
-                        suite = "suite",
-                        zipcode = "zipcode"
-                    ),
                     email = "mir.kusnir@gmail.com",
-                    id = 1,
+                    id = 1L,
                     name = "Miroslav Coder"
                 )
             )
