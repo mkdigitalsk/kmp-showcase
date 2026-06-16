@@ -46,12 +46,26 @@ internal class UserRepositoryImpl : UserRepository {
             name = name,
             createdAt = now,
             themeMode = ThemeMode.SYSTEM,
+            locale = UsersTable.DEFAULT_LOCALE,
         )
     }
 
     override suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = newSuspendedTransaction {
         val updated = UsersTable.update({ UsersTable.id eq id }) {
             it[UsersTable.themeMode] = themeMode
+        }
+        if (updated > 0) {
+            UsersTable.selectAll()
+                .where { UsersTable.id eq id }
+                .mapToSingleOrNull { it.toUser() }
+        } else {
+            null
+        }
+    }
+
+    override suspend fun updateLocale(id: Long, locale: String): User? = newSuspendedTransaction {
+        val updated = UsersTable.update({ UsersTable.id eq id }) {
+            it[UsersTable.locale] = locale
         }
         if (updated > 0) {
             UsersTable.selectAll()
@@ -81,6 +95,7 @@ internal class UserRepositoryImpl : UserRepository {
         name = this[UsersTable.name],
         createdAt = this[UsersTable.createdAt],
         themeMode = this[UsersTable.themeMode],
+        locale = this[UsersTable.locale],
     )
 
     private companion object {

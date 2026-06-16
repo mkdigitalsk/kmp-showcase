@@ -24,6 +24,8 @@ internal class UserService(
 
     suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = repository.updateThemeMode(id, themeMode)
 
+    suspend fun updateLocale(id: Long, locale: String): User? = repository.updateLocale(id, locale)
+
     private companion object {
         val PASSWORD_REGEX = Regex(
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"

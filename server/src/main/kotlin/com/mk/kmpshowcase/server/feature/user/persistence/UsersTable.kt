@@ -10,9 +10,12 @@ internal object UsersTable : LongIdTable("users") {
     val createdAt = long("created_at")
     val updatedAt = long("updated_at")
     val themeMode = enumerationByName("theme_mode", THEME_MODE_LENGTH, ThemeMode::class).default(ThemeMode.SYSTEM)
+    val locale = varchar("locale", LOCALE_LENGTH).default(DEFAULT_LOCALE)
 
     private const val EMAIL_LENGTH = 255
     private const val PASSWORD_HASH_LENGTH = 255
     private const val NAME_LENGTH = 255
     private const val THEME_MODE_LENGTH = 10
+    private const val LOCALE_LENGTH = 35
+    const val DEFAULT_LOCALE = "en-GB"
 }

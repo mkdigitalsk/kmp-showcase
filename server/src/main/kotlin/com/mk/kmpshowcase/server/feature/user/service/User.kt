@@ -6,4 +6,5 @@ internal data class User(
     val name: String,
     val createdAt: Long,
     val themeMode: ThemeMode,
+    val locale: String,
 )

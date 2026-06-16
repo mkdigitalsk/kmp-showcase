@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.server.feature.user.api
 
+import com.mk.kmpshowcase.contracts.user.UpdateLocaleRequestDTO
 import com.mk.kmpshowcase.contracts.user.UpdateThemeModeRequestDTO
 import com.mk.kmpshowcase.server.core.auth.userId
 import com.mk.kmpshowcase.server.feature.user.service.UserService
@@ -27,6 +28,13 @@ internal fun Route.userRoutes(userService: UserService) {
                 val userId = call.userId() ?: return@put call.respond(HttpStatusCode.Unauthorized)
                 val request = call.receive<UpdateThemeModeRequestDTO>()
                 val user = userService.updateThemeMode(userId, request.themeMode.toThemeMode())
+                    ?: return@put call.respond(HttpStatusCode.NotFound)
+                call.respond(user.toUserResponseDTO())
+            }
+            put("/me/locale") {
+                val userId = call.userId() ?: return@put call.respond(HttpStatusCode.Unauthorized)
+                val request = call.receive<UpdateLocaleRequestDTO>()
+                val user = userService.updateLocale(userId, request.locale)
                     ?: return@put call.respond(HttpStatusCode.NotFound)
                 call.respond(user.toUserResponseDTO())
             }

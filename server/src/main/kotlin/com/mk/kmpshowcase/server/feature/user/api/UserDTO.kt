@@ -11,6 +11,7 @@ internal fun User.toUserResponseDTO() = UserResponseDTO(
     name = name,
     createdAt = createdAt,
     themeMode = themeMode.toThemeModeDTO(),
+    locale = locale,
 )
 
 internal fun ThemeMode.toThemeModeDTO(): ThemeModeDTO = when (this) {
