@@ -31,7 +31,7 @@ export function TechStack({ groups }: { groups: TechGroup[] }) {
                     label={tech}
                     variant="outlined"
                     icon={group.withIcons ? <TechIcon tech={tech} /> : undefined}
-                    sx={group.withIcons ? { '& .MuiChip-icon': { ml: 0.75 } } : undefined}
+                    sx={group.withIcons ? { '& .MuiChip-icon': { ml: 1.25 } } : undefined}
                   />
                 ))}
               </Stack>
