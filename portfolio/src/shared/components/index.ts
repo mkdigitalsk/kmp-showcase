@@ -17,6 +17,8 @@ export {
   TextBody1Neutral80,
   TextBody1Neutral60,
   TextBody1Primary,
+  TextCaption,
+  TextCaptionNeutral60,
 } from './text'
 export { Chip, FilterChip } from './chips/Chip'
 export { Divider, DividerPrimary } from './dividers/Divider'
