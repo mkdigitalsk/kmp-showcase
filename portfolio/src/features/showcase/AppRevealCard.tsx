@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, type KeyboardEvent } from 'react'
 import { TextCaptionNeutral60, TextH6Bold } from '@/shared/components'
 import { HeartBeat } from './HeartBeat'
+import { fasterClose } from './closeTransition'
 import { iconAnimations } from './iconAnimations'
 import { revealAnimations } from './revealAnimations'
 import type { ShowcaseApp } from './apps'
@@ -100,8 +101,10 @@ export function AppRevealCard({ app, hint, ariaLabel, onActivate, height = 240 }
 
         {previewSrc && (
           <motion.div
-            variants={{ rest: reveal.rest, active: reveal.active }}
-            transition={reveal.transition}
+            variants={{
+              rest: { ...reveal.rest, transition: fasterClose(reveal.transition) },
+              active: { ...reveal.active, transition: reveal.transition },
+            }}
             style={{ position: 'absolute', inset: 0 }}
           >
             <Box
@@ -131,8 +134,10 @@ export function AppRevealCard({ app, hint, ariaLabel, onActivate, height = 240 }
             <HeartBeat accent={accent} />
           ) : (
             <motion.div
-              variants={iconAnim.variants}
-              transition={iconAnim.transition}
+              variants={{
+                rest: { ...iconAnim.variants.rest, transition: fasterClose(iconAnim.transition) },
+                active: { ...iconAnim.variants.active, transition: iconAnim.transition },
+              }}
               style={{
                 width: 76,
                 height: 76,

@@ -11,8 +11,6 @@ import { FlipRevealCard } from './FlipRevealCard'
 import { FoodFlip } from './FoodFlip'
 import { showcaseApps, type ShowcaseApp } from './apps'
 
-const FLIP_ICON_MS = 320
-
 const STAGGER_STEP = 0.06
 const STAGGER_MAX = 0.3
 
@@ -51,8 +49,7 @@ export function AppShowcase() {
                 hint={t('home.cardHint')}
                 ariaLabel={t('home.openDetail', { name: app.label })}
                 onActivate={() => setSelectedApp(app)}
-                frontIcon={<BankFlip accent={app.accent} />}
-                iconFlipMs={FLIP_ICON_MS}
+                frontIcon={<BankFlip accent={app.accent} flipSign={-1} />}
                 flipSign={-1}
               />
             ) : app.iconAnimation === 'food' ? (
@@ -61,8 +58,7 @@ export function AppShowcase() {
                 hint={t('home.cardHint')}
                 ariaLabel={t('home.openDetail', { name: app.label })}
                 onActivate={() => setSelectedApp(app)}
-                frontIcon={<FoodFlip accent={app.accent} />}
-                iconFlipMs={FLIP_ICON_MS}
+                frontIcon={<FoodFlip accent={app.accent} flipSign={1} />}
                 flipSign={1}
               />
             ) : (

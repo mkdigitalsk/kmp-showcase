@@ -4,10 +4,11 @@ import Box from '@mui/material/Box'
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, type KeyboardEvent, type ReactNode } from 'react'
 import { TextCaptionNeutral60, TextH6Bold } from '@/shared/components'
+import { CARD_FLIP_CLOSE_S, CARD_FLIP_S, FLIP_EASE, ICON_FLIP_S } from './flipTiming'
 import type { ShowcaseApp } from './apps'
 
 const CARD_RADIUS = 12
-const CARD_FLIP_MS = 520
+const PLAY_DELAY_MS = (ICON_FLIP_S + 0.18) * 1000
 
 const faceStyle = {
   position: 'absolute',
@@ -23,10 +24,8 @@ interface FlipRevealCardProps {
   hint: string
   ariaLabel: string
   onActivate: () => void
-  // The animated icon shown on the front face (it flips first), e.g. BankFlip / FoodFlip.
+  // The animated icon shown on the front face — it flips first, e.g. BankFlip / FoodFlip.
   frontIcon: ReactNode
-  // How long the front icon's own flip takes — the card flip waits for it.
-  iconFlipMs: number
   // 1 flips the card bottom-to-top, -1 top-to-bottom.
   flipSign?: 1 | -1
   height?: number
@@ -38,7 +37,6 @@ export function FlipRevealCard({
   ariaLabel,
   onActivate,
   frontIcon,
-  iconFlipMs,
   flipSign = -1,
   height = 240,
 }: FlipRevealCardProps) {
@@ -59,7 +57,7 @@ export function FlipRevealCard({
     clearPlayTimer()
     playTimerRef.current = setTimeout(() => {
       videoRef.current?.play().catch(() => undefined)
-    }, iconFlipMs + 180)
+    }, PLAY_DELAY_MS)
   }
   const stopPreview = () => {
     clearPlayTimer()
@@ -102,8 +100,12 @@ export function FlipRevealCard({
         initial="rest"
         animate="rest"
         whileHover={reduceMotion ? undefined : 'active'}
-        variants={{ rest: { rotateX: 0 }, active: { rotateX: flipTo } }}
-        transition={{ duration: CARD_FLIP_MS / 1000, delay: iconFlipMs / 1000, ease: [0.4, 0, 0.2, 1] }}
+        variants={{
+          // Close: the card flips back first (no delay, a touch quicker), then the icon flips.
+          rest: { rotateX: 0, transition: { duration: CARD_FLIP_CLOSE_S, delay: 0, ease: FLIP_EASE } },
+          // Open: the icon flips first, then the card flips.
+          active: { rotateX: flipTo, transition: { duration: CARD_FLIP_S, delay: ICON_FLIP_S, ease: FLIP_EASE } },
+        }}
         style={{ position: 'relative', width: '100%', height: '100%', transformStyle: 'preserve-3d' }}
       >
         <Box sx={{ ...faceStyle, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
