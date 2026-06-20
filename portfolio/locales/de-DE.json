@@ -72,5 +72,71 @@
     "booking": { "label": "Buchung & Reisen", "tagline": "Verwandeln Sie jede Suche in eine sichere, abgeschlossene Buchung.", "features": { "search": { "label": "Smarte Suche & Filter", "benefit": "Kunden finden die richtige Option in Sekunden" }, "availability": { "label": "Verfügbarkeitskalender", "benefit": "Live-Termine und -Preise, nie doppelt gebucht" }, "instantBooking": { "label": "Sofortbuchung", "benefit": "Mit wenigen Tipps reservieren" }, "mapView": { "label": "Kartenansicht", "benefit": "Sehen Sie genau, wo sich alles befindet" }, "payments": { "label": "Sichere Zahlungen", "benefit": "Vertrauenswürdiger Checkout schützt jede Transaktion" }, "manage": { "label": "Buchungsverwaltung", "benefit": "Reisen einfach ansehen, ändern oder stornieren" }, "reviews": { "label": "Bewertungen & Rezensionen", "benefit": "Echtes Feedback schafft Käufervertrauen" }, "multiLangCurrency": { "label": "Mehrsprachig & Mehrwährung", "benefit": "Begrüßen Sie Reisende aus aller Welt" }, "reminders": { "label": "Reise-Erinnerungen", "benefit": "Rechtzeitige Hinweise halten Kunden im Zeitplan" } } },
     "marketplace": { "label": "Marktplatz", "tagline": "Alles, was Käufer und Verkäufer brauchen, um mit Vertrauen zu handeln.", "features": { "sellerListings": { "label": "Einfache Verkäufer-Inserate", "benefit": "Verkäufer inserieren Artikel in Sekunden mit Fotos" }, "search": { "label": "Smarte Suche & Filter", "benefit": "Käufer finden den richtigen Artikel schnell" }, "chat": { "label": "In-App-Chat", "benefit": "Käufer und Verkäufer sprechen vor dem Kauf" }, "escrow": { "label": "Sichere Treuhand-Zahlungen", "benefit": "Geld erst freigegeben, wenn Käufer zufrieden sind" }, "buyerProtection": { "label": "Käuferschutz", "benefit": "Rückerstattungen und Streitschlichtung schaffen Vertrauen" }, "reviews": { "label": "Bewertungen & Rezensionen", "benefit": "Ehrliches Feedback belohnt vertrauenswürdige Nutzer" }, "verification": { "label": "Identitätsprüfung", "benefit": "Verifizierte Konten halten Betrug fern" }, "shipping": { "label": "Versand-Integration", "benefit": "Etiketten und Tracking direkt in der App" }, "pushOffers": { "label": "Push-Angebote & Alerts", "benefit": "Käufer mit zeitnahen Deals zurückholen" } } },
     "health": { "label": "Gesundheit & Fitness", "tagline": "Helfen Sie Ihren Nutzern, sich mehr zu bewegen, besser zu essen und motiviert zu bleiben.", "features": { "activityTracking": { "label": "Aktivitätsverfolgung", "benefit": "Erfasst Schritte, Läufe und Workouts automatisch" }, "wearableSync": { "label": "Wearable-Sync", "benefit": "Verbindet Apple Watch, Fitbit und Garmin" }, "workoutPlans": { "label": "Personalisierte Trainingspläne", "benefit": "Routinen, abgestimmt auf die Ziele jedes Nutzers" }, "nutrition": { "label": "Ernährungsprotokoll", "benefit": "Einfaches Verfolgen von Mahlzeiten und Kalorien" }, "progressCharts": { "label": "Fortschrittsdiagramme", "benefit": "Verbesserungen auf einen Blick sehen" }, "goalReminders": { "label": "Ziel-Erinnerungen", "benefit": "Sanfte Anstöße halten Nutzer auf Kurs" }, "challenges": { "label": "Soziale Challenges", "benefit": "Freundlicher Wettbewerb fördert tägliches Engagement" }, "sleep": { "label": "Schlaf & Erholung", "benefit": "Ruhe verfolgen für gesündere Ergebnisse" }, "privacy": { "label": "Private Gesundheitsdaten", "benefit": "Persönliche Daten bleiben sicher und geschützt" } } }
+  },
+  "previews": {
+    "fintech": {
+      "accounts": "Konten",
+      "mainAccount": "Hauptkonto",
+      "current": "Girokonto",
+      "cardPhysical": "Karte · Physisch",
+      "cardLabel": "Karte",
+      "salary": "Gehalt"
+    },
+    "food": {
+      "previews": {
+        "food": {
+          "restaurantsNearYou": "Restaurants in der Nähe",
+          "dish": {
+            "pizza": "Margherita",
+            "burger": "Klassischer Burger",
+            "ramen": "Ramen-Schüssel"
+          },
+          "onTheWay": "Unterwegs",
+          "driver": "Fahrer",
+          "kmAway": "{distance} km entfernt"
+        }
+      }
+    },
+    "ecommerce": {
+      "searchProducts": "Produkte suchen",
+      "runningShoes": "Laufschuhe",
+      "headphones": "Kopfhörer",
+      "smartWatch": "Smartwatch",
+      "reviews": "Bewertungen",
+      "addToCart": "In den Warenkorb"
+    },
+    "booking": {
+      "whereTo": "Wohin?",
+      "guests": "{count, plural, one {# Gast} other {# Gäste}}",
+      "nights": "{count, plural, one {# Nacht} other {# Nächte}}",
+      "perNightShort": "/Nacht",
+      "perNight": "/ Nacht",
+      "freeCancellation": "Kostenlose Stornierung",
+      "bookNow": "Jetzt buchen",
+      "beachResort": "Strandresort",
+      "mountainLodge": "Berghütte",
+      "cityHotel": "Stadthotel"
+    },
+    "marketplace": {
+      "pillAll": "Alle",
+      "pillTech": "Technik",
+      "pillHome": "Zuhause",
+      "camera": "Kamera",
+      "bike": "Fahrrad",
+      "designerChair": "Designerstuhl",
+      "seller": "Verkäufer",
+      "sales": "Verkäufe",
+      "escrow": "Sichere Treuhand · Käuferschutz",
+      "messageSeller": "Verkäufer kontaktieren"
+    },
+    "health": {
+      "today": "Heute",
+      "steps": "Schritte",
+      "kcal": "kcal",
+      "min": "Min",
+      "startWorkout": "Training starten",
+      "morningRun": "Morgenlauf",
+      "elapsed": "VERSTRICHEN"
+    }
   }
 }

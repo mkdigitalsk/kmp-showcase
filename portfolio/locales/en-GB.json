@@ -156,5 +156,71 @@
         "privacy": { "label": "Private health data", "benefit": "Personal information stays safe and secure" }
       }
     }
+  },
+  "previews": {
+    "fintech": {
+      "accounts": "Accounts",
+      "mainAccount": "Main account",
+      "current": "Current",
+      "cardPhysical": "Card · Physical",
+      "cardLabel": "Card",
+      "salary": "Salary"
+    },
+    "food": {
+      "previews": {
+        "food": {
+          "restaurantsNearYou": "Restaurants near you",
+          "dish": {
+            "pizza": "Margherita",
+            "burger": "Classic Burger",
+            "ramen": "Ramen Bowl"
+          },
+          "onTheWay": "On the way",
+          "driver": "Driver",
+          "kmAway": "{distance} km away"
+        }
+      }
+    },
+    "ecommerce": {
+      "searchProducts": "Search products",
+      "runningShoes": "Running Shoes",
+      "headphones": "Headphones",
+      "smartWatch": "Smart Watch",
+      "reviews": "reviews",
+      "addToCart": "Add to cart"
+    },
+    "booking": {
+      "whereTo": "Where to?",
+      "guests": "{count, plural, one {# guest} other {# guests}}",
+      "nights": "{count, plural, one {# night} other {# nights}}",
+      "perNightShort": "/night",
+      "perNight": "/ night",
+      "freeCancellation": "Free cancellation",
+      "bookNow": "Book now",
+      "beachResort": "Beach Resort",
+      "mountainLodge": "Mountain Lodge",
+      "cityHotel": "City Hotel"
+    },
+    "marketplace": {
+      "pillAll": "All",
+      "pillTech": "Tech",
+      "pillHome": "Home",
+      "camera": "Camera",
+      "bike": "Bike",
+      "designerChair": "Designer Chair",
+      "seller": "seller",
+      "sales": "sales",
+      "escrow": "Secure escrow · buyer protection",
+      "messageSeller": "Message seller"
+    },
+    "health": {
+      "today": "Today",
+      "steps": "Steps",
+      "kcal": "kcal",
+      "min": "min",
+      "startWorkout": "Start workout",
+      "morningRun": "Morning Run",
+      "elapsed": "ELAPSED"
+    }
   }
 }

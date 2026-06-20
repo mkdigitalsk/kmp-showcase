@@ -3,6 +3,7 @@
 import { AccountBalanceWallet, ArrowDownward, ArrowUpward, CreditCard } from '@mui/icons-material'
 import Box from '@mui/material/Box'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { PreviewScreen, type PreviewProps } from './PreviewKit'
 
@@ -13,16 +14,17 @@ import { PreviewScreen, type PreviewProps } from './PreviewKit'
 const R = 8 // tighter, fintech radius
 
 const ACCOUNTS = [
-  { Icon: AccountBalanceWallet, name: 'Main account', sub: 'Current', amount: '€8,210.30' },
-  { Icon: CreditCard, name: 'Card · Physical', sub: 'Visa', amount: '€4,270.20' },
+  { Icon: AccountBalanceWallet, key: 'mainAccount', subKey: 'current', amount: '€8,210.30' },
+  { Icon: CreditCard, key: 'cardPhysical', sub: 'Visa', amount: '€4,270.20' },
 ]
 const TX = [
-  { dir: 'in' as const, name: 'Salary', amount: '+€2,400.00' },
-  { dir: 'out' as const, name: 'Tesco', amount: '−€42.10' },
-  { dir: 'out' as const, name: 'Spotify', amount: '−€9.99' },
+  { dir: 'in' as const, key: 'salary', amount: '+€2,400.00' },
+  { dir: 'out' as const, key: 'tesco', name: 'Tesco', amount: '−€42.10' },
+  { dir: 'out' as const, key: 'spotify', name: 'Spotify', amount: '−€9.99' },
 ]
 
 export function FintechFlow({ accent }: PreviewProps) {
+  const t = useTranslations('previews.fintech')
   const reduceMotion = useReducedMotion()
   const [screen, setScreen] = useState(0)
   const [tapping, setTapping] = useState(false)
@@ -35,8 +37,8 @@ export function FintechFlow({ accent }: PreviewProps) {
       flip = setTimeout(() => {
         setScreen((s) => 1 - s)
         setTapping(false)
-      }, 450)
-    }, 3000)
+      }, 400)
+    }, 2000)
     return () => {
       clearInterval(loop)
       clearTimeout(flip)
@@ -57,7 +59,7 @@ export function FintechFlow({ accent }: PreviewProps) {
               style={{ padding: '0 12px' }}
             >
               <Box sx={{ fontSize: 10.5, fontWeight: 700, color: 'text.secondary', letterSpacing: '-0.01em' }}>
-                Accounts
+                {t('accounts')}
               </Box>
               <Box
                 sx={{
@@ -73,7 +75,7 @@ export function FintechFlow({ accent }: PreviewProps) {
               </Box>
               {ACCOUNTS.map((a, i) => (
                 <Box
-                  key={a.name}
+                  key={a.key}
                   sx={{
                     position: 'relative',
                     display: 'flex',
@@ -99,8 +101,8 @@ export function FintechFlow({ accent }: PreviewProps) {
                     <a.Icon sx={{ fontSize: 16 }} />
                   </Box>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Box sx={{ fontSize: 11.5, fontWeight: 700, color: 'text.primary' }}>{a.name}</Box>
-                    <Box sx={{ fontSize: 9.5, color: 'text.secondary' }}>{a.sub}</Box>
+                    <Box sx={{ fontSize: 11.5, fontWeight: 700, color: 'text.primary' }}>{t(a.key)}</Box>
+                    <Box sx={{ fontSize: 9.5, color: 'text.secondary' }}>{a.subKey ? t(a.subKey) : a.sub}</Box>
                   </Box>
                   <Box sx={{ fontSize: 11.5, fontWeight: 800, color: 'text.primary', fontVariantNumeric: 'tabular-nums' }}>
                     {a.amount}
@@ -148,13 +150,13 @@ export function FintechFlow({ accent }: PreviewProps) {
                 }}
               >
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Box sx={{ fontSize: 10, fontWeight: 700, opacity: 0.85 }}>Card · Visa</Box>
+                  <Box sx={{ fontSize: 10, fontWeight: 700, opacity: 0.85 }}>{t('cardLabel')} · Visa</Box>
                   <CreditCard sx={{ fontSize: 16, opacity: 0.85 }} />
                 </Box>
                 <Box sx={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em' }}>•••• 4821</Box>
               </Box>
-              {TX.map((t) => (
-                <Box key={t.name} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
+              {TX.map((tx) => (
+                <Box key={tx.key} sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5 }}>
                   <Box
                     sx={{
                       width: 26,
@@ -163,21 +165,21 @@ export function FintechFlow({ accent }: PreviewProps) {
                       display: 'grid',
                       placeItems: 'center',
                       bgcolor: 'action.hover',
-                      color: t.dir === 'in' ? 'success.main' : 'text.secondary',
+                      color: tx.dir === 'in' ? 'success.main' : 'text.secondary',
                     }}
                   >
-                    {t.dir === 'in' ? <ArrowUpward sx={{ fontSize: 14 }} /> : <ArrowDownward sx={{ fontSize: 14 }} />}
+                    {tx.dir === 'in' ? <ArrowUpward sx={{ fontSize: 14 }} /> : <ArrowDownward sx={{ fontSize: 14 }} />}
                   </Box>
-                  <Box sx={{ flex: 1, fontSize: 11.5, fontWeight: 700, color: 'text.primary' }}>{t.name}</Box>
+                  <Box sx={{ flex: 1, fontSize: 11.5, fontWeight: 700, color: 'text.primary' }}>{tx.name ?? t(tx.key)}</Box>
                   <Box
                     sx={{
                       fontSize: 11.5,
                       fontWeight: 800,
-                      color: t.dir === 'in' ? 'success.main' : 'text.primary',
+                      color: tx.dir === 'in' ? 'success.main' : 'text.primary',
                       fontVariantNumeric: 'tabular-nums',
                     }}
                   >
-                    {t.amount}
+                    {tx.amount}
                   </Box>
                 </Box>
               ))}

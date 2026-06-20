@@ -2,6 +2,7 @@
 
 import Box from '@mui/material/Box'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { PreviewScreen, type PreviewProps } from './PreviewKit'
 
@@ -13,14 +14,15 @@ import { PreviewScreen, type PreviewProps } from './PreviewKit'
 const R = 11 // medium radius
 
 const PRODUCTS = [
-  { emoji: '👟', name: 'Running Shoes', price: '€89.00' },
-  { emoji: '🎧', name: 'Headphones', price: '€149.00' },
-  { emoji: '⌚', name: 'Smart Watch', price: '€199.00' },
+  { key: 'runningShoes', emoji: '👟', price: '€89.00' },
+  { key: 'headphones', emoji: '🎧', price: '€149.00' },
+  { key: 'smartWatch', emoji: '⌚', price: '€199.00' },
 ]
 
 const CHOSEN = PRODUCTS[1]
 
 export function EcommerceFlow({ accent }: PreviewProps) {
+  const t = useTranslations('previews.ecommerce')
   const reduceMotion = useReducedMotion()
   const [screen, setScreen] = useState(0)
   const [tapping, setTapping] = useState(false)
@@ -33,8 +35,8 @@ export function EcommerceFlow({ accent }: PreviewProps) {
       flip = setTimeout(() => {
         setScreen((s) => 1 - s)
         setTapping(false)
-      }, 450)
-    }, 3000)
+      }, 400)
+    }, 2000)
     return () => {
       clearInterval(loop)
       clearTimeout(flip)
@@ -68,7 +70,7 @@ export function EcommerceFlow({ accent }: PreviewProps) {
                     color: 'text.secondary',
                   }}
                 >
-                  🔍 Search products
+                  🔍 {t('searchProducts')}
                 </Box>
                 <Box
                   sx={{
@@ -106,7 +108,7 @@ export function EcommerceFlow({ accent }: PreviewProps) {
               </Box>
               {PRODUCTS.map((p, i) => (
                 <Box
-                  key={p.name}
+                  key={p.key}
                   sx={{
                     position: 'relative',
                     display: 'flex',
@@ -129,7 +131,7 @@ export function EcommerceFlow({ accent }: PreviewProps) {
                   >
                     {p.emoji}
                   </Box>
-                  <Box sx={{ flex: 1, fontSize: 11.5, fontWeight: 600, color: 'text.primary' }}>{p.name}</Box>
+                  <Box sx={{ flex: 1, fontSize: 11.5, fontWeight: 600, color: 'text.primary' }}>{t(p.key)}</Box>
                   <Box sx={{ fontSize: 11.5, fontWeight: 800, color: accent, fontVariantNumeric: 'tabular-nums' }}>
                     {p.price}
                   </Box>
@@ -214,12 +216,12 @@ export function EcommerceFlow({ accent }: PreviewProps) {
                 {CHOSEN.emoji}
               </Box>
               <Box sx={{ fontSize: 14, fontWeight: 700, color: 'text.primary', letterSpacing: '-0.01em' }}>
-                {CHOSEN.name}
+                {t(CHOSEN.key)}
               </Box>
               <Box sx={{ fontSize: 16, fontWeight: 800, color: accent, mt: 0.25, fontVariantNumeric: 'tabular-nums' }}>
                 {CHOSEN.price}
               </Box>
-              <Box sx={{ fontSize: 10, color: 'text.secondary', mt: 0.5, mb: 1.25 }}>★★★★☆ 124 reviews</Box>
+              <Box sx={{ fontSize: 10, color: 'text.secondary', mt: 0.5, mb: 1.25 }}>★★★★☆ 124 {t('reviews')}</Box>
               <Box
                 sx={{
                   width: '100%',
@@ -233,7 +235,7 @@ export function EcommerceFlow({ accent }: PreviewProps) {
                   fontWeight: 700,
                 }}
               >
-                Add to cart
+                {t('addToCart')}
               </Box>
             </motion.div>
           )}

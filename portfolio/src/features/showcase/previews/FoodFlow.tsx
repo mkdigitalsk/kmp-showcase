@@ -2,6 +2,7 @@
 
 import Box from '@mui/material/Box'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { PreviewScreen, type PreviewProps } from './PreviewKit'
 
@@ -13,14 +14,15 @@ import { PreviewScreen, type PreviewProps } from './PreviewKit'
 const R = 13 // medium-large, food-app radius
 
 const DISHES = [
-  { emoji: '🍕', name: 'Margherita', meta: '★ 4.8 · 25 min', price: '€9.50' },
-  { emoji: '🍔', name: 'Classic Burger', meta: '★ 4.6 · 20 min', price: '€7.90' },
-  { emoji: '🍜', name: 'Ramen Bowl', meta: '★ 4.9 · 30 min', price: '€11.00' },
+  { key: 'pizza', emoji: '🍕', meta: '★ 4.8 · 25 min', price: '€9.50' },
+  { key: 'burger', emoji: '🍔', meta: '★ 4.6 · 20 min', price: '€7.90' },
+  { key: 'ramen', emoji: '🍜', meta: '★ 4.9 · 30 min', price: '€11.00' },
 ]
 
 const CHOSEN = DISHES[1]
 
 export function FoodFlow({ accent }: PreviewProps) {
+  const t = useTranslations('previews.food')
   const reduceMotion = useReducedMotion()
   const [screen, setScreen] = useState(0)
   const [tapping, setTapping] = useState(false)
@@ -33,8 +35,8 @@ export function FoodFlow({ accent }: PreviewProps) {
       flip = setTimeout(() => {
         setScreen((s) => 1 - s)
         setTapping(false)
-      }, 450)
-    }, 3000)
+      }, 400)
+    }, 2000)
     return () => {
       clearInterval(loop)
       clearTimeout(flip)
@@ -68,11 +70,11 @@ export function FoodFlow({ accent }: PreviewProps) {
                   color: 'text.secondary',
                 }}
               >
-                🔍&nbsp;Restaurants near you
+                🔍&nbsp;{t('restaurantsNearYou')}
               </Box>
               {DISHES.map((d, i) => (
                 <Box
-                  key={d.name}
+                  key={d.key}
                   sx={{
                     position: 'relative',
                     display: 'flex',
@@ -99,7 +101,7 @@ export function FoodFlow({ accent }: PreviewProps) {
                     {d.emoji}
                   </Box>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Box sx={{ fontSize: 12, fontWeight: 500, color: 'text.primary' }}>{d.name}</Box>
+                    <Box sx={{ fontSize: 12, fontWeight: 500, color: 'text.primary' }}>{t(`dish.${d.key}`)}</Box>
                     <Box sx={{ fontSize: 10, fontWeight: 400, color: 'text.secondary' }}>{d.meta}</Box>
                   </Box>
                   <Box sx={{ fontSize: 12, fontWeight: 600, color: accent }}>{d.price}</Box>
@@ -148,7 +150,7 @@ export function FoodFlow({ accent }: PreviewProps) {
                   {CHOSEN.emoji}
                 </Box>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Box sx={{ fontSize: 13, fontWeight: 500, color: 'text.primary' }}>{CHOSEN.name}</Box>
+                  <Box sx={{ fontSize: 13, fontWeight: 500, color: 'text.primary' }}>{t(`dish.${CHOSEN.key}`)}</Box>
                   <Box sx={{ fontSize: 11, color: 'text.secondary' }}>{CHOSEN.meta}</Box>
                 </Box>
                 <Box sx={{ fontSize: 13, fontWeight: 600, color: accent }}>{CHOSEN.price}</Box>
@@ -161,7 +163,9 @@ export function FoodFlow({ accent }: PreviewProps) {
                   bgcolor: `${accent}14`,
                 }}
               >
-                <Box sx={{ fontSize: 11.5, fontWeight: 600, color: 'text.primary', mb: 0.9 }}>On the way · 12 min</Box>
+                <Box sx={{ fontSize: 11.5, fontWeight: 600, color: 'text.primary', mb: 0.9 }}>
+                  {t('onTheWay')} · 12 min
+                </Box>
                 <Box sx={{ height: 5, borderRadius: 3, bgcolor: 'action.hover', overflow: 'hidden', mb: 1.1 }}>
                   <motion.div
                     initial={{ width: reduceMotion ? '64%' : '12%' }}
@@ -172,8 +176,8 @@ export function FoodFlow({ accent }: PreviewProps) {
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                   <Box sx={{ fontSize: 16, lineHeight: 1 }}>🛵</Box>
-                  <Box sx={{ flex: 1, fontSize: 11, fontWeight: 500, color: 'text.primary' }}>Driver</Box>
-                  <Box sx={{ fontSize: 10, color: 'text.secondary' }}>0.8 km away</Box>
+                  <Box sx={{ flex: 1, fontSize: 11, fontWeight: 500, color: 'text.primary' }}>{t('driver')}</Box>
+                  <Box sx={{ fontSize: 10, color: 'text.secondary' }}>{t('kmAway', { distance: '0.8' })}</Box>
                 </Box>
               </Box>
             </motion.div>

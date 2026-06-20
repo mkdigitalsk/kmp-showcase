@@ -2,6 +2,7 @@
 
 import Box from '@mui/material/Box'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { PreviewScreen, type PreviewProps } from './PreviewKit'
 
@@ -12,15 +13,16 @@ import { PreviewScreen, type PreviewProps } from './PreviewKit'
 
 const R = 10 // medium, friendly radius
 
-const PILLS = ['All', 'Tech', 'Home']
+const PILL_KEYS = ['pillAll', 'pillTech', 'pillHome'] as const
 const LISTINGS = [
-  { emoji: '📷', name: 'Camera', price: '€240', rating: '4.9' },
-  { emoji: '🚲', name: 'Bike', price: '€180', rating: '4.7' },
-  { emoji: '🪑', name: 'Designer Chair', price: '€60', rating: '4.8' },
-]
+  { key: 'camera', emoji: '📷', price: '€240', rating: '4.9' },
+  { key: 'bike', emoji: '🚲', price: '€180', rating: '4.7' },
+  { key: 'designerChair', emoji: '🪑', price: '€60', rating: '4.8' },
+] as const
 const FEATURED = LISTINGS[0]
 
 export function MarketplaceFlow({ accent }: PreviewProps) {
+  const t = useTranslations('previews.marketplace')
   const reduceMotion = useReducedMotion()
   const [screen, setScreen] = useState(0)
   const [tapping, setTapping] = useState(false)
@@ -33,8 +35,8 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
       flip = setTimeout(() => {
         setScreen((s) => 1 - s)
         setTapping(false)
-      }, 450)
-    }, 3000)
+      }, 400)
+    }, 2000)
     return () => {
       clearInterval(loop)
       clearTimeout(flip)
@@ -55,9 +57,9 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
               style={{ padding: '0 12px' }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1 }}>
-                {PILLS.map((p, i) => (
+                {PILL_KEYS.map((pillKey, i) => (
                   <Box
-                    key={p}
+                    key={pillKey}
                     sx={{
                       fontSize: 10,
                       fontWeight: 700,
@@ -68,7 +70,7 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
                       color: i === 0 ? 'common.white' : 'text.secondary',
                     }}
                   >
-                    {p}
+                    {t(pillKey)}
                   </Box>
                 ))}
                 <Box
@@ -88,7 +90,7 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
               </Box>
               {LISTINGS.map((l, i) => (
                 <Box
-                  key={l.name}
+                  key={l.key}
                   sx={{
                     position: 'relative',
                     display: 'flex',
@@ -114,8 +116,10 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
                     {l.emoji}
                   </Box>
                   <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Box sx={{ fontSize: 11.5, fontWeight: 700, color: 'text.primary' }}>{l.name}</Box>
-                    <Box sx={{ fontSize: 9.5, fontWeight: 700, color: accent }}>★{l.rating} seller</Box>
+                    <Box sx={{ fontSize: 11.5, fontWeight: 700, color: 'text.primary' }}>{t(l.key)}</Box>
+                    <Box sx={{ fontSize: 9.5, fontWeight: 700, color: accent }}>
+                      ★{l.rating} {t('seller')}
+                    </Box>
                   </Box>
                   <Box sx={{ fontSize: 12, fontWeight: 800, color: accent }}>{l.price}</Box>
                   {tapping && i === 0 && !reduceMotion && (
@@ -162,7 +166,7 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
                   {FEATURED.emoji}
                 </Box>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Box sx={{ fontSize: 13, fontWeight: 800, color: 'text.primary' }}>{FEATURED.name}</Box>
+                  <Box sx={{ fontSize: 13, fontWeight: 800, color: 'text.primary' }}>{t(FEATURED.key)}</Box>
                   <Box sx={{ fontSize: 15, fontWeight: 800, color: accent }}>{FEATURED.price}</Box>
                 </Box>
               </Box>
@@ -176,7 +180,7 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
                 }}
               >
                 <Box sx={{ fontSize: 11, fontWeight: 700, color: accent }}>★{FEATURED.rating}</Box>
-                <Box sx={{ fontSize: 10.5, color: 'text.secondary' }}>· 230 sales</Box>
+                <Box sx={{ fontSize: 10.5, color: 'text.secondary' }}>· 230 {t('sales')}</Box>
               </Box>
               <Box
                 sx={{
@@ -190,7 +194,7 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
                   bgcolor: `${accent}1A`,
                 }}
               >
-                🔒 Secure escrow · buyer protection
+                🔒 {t('escrow')}
               </Box>
               <Box
                 sx={{
@@ -203,7 +207,7 @@ export function MarketplaceFlow({ accent }: PreviewProps) {
                   bgcolor: accent,
                 }}
               >
-                💬 Message seller
+                💬 {t('messageSeller')}
               </Box>
             </motion.div>
           )}

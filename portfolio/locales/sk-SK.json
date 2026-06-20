@@ -72,5 +72,71 @@
     "booking": { "label": "Rezervácie a cestovanie", "tagline": "Premeňte každé hľadanie na istú a dokončenú rezerváciu.", "features": { "search": { "label": "Inteligentné vyhľadávanie a filtre", "benefit": "Zákazníci nájdu správnu možnosť v priebehu sekúnd" }, "availability": { "label": "Kalendár dostupnosti", "benefit": "Aktuálne dátumy a ceny, nikdy dvojitá rezervácia" }, "instantBooking": { "label": "Okamžitá rezervácia", "benefit": "Rezervujte niekoľkými rýchlymi ťuknutiami" }, "mapView": { "label": "Zobrazenie na mape", "benefit": "Vidíte presne, kde sa všetko nachádza" }, "payments": { "label": "Bezpečné platby", "benefit": "Dôveryhodná pokladňa chráni každú transakciu" }, "manage": { "label": "Správa rezervácií", "benefit": "Jednoducho zobrazte, zmeňte alebo zrušte cesty" }, "reviews": { "label": "Hodnotenia a recenzie", "benefit": "Skutočná spätná väzba buduje istotu kupujúcich" }, "multiLangCurrency": { "label": "Viac jazykov a mien", "benefit": "Privítajte cestovateľov z celého sveta" }, "reminders": { "label": "Pripomienky ciest", "benefit": "Včasné upozornenia udržia zákazníkov v pláne" } } },
     "marketplace": { "label": "Trhovisko", "tagline": "Všetko, čo kupujúci a predávajúci potrebujú na obchodovanie s istotou.", "features": { "sellerListings": { "label": "Jednoduché ponuky predajcov", "benefit": "Predajcovia pridajú položky s fotkami v priebehu sekúnd" }, "search": { "label": "Inteligentné vyhľadávanie a filtre", "benefit": "Kupujúci rýchlo nájdu správnu položku" }, "chat": { "label": "Chat v aplikácii", "benefit": "Kupujúci a predávajúci sa porozprávajú pred nákupom" }, "escrow": { "label": "Bezpečné platby cez escrow", "benefit": "Peniaze sa uvoľnia, až keď sú kupujúci spokojní" }, "buyerProtection": { "label": "Ochrana kupujúceho", "benefit": "Refundácie a podpora pri sporoch budujú dôveru" }, "reviews": { "label": "Hodnotenia a recenzie", "benefit": "Úprimná spätná väzba odmeňuje dôveryhodných používateľov" }, "verification": { "label": "Overenie identity", "benefit": "Overené účty držia podvody mimo" }, "shipping": { "label": "Integrácia dopravy", "benefit": "Štítky a sledovanie vybavené priamo v aplikácii" }, "pushOffers": { "label": "Push ponuky a upozornenia", "benefit": "Priveďte nakupujúcich späť včasnými ponukami" } } },
     "health": { "label": "Zdravie a fitness", "tagline": "Pomôžte svojim používateľom viac sa hýbať, lepšie jesť a zostať motivovaní.", "features": { "activityTracking": { "label": "Sledovanie aktivity", "benefit": "Automaticky zaznamenáva kroky, behy a cvičenia" }, "wearableSync": { "label": "Synchronizácia s nositeľnou elektronikou", "benefit": "Pripojí Apple Watch, Fitbit a Garmin" }, "workoutPlans": { "label": "Personalizované tréningové plány", "benefit": "Rutiny prispôsobené cieľom každého používateľa" }, "nutrition": { "label": "Zaznamenávanie stravy", "benefit": "Jednoduché sledovanie jedál a kalórií" }, "progressCharts": { "label": "Grafy pokroku", "benefit": "Vidíte zlepšenie na prvý pohľad" }, "goalReminders": { "label": "Pripomienky cieľov", "benefit": "Jemné podnety udržia používateľov na správnej ceste" }, "challenges": { "label": "Sociálne výzvy", "benefit": "Priateľská súťaž poháňa každodenné zapojenie" }, "sleep": { "label": "Spánok a regenerácia", "benefit": "Sledujte odpočinok pre zdravšie výsledky" }, "privacy": { "label": "Súkromné zdravotné údaje", "benefit": "Osobné informácie zostávajú v bezpečí" } } }
+  },
+  "previews": {
+    "fintech": {
+      "accounts": "Účty",
+      "mainAccount": "Hlavný účet",
+      "current": "Bežný",
+      "cardPhysical": "Karta · Fyzická",
+      "cardLabel": "Karta",
+      "salary": "Mzda"
+    },
+    "food": {
+      "previews": {
+        "food": {
+          "restaurantsNearYou": "Reštaurácie v okolí",
+          "dish": {
+            "pizza": "Margherita",
+            "burger": "Klasický burger",
+            "ramen": "Ramen miska"
+          },
+          "onTheWay": "Na ceste",
+          "driver": "Kuriér",
+          "kmAway": "{distance} km od vás"
+        }
+      }
+    },
+    "ecommerce": {
+      "searchProducts": "Hľadať produkty",
+      "runningShoes": "Bežecké topánky",
+      "headphones": "Slúchadlá",
+      "smartWatch": "Inteligentné hodinky",
+      "reviews": "recenzií",
+      "addToCart": "Pridať do košíka"
+    },
+    "booking": {
+      "whereTo": "Kam cestujete?",
+      "guests": "{count, plural, one {# hosť} few {# hostia} other {# hostí}}",
+      "nights": "{count, plural, one {# noc} few {# noci} other {# nocí}}",
+      "perNightShort": "/noc",
+      "perNight": "/ noc",
+      "freeCancellation": "Bezplatné zrušenie",
+      "bookNow": "Rezervovať",
+      "beachResort": "Plážový rezort",
+      "mountainLodge": "Horská chata",
+      "cityHotel": "Mestský hotel"
+    },
+    "marketplace": {
+      "pillAll": "Všetko",
+      "pillTech": "Technika",
+      "pillHome": "Domov",
+      "camera": "Fotoaparát",
+      "bike": "Bicykel",
+      "designerChair": "Dizajnová stolička",
+      "seller": "predajca",
+      "sales": "predajov",
+      "escrow": "Bezpečná úschova · ochrana kupujúceho",
+      "messageSeller": "Napísať predajcovi"
+    },
+    "health": {
+      "today": "Dnes",
+      "steps": "Kroky",
+      "kcal": "kcal",
+      "min": "min",
+      "startWorkout": "Spustiť tréning",
+      "morningRun": "Ranný beh",
+      "elapsed": "UPLYNULÝ ČAS"
+    }
   }
 }

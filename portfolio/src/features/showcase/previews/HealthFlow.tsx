@@ -3,6 +3,7 @@
 import { Bolt, DirectionsRun, LocalFireDepartment, Timer } from '@mui/icons-material'
 import Box from '@mui/material/Box'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { PreviewScreen, type PreviewProps } from './PreviewKit'
 
@@ -14,9 +15,9 @@ import { PreviewScreen, type PreviewProps } from './PreviewKit'
 const R = 12 // medium, sporty radius
 
 const STATS = [
-  { Icon: DirectionsRun, value: '8,240', label: 'Steps' },
-  { Icon: LocalFireDepartment, value: '540', label: 'kcal' },
-  { Icon: Timer, value: '47', label: 'min' },
+  { Icon: DirectionsRun, value: '8,240', key: 'steps' },
+  { Icon: LocalFireDepartment, value: '540', key: 'kcal' },
+  { Icon: Timer, value: '47', key: 'min' },
 ]
 
 const METRICS = ['3.2 km', '320 kcal', "5'10/km"]
@@ -27,6 +28,7 @@ const RING_R = (RING_SIZE - RING_STROKE) / 2
 const RING_C = 2 * Math.PI * RING_R
 
 export function HealthFlow({ accent }: PreviewProps) {
+  const t = useTranslations('previews.health')
   const reduceMotion = useReducedMotion()
   const [screen, setScreen] = useState(0)
   const [tapping, setTapping] = useState(false)
@@ -39,8 +41,8 @@ export function HealthFlow({ accent }: PreviewProps) {
       flip = setTimeout(() => {
         setScreen((s) => 1 - s)
         setTapping(false)
-      }, 450)
-    }, 3000)
+      }, 400)
+    }, 2000)
     return () => {
       clearInterval(loop)
       clearTimeout(flip)
@@ -61,7 +63,7 @@ export function HealthFlow({ accent }: PreviewProps) {
               style={{ padding: '0 12px' }}
             >
               <Box sx={{ fontSize: 22, fontWeight: 800, color: 'text.primary', letterSpacing: '-0.02em' }}>
-                Today
+                {t('today')}
               </Box>
               <Box sx={{ fontSize: 10.5, fontWeight: 700, color: 'text.secondary', mb: 1.25 }}>
                 Mon, Jun 20
@@ -69,7 +71,7 @@ export function HealthFlow({ accent }: PreviewProps) {
               <Box sx={{ display: 'flex', gap: 0.75, mb: 1.5 }}>
                 {STATS.map((s) => (
                   <Box
-                    key={s.label}
+                    key={s.key}
                     sx={{
                       flex: 1,
                       borderRadius: `${R}px`,
@@ -93,7 +95,7 @@ export function HealthFlow({ accent }: PreviewProps) {
                     >
                       {s.value}
                     </Box>
-                    <Box sx={{ fontSize: 9.5, fontWeight: 700, color: 'text.secondary' }}>{s.label}</Box>
+                    <Box sx={{ fontSize: 9.5, fontWeight: 700, color: 'text.secondary' }}>{t(s.key)}</Box>
                   </Box>
                 ))}
               </Box>
@@ -112,7 +114,7 @@ export function HealthFlow({ accent }: PreviewProps) {
                 }}
               >
                 <Bolt sx={{ fontSize: 18 }} />
-                <Box sx={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.01em' }}>Start workout</Box>
+                <Box sx={{ fontSize: 13, fontWeight: 800, letterSpacing: '0.01em' }}>{t('startWorkout')}</Box>
                 {tapping && !reduceMotion && (
                   <motion.div
                     initial={{ scale: 0, opacity: 0.5 }}
@@ -145,7 +147,7 @@ export function HealthFlow({ accent }: PreviewProps) {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
                 <DirectionsRun sx={{ fontSize: 16, color: accent }} />
                 <Box sx={{ fontSize: 12, fontWeight: 800, color: 'text.primary', letterSpacing: '-0.01em' }}>
-                  Morning Run
+                  {t('morningRun')}
                 </Box>
               </Box>
               <Box sx={{ position: 'relative', width: RING_SIZE, height: RING_SIZE, mb: 1.25 }}>
@@ -198,7 +200,7 @@ export function HealthFlow({ accent }: PreviewProps) {
                   >
                     12:34
                   </Box>
-                  <Box sx={{ fontSize: 9, fontWeight: 700, color: 'text.secondary', mt: 0.25 }}>ELAPSED</Box>
+                  <Box sx={{ fontSize: 9, fontWeight: 700, color: 'text.secondary', mt: 0.25 }}>{t('elapsed')}</Box>
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
