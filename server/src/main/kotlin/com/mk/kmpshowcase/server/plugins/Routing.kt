@@ -1,6 +1,7 @@
 package com.mk.kmpshowcase.server.plugins
 
 import com.mk.kmpshowcase.server.di.AppDependencies
+import com.mk.kmpshowcase.server.feature.lead.api.leadRoutes
 import com.mk.kmpshowcase.server.feature.note.api.noteRoutes
 import com.mk.kmpshowcase.server.feature.user.api.authRoutes
 import com.mk.kmpshowcase.server.feature.user.api.userRoutes
@@ -22,5 +23,6 @@ internal fun Application.configureRouting(dependencies: AppDependencies) {
         authRoutes(dependencies.userService, dependencies.jwtConfig)
         userRoutes(dependencies.userService)
         noteRoutes(dependencies.noteService)
+        leadRoutes(dependencies.leadService)
     }
 }

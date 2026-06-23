@@ -43,6 +43,9 @@ dependencies {
     implementation(libs.h2)
     implementation(libs.hikari)
 
+    // Email (lead notifications)
+    implementation(libs.angus.mail)
+
     // Security
     implementation(libs.bcrypt)
 

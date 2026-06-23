@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.server.config
 
+import com.mk.kmpshowcase.server.feature.lead.persistence.LeadsTable
 import com.mk.kmpshowcase.server.feature.note.persistence.NotesTable
 import com.mk.kmpshowcase.server.feature.user.persistence.UsersTable
 import com.zaxxer.hikari.HikariConfig
@@ -19,7 +20,7 @@ internal object DatabaseConfig {
         val database = Database.connect(hikari(appConfig))
 
         transaction(database) {
-            SchemaUtils.create(UsersTable, NotesTable)
+            SchemaUtils.create(UsersTable, NotesTable, LeadsTable)
             logger.info("Database tables created/verified")
         }
     }

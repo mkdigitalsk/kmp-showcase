@@ -1,6 +1,7 @@
 package com.mk.kmpshowcase.server
 
 import com.mk.kmpshowcase.server.config.DatabaseConfig
+import com.mk.kmpshowcase.server.core.mail.MailConfig
 import com.mk.kmpshowcase.server.core.security.JwtConfig
 import com.mk.kmpshowcase.server.di.AppDependencies
 import com.mk.kmpshowcase.server.plugins.configureAuth
@@ -32,7 +33,15 @@ internal fun Application.module() {
         issuer = config.property("jwt.issuer").getString(),
         audience = config.property("jwt.audience").getString(),
     )
-    val dependencies = AppDependencies(jwtConfig)
+    val mailConfig = MailConfig(
+        host = config.property("mail.host").getString(),
+        port = config.property("mail.port").getString().toInt(),
+        user = config.property("mail.user").getString(),
+        password = config.property("mail.password").getString(),
+        from = config.property("mail.from").getString(),
+        recipient = config.property("mail.recipient").getString(),
+    )
+    val dependencies = AppDependencies(jwtConfig, mailConfig)
     configureCallLogging()
     configureSerialization()
     configureStatusPages()

@@ -16,3 +16,11 @@ database:
   url: "$DATABASE_URL:jdbc:postgresql://localhost:5432/kmpshowcase"
   user: "$DATABASE_USER:postgres"
   password: "$DATABASE_PASSWORD:postgres"
+
+mail:
+  host: "$MAIL_HOST:smtp.m1.websupport.sk"
+  port: "$MAIL_PORT:465"
+  user: "$MAIL_USER:admin@mkdigital.sk"
+  password: "$MAIL_PASSWORD:"
+  from: "$MAIL_FROM:admin@mkdigital.sk"
+  recipient: "$MAIL_RECIPIENT:admin@mkdigital.sk"
