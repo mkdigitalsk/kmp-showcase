@@ -14,6 +14,9 @@ import com.mk.kmpshowcase.server.feature.note.service.NoteService
 import com.mk.kmpshowcase.server.feature.user.persistence.UserRepository
 import com.mk.kmpshowcase.server.feature.user.persistence.UserRepositoryImpl
 import com.mk.kmpshowcase.server.feature.user.service.UserService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 internal class AppDependencies(val jwtConfig: JwtConfig, mailConfig: MailConfig) {
 
@@ -22,8 +25,9 @@ internal class AppDependencies(val jwtConfig: JwtConfig, mailConfig: MailConfig)
     private val leadRepository: LeadRepository = LeadRepositoryImpl()
     private val mailer: Mailer =
         if (mailConfig.resendApiKey.isNotBlank()) ResendMailer(mailConfig) else SmtpMailer(mailConfig)
+    private val mailScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     val userService = UserService(userRepository)
     val noteService = NoteService(noteRepository)
-    val leadService = LeadService(leadRepository, mailer, mailConfig.recipient)
+    val leadService = LeadService(leadRepository, mailer, mailConfig.recipient, mailScope)
 }

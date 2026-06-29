@@ -2,6 +2,7 @@ package com.mk.kmpshowcase.server.core.mail
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -17,10 +18,16 @@ internal class ResendMailer(private val config: MailConfig) : Mailer {
     private val client = HttpClient.newHttpClient()
 
     @Serializable
-    private data class Email(val from: String, val to: List<String>, val subject: String, val text: String)
+    private data class Email(
+        val from: String,
+        val to: List<String>,
+        val subject: String,
+        val text: String,
+        @SerialName("reply_to") val replyTo: String? = null,
+    )
 
-    override suspend fun send(to: String, subject: String, body: String) {
-        val payload = Json.encodeToString(Email(config.from, listOf(to), subject, body))
+    override suspend fun send(to: String, subject: String, body: String, replyTo: String?) {
+        val payload = Json.encodeToString(Email(config.from, listOf(to), subject, body, replyTo))
         val request = HttpRequest.newBuilder()
             .uri(URI.create("https://api.resend.com/emails"))
             .header("Authorization", "Bearer ${config.resendApiKey}")

@@ -26,12 +26,13 @@ internal class SmtpMailer(private val config: MailConfig) : Mailer {
         })
     }
 
-    override suspend fun send(to: String, subject: String, body: String) {
+    override suspend fun send(to: String, subject: String, body: String, replyTo: String?) {
         val activeSession = session ?: return
         withContext(Dispatchers.IO) {
             val message = MimeMessage(activeSession).apply {
                 setFrom(InternetAddress(config.from))
                 setRecipients(Message.RecipientType.TO, InternetAddress.parse(to))
+                replyTo?.let { setReplyTo(InternetAddress.parse(it)) }
                 setSubject(subject, "UTF-8")
                 setText(body, "UTF-8")
             }
