@@ -22,4 +22,5 @@ internal data class LeadDraft(
     val phone: String?,
     val note: String?,
     val hasDoc: Boolean,
+    val locale: String?,
 )

@@ -23,11 +23,12 @@ internal class ResendMailer(private val config: MailConfig) : Mailer {
         val to: List<String>,
         val subject: String,
         val text: String,
+        val html: String? = null,
         @SerialName("reply_to") val replyTo: String? = null,
     )
 
-    override suspend fun send(to: String, subject: String, body: String, replyTo: String?) {
-        val payload = Json.encodeToString(Email(config.from, listOf(to), subject, body, replyTo))
+    override suspend fun send(to: String, subject: String, text: String, html: String?, replyTo: String?) {
+        val payload = Json.encodeToString(Email(config.from, listOf(to), subject, text, html, replyTo))
         val request = HttpRequest.newBuilder()
             .uri(URI.create("https://api.resend.com/emails"))
             .header("Authorization", "Bearer ${config.resendApiKey}")

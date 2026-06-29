@@ -6,7 +6,9 @@ import jakarta.mail.PasswordAuthentication
 import jakarta.mail.Session
 import jakarta.mail.Transport
 import jakarta.mail.internet.InternetAddress
+import jakarta.mail.internet.MimeBodyPart
 import jakarta.mail.internet.MimeMessage
+import jakarta.mail.internet.MimeMultipart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
@@ -26,7 +28,7 @@ internal class SmtpMailer(private val config: MailConfig) : Mailer {
         })
     }
 
-    override suspend fun send(to: String, subject: String, body: String, replyTo: String?) {
+    override suspend fun send(to: String, subject: String, text: String, html: String?, replyTo: String?) {
         val activeSession = session ?: return
         withContext(Dispatchers.IO) {
             val message = MimeMessage(activeSession).apply {
@@ -34,7 +36,16 @@ internal class SmtpMailer(private val config: MailConfig) : Mailer {
                 setRecipients(Message.RecipientType.TO, InternetAddress.parse(to))
                 replyTo?.let { setReplyTo(InternetAddress.parse(it)) }
                 setSubject(subject, "UTF-8")
-                setText(body, "UTF-8")
+                if (html == null) {
+                    setText(text, "UTF-8")
+                } else {
+                    setContent(
+                        MimeMultipart("alternative").apply {
+                            addBodyPart(MimeBodyPart().apply { setText(text, "UTF-8") })
+                            addBodyPart(MimeBodyPart().apply { setContent(html, "text/html; charset=UTF-8") })
+                        },
+                    )
+                }
             }
             Transport.send(message)
         }

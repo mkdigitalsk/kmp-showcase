@@ -13,6 +13,7 @@ internal data class LeadRequestDTO(
     val phone: String? = null,
     val note: String? = null,
     val hasDoc: Boolean = false,
+    val locale: String? = null,
 )
 
 @Serializable
@@ -27,4 +28,5 @@ internal fun LeadRequestDTO.toDraft() = LeadDraft(
     phone = phone?.trim()?.takeIf { it.isNotEmpty() },
     note = note?.trim()?.takeIf { it.isNotEmpty() },
     hasDoc = hasDoc,
+    locale = locale?.trim()?.takeIf { it.isNotEmpty() },
 )

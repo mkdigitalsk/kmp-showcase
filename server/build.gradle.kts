@@ -45,6 +45,7 @@ dependencies {
 
     // Email (lead notifications)
     implementation(libs.angus.mail)
+    implementation(libs.kotlinx.html.jvm)
 
     // Security
     implementation(libs.bcrypt)

@@ -4,6 +4,7 @@ kotlin = "2.3.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.10.0"
+kotlinx-html = "0.11.0"
 ktor = "3.3.3"
 koin = "4.1.1"
 
@@ -63,6 +64,7 @@ robolectric = "4.14.1"
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-html-jvm = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinx-html" }
 
 # CORE - Koin DI
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

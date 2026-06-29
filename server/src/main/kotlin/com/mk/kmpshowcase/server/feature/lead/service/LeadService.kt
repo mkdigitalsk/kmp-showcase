@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("LeadService")
 private val EMAIL_REGEX = Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
-private const val CLIENT_SUBJECT = "We received your request — MK Digital"
 
 internal class LeadService(
     private val repository: LeadRepository,
@@ -23,8 +22,11 @@ internal class LeadService(
         val lead = repository.create(draft)
 
         // Fire-and-forget: the response returns immediately; mail must never block or fail the lead.
-        mailScope.launch { notifyAdmin(lead) }
-        mailScope.launch { confirmToClient(lead) }
+        // Sequential (one launch) keeps the two sends from hitting the Resend rate limit at once.
+        mailScope.launch {
+            notifyAdmin(lead)
+            confirmToClient(lead, draft.locale)
+        }
 
         return lead
     }
@@ -35,9 +37,16 @@ internal class LeadService(
     }
 
     // Reply-To = recipient (admin@) so the client's reply reaches a real mailbox — the from-domain is send-only.
-    private suspend fun confirmToClient(lead: Lead) {
-        runCatching { mailer.send(lead.email, CLIENT_SUBJECT, clientBody(lead), replyTo = recipient) }
-            .onFailure { logger.error("Lead ${lead.id}: client confirmation failed", it) }
+    private suspend fun confirmToClient(lead: Lead, locale: String?) {
+        runCatching {
+            mailer.send(
+                to = lead.email,
+                subject = ClientConfirmationEmail.subject(locale),
+                text = ClientConfirmationEmail.text(lead, locale),
+                html = ClientConfirmationEmail.html(lead, locale),
+                replyTo = recipient,
+            )
+        }.onFailure { logger.error("Lead ${lead.id}: client confirmation failed", it) }
     }
 
     private fun adminBody(lead: Lead) = buildString {
@@ -62,21 +71,5 @@ internal class LeadService(
             appendLine("Note:")
             appendLine(it)
         }
-    }
-
-    private fun clientBody(lead: Lead) = buildString {
-        appendLine("Hi${lead.name?.let { " $it" } ?: ""},")
-        appendLine()
-        appendLine("Thanks for reaching out to MK Digital — we've received your request and will reply shortly.")
-        appendLine()
-        appendLine("What you sent us:")
-        appendLine("  App type: ${lead.appType}")
-        if (lead.platforms.isNotEmpty()) appendLine("  Platforms: ${lead.platforms.joinToString(", ")}")
-        if (lead.features.isNotEmpty()) appendLine("  Features: ${lead.features.joinToString(", ")}")
-        appendLine()
-        appendLine("Want to add anything? Just reply to this email.")
-        appendLine()
-        appendLine("— MK Digital")
-        appendLine("Senior-led software studio")
     }
 }
