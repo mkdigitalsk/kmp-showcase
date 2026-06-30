@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.server.feature.lead.service
 
+import java.time.Year
 import java.util.Locale
 import java.util.ResourceBundle
 import kotlinx.html.FlowContent
@@ -7,14 +8,13 @@ import kotlinx.html.TABLE
 import kotlinx.html.TD
 import kotlinx.html.a
 import kotlinx.html.body
-import kotlinx.html.br
 import kotlinx.html.div
 import kotlinx.html.head
 import kotlinx.html.html
+import kotlinx.html.img
 import kotlinx.html.lang
 import kotlinx.html.meta
 import kotlinx.html.p
-import kotlinx.html.span
 import kotlinx.html.stream.createHTML
 import kotlinx.html.strong
 import kotlinx.html.style
@@ -46,7 +46,10 @@ internal object ClientConfirmationEmail {
             appendLine(s.replyLine)
             appendLine()
             appendLine("$COMPANY · ${s.tagline}")
-            appendLine("mkdigital.sk")
+            appendLine(ADDRESS)
+            appendLine(s.footerReason)
+            appendLine("mkdigital.sk · https://mkdigital.sk/privacy")
+            appendLine("© ${Year.now().value} $COMPANY")
         }
     }
 
@@ -79,7 +82,7 @@ internal object ClientConfirmationEmail {
 
     private fun TD.card(greeting: String, s: Strings, rows: List<Pair<String, String>>) {
         presentationTable(CARD) {
-            tr { td { style = HEADER; span { style = BRAND; +"MK Digital" } } }
+            tr { td { style = HEADER; headerLockup() } }
             tr {
                 td {
                     style = CONTENT
@@ -91,6 +94,12 @@ internal object ClientConfirmationEmail {
             }
             tr { td { style = FOOTER; footer(s) } }
         }
+    }
+
+    // Logo = pre-rendered PNG of the canonical SVG lockup (email clients strip inline SVG), hosted on
+    // the API. Shows on the navy header; alt text covers image-blocking clients.
+    private fun TD.headerLockup() {
+        img(src = LOGO_URL, alt = "MK Digital — Software Studio") { style = LOGO_IMG }
     }
 
     private fun TD.requestBox(s: Strings, rows: List<Pair<String, String>>) {
@@ -116,12 +125,16 @@ internal object ClientConfirmationEmail {
     }
 
     private fun TD.footer(s: Strings) {
+        p { style = FOOTER_COMPANY; +"$COMPANY · ${s.tagline}" }
+        p { style = FOOTER_ADDR; +ADDRESS }
+        p { style = FOOTER_TEXT; +s.footerReason }
         p {
-            style = FOOTER_TEXT
-            +"$COMPANY · ${s.tagline}"
-            br { }
+            style = FOOTER_LINKS
             a(href = "https://mkdigital.sk") { style = LINK; +"mkdigital.sk" }
+            +"  ·  "
+            a(href = "https://mkdigital.sk/privacy") { style = LINK; +s.privacy }
         }
+        p { style = FOOTER_COPY; +"© ${Year.now().value} $COMPANY" }
     }
 
     private fun FlowContent.presentationTable(styleValue: String?, block: TABLE.() -> Unit) {
@@ -155,6 +168,8 @@ internal object ClientConfirmationEmail {
             featuresLabel = bundle.getString("featuresLabel"),
             replyLine = bundle.getString("replyLine"),
             tagline = bundle.getString("tagline"),
+            footerReason = bundle.getString("footerReason"),
+            privacy = bundle.getString("privacy"),
         )
     }
 
@@ -177,6 +192,8 @@ internal object ClientConfirmationEmail {
         val featuresLabel: String,
         val replyLine: String,
         val tagline: String,
+        val footerReason: String,
+        val privacy: String,
     )
 
     // Resolve only the requested locale → base (English); never the JVM default locale.
@@ -190,7 +207,9 @@ internal object ClientConfirmationEmail {
     private const val OUTER = "background:#f4f6f8;padding:24px 12px;"
     private const val CARD = "max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;"
     private const val HEADER = "background:#0E2A47;padding:20px 32px;border-bottom:3px solid #37C2B4;"
-    private const val BRAND = "color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.3px;"
+    // TODO: switch to api.mkdigital.sk once the API custom domain is set up.
+    private const val LOGO_URL = "https://kmp-showcase-production.up.railway.app/assets/mk-digital-logo.png"
+    private const val LOGO_IMG = "display:block;width:240px;max-width:60%;height:auto;border:0;"
     private const val CONTENT = "padding:32px;"
     private const val GREETING = "margin:0 0 18px;font-size:16px;color:#0E2A47;"
     private const val INTRO = "margin:0 0 24px;font-size:15px;line-height:1.6;color:#33414f;"
@@ -200,7 +219,12 @@ internal object ClientConfirmationEmail {
     private const val ROW = "padding:4px 0;font-size:14px;line-height:1.5;color:#33414f;"
     private const val STRONG = "color:#0E2A47;"
     private const val REPLY = "margin:0;font-size:15px;line-height:1.6;color:#33414f;"
-    private const val FOOTER = "padding:20px 32px;border-top:1px solid #eaedf0;"
-    private const val FOOTER_TEXT = "margin:0;font-size:13px;line-height:1.6;color:#5b6470;"
+    private const val FOOTER = "padding:22px 32px;border-top:1px solid #eaedf0;"
+    private const val FOOTER_COMPANY = "margin:0 0 6px;font-size:13px;font-weight:700;color:#0E2A47;"
+    private const val FOOTER_ADDR = "margin:0 0 12px;font-size:12px;line-height:1.6;color:#8a97a3;"
+    private const val FOOTER_TEXT = "margin:0 0 12px;font-size:12px;line-height:1.6;color:#5b6470;"
+    private const val FOOTER_LINKS = "margin:0 0 12px;font-size:13px;color:#5b6470;"
+    private const val FOOTER_COPY = "margin:0;font-size:12px;color:#8a97a3;"
+    private const val ADDRESS = "Medená 15387/2, 974 05 Banská Bystrica, Slovakia · IČO 55 450 229"
     private const val LINK = "color:#0E2A47;text-decoration:underline;"
 }
