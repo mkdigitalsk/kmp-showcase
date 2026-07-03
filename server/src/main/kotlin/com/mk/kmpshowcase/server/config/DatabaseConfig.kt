@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.server.config
 
+import com.mk.kmpshowcase.server.feature.lead.persistence.LeadArtifactsTable
 import com.mk.kmpshowcase.server.feature.lead.persistence.LeadsTable
 import com.mk.kmpshowcase.server.feature.note.persistence.NotesTable
 import com.mk.kmpshowcase.server.feature.user.persistence.UsersTable
@@ -20,7 +21,9 @@ internal object DatabaseConfig {
         val database = Database.connect(hikari(appConfig))
 
         transaction(database) {
-            SchemaUtils.create(UsersTable, NotesTable, LeadsTable)
+            // createMissingTablesAndColumns (not create) so additive migrations — the leads.status
+            // column + the lead_artifacts table — land on an already-populated DB.
+            SchemaUtils.createMissingTablesAndColumns(UsersTable, NotesTable, LeadsTable, LeadArtifactsTable)
             logger.info("Database tables created/verified")
         }
     }

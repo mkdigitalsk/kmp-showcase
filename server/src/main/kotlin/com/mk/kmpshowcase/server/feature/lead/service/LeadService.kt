@@ -17,6 +17,16 @@ internal class LeadService(
 ) {
     suspend fun getAll(): List<Lead> = repository.findAll()
 
+    suspend fun getByEmail(email: String): LeadDetail? {
+        val lead = repository.findByEmail(email) ?: return null
+        return LeadDetail(lead, repository.findArtifacts(email))
+    }
+
+    suspend fun updateStatus(email: String, status: LeadStatus): Lead? = repository.updateStatus(email, status)
+
+    suspend fun saveArtifact(email: String, stage: LeadArtifactStage, content: String) =
+        repository.upsertArtifact(email, stage, content)
+
     suspend fun submit(draft: LeadDraft): Lead {
         require(EMAIL_REGEX.matches(draft.email)) { "A valid email is required" }
         require(draft.appType.isNotBlank()) { "App type is required" }
