@@ -55,6 +55,7 @@ kotlin {
                 optIn("androidx.compose.material3.ExperimentalMaterial3Api")
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlin.uuid.ExperimentalUuidApi")
+                optIn("kotlin.time.ExperimentalTime")
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.cinterop.BetaInteropApi")
                 optIn("kotlin.annotation.AnnotationTarget")
