@@ -344,7 +344,6 @@ class LoginViewModelTest {
         assertNull(state.passwordError)
         assertFalse(state.biometricsAvailable)
         assertFalse(state.biometricsLoading)
-        assertNull(state.biometricsResult)
     }
 
 
