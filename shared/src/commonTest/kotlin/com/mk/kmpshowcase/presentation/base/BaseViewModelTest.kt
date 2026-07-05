@@ -2,6 +2,8 @@ package com.mk.kmpshowcase.presentation.base
 
 import com.mk.kmpshowcase.data.analytics.AnalyticsClient
 import com.mk.kmpshowcase.domain.useCase.analytics.TrackScreenUseCase
+import com.mk.kmpshowcase.fake.NoOpAnalyticsClient
+import com.mk.kmpshowcase.fake.NoOpLogger
 import com.mk.kmpshowcase.util.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,7 +20,6 @@ import kotlin.test.BeforeTest
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class BaseViewModelTest {
 
-    // Eager dispatcher: viewModelScope coroutines run on runTest's scheduler without advanceUntilIdle.
     protected val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
 
     @BeforeTest
@@ -40,17 +41,4 @@ abstract class BaseViewModelTest {
         Dispatchers.resetMain()
         stopKoin()
     }
-}
-
-private object NoOpAnalyticsClient : AnalyticsClient {
-    override fun trackScreen(screenName: String) = Unit
-    override fun recordException(throwable: Throwable) = Unit
-    override fun log(message: String) = Unit
-}
-
-private object NoOpLogger : Logger {
-    override fun e(log: String) = Unit
-    override fun e(e: Throwable) = Unit
-    override fun e(log: String, e: Throwable) = Unit
-    override fun d(log: String) = Unit
 }
