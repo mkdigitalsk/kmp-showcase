@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
 import com.mk.kmpshowcase.LocalSnackbarHostState
-import com.mk.kmpshowcase.domain.model.BiometricResult
 import com.mk.kmpshowcase.presentation.base.CollectNavEvents
 import com.mk.kmpshowcase.presentation.base.NavEvent
 import com.mk.kmpshowcase.presentation.base.NavRouter
@@ -89,8 +88,8 @@ import com.mk.kmpshowcase.shared.generated.resources.platform_apis_share_action
 import com.mk.kmpshowcase.shared.generated.resources.platform_apis_share_title
 import com.mk.kmpshowcase.shared.generated.resources.platform_apis_subtitle
 import com.mk.kmpshowcase.shared.generated.resources.platform_apis_title
-import com.mk.kmpshowcase.util.StringFormatter
 import org.jetbrains.compose.resources.stringResource
+import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("CyclomaticComplexMethod", "CognitiveComplexMethod")
 @Composable
@@ -110,7 +109,7 @@ fun PlatformApisScreen(
     LaunchedEffect(state.copiedToClipboard) {
         if (state.copiedToClipboard) {
             snackbarHostState.showSnackbar(copiedMessage)
-            delay(100)
+            delay(100.milliseconds)
             viewModel.resetCopyState()
         }
     }
@@ -204,13 +203,14 @@ fun PlatformApisScreen(
                 icon = Icons.Outlined.LocationOn,
                 title = stringResource(Res.string.platform_apis_location_title)
             ) {
-                when {
-                    state.locationLoading -> TextBodyMediumNeutral80(loadingText)
-                    state.locationError -> TextBodyMediumNeutral80(errorText)
-                    location != null -> TextBodyMediumNeutral80(
-                        formatLocationText(location.lat, location.lon)
-                    )
+                val locationText = when {
+                    state.locationLoading -> loadingText
+                    state.locationError -> errorText
+                    location != null ->
+                        stringResource(Res.string.platform_apis_location_result, location.latitude, location.longitude)
+                    else -> null
                 }
+                locationText?.let { TextBodyMediumNeutral80(it) }
                 Spacer2()
                 ApiCardButton(
                     text = stringResource(Res.string.platform_apis_location_action),
@@ -226,12 +226,16 @@ fun PlatformApisScreen(
                 icon = Icons.Outlined.MyLocation,
                 title = stringResource(Res.string.platform_apis_location_updates_title)
             ) {
-                when {
-                    state.locationUpdatesError -> TextBodyMediumNeutral80(errorText)
-                    trackedLocation != null -> TextBodyMediumNeutral80(
-                        formatLocationText(trackedLocation.lat, trackedLocation.lon)
+                val trackedText = when {
+                    state.locationUpdatesError -> errorText
+                    trackedLocation != null -> stringResource(
+                        Res.string.platform_apis_location_result,
+                        trackedLocation.latitude,
+                        trackedLocation.longitude
                     )
+                    else -> null
                 }
+                trackedText?.let { TextBodyMediumNeutral80(it) }
                 Spacer2()
                 ApiCardButton(
                     text = stringResource(
@@ -253,25 +257,24 @@ fun PlatformApisScreen(
             val notAvailableText = stringResource(Res.string.platform_apis_biometrics_not_available)
             val activityNotAvailableText = stringResource(Res.string.platform_apis_biometrics_activity_not_available)
             val unknownErrorText = stringResource(Res.string.platform_apis_biometrics_unknown_error)
+            val biometric = state.biometricsResult
             PlatformApiCard(
                 icon = Icons.Outlined.Fingerprint,
                 title = stringResource(Res.string.platform_apis_biometrics_title)
             ) {
-                when {
-                    !state.biometricsAvailable -> TextBodyMediumNeutral80(notAvailableText)
-                    state.biometricsLoading -> TextBodyMediumNeutral80("...")
-                    state.biometricsResult is BiometricResult.Success -> TextBodyMediumNeutral80(successText)
-                    state.biometricsResult is BiometricResult.SystemError -> {
-                        val errorMsg = (state.biometricsResult as BiometricResult.SystemError)
-                            .message.ifEmpty { unknownErrorText }
-                        TextBodyMediumNeutral80("$failedText: $errorMsg")
+                val biometricText = when {
+                    !state.biometricsAvailable -> notAvailableText
+                    state.biometricsLoading -> "..."
+                    biometric != null -> when (biometric.status) {
+                        BiometricUiStatus.SUCCESS -> successText
+                        BiometricUiStatus.FAILED -> "$failedText: ${biometric.errorDetail ?: unknownErrorText}"
+                        BiometricUiStatus.CANCELLED -> cancelledText
+                        BiometricUiStatus.NOT_AVAILABLE -> notAvailableText
+                        BiometricUiStatus.ACTIVITY_NOT_AVAILABLE -> activityNotAvailableText
                     }
-
-                    state.biometricsResult is BiometricResult.Cancelled -> TextBodyMediumNeutral80(cancelledText)
-                    state.biometricsResult is BiometricResult.NotAvailable -> TextBodyMediumNeutral80(notAvailableText)
-                    state.biometricsResult is BiometricResult.ActivityNotAvailable ->
-                        TextBodyMediumNeutral80(activityNotAvailableText)
+                    else -> null
                 }
+                biometricText?.let { TextBodyMediumNeutral80(it) }
                 Spacer2()
                 ApiCardButton(
                     text = stringResource(Res.string.platform_apis_biometrics_action),
@@ -358,17 +361,6 @@ private fun PlatformApisNavEvents(
             is PlatformApisNavEvent.CopyToClipboard -> router.copyToClipboard(event.text)
         }
     }
-}
-
-private const val COORDINATE_DECIMAL_PLACES = 6
-
-@Composable
-private fun formatLocationText(lat: Double, lon: Double): String {
-    return stringResource(
-        Res.string.platform_apis_location_result,
-        StringFormatter.formatDouble(lat, COORDINATE_DECIMAL_PLACES),
-        StringFormatter.formatDouble(lon, COORDINATE_DECIMAL_PLACES)
-    )
 }
 
 private enum class PendingLocationAction { NONE, GET_LOCATION, START_UPDATES }

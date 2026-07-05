@@ -1,8 +1,7 @@
 package com.mk.kmpshowcase.presentation.screen.platformapis
 
+import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.Job
-import com.mk.kmpshowcase.domain.model.BiometricResult
-import com.mk.kmpshowcase.domain.model.Location
 import com.mk.kmpshowcase.domain.useCase.base.invoke
 import com.mk.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometricUseCase
 import com.mk.kmpshowcase.domain.useCase.biometric.IsBiometricEnabledUseCase
@@ -87,7 +86,7 @@ class PlatformApisViewModel(
             action = { getLastKnownLocationUseCase() },
             onLoading = { newState { it.copy(locationLoading = true, locationError = false) } },
             onSuccess = { location ->
-                newState { it.copy(location = location, locationLoading = false) }
+                newState { it.copy(location = location.toUiModel(), locationLoading = false) }
             },
             onError = {
                 newState { it.copy(locationLoading = false, locationError = true) }
@@ -111,7 +110,7 @@ class PlatformApisViewModel(
         newState { it.copy(isTrackingLocation = true, locationUpdatesError = false) }
         locationUpdatesJob = observe(
             flow = observeLocationUpdatesUseCase(ObserveLocationUpdatesUseCase.Params(highAccuracy = true)),
-            onEach = { location -> newState { it.copy(trackedLocation = location) } },
+            onEach = { location -> newState { it.copy(trackedLocation = location.toUiModel()) } },
             onError = { newState { it.copy(isTrackingLocation = false, locationUpdatesError = true) } }
         )
     }
@@ -126,9 +125,11 @@ class PlatformApisViewModel(
         execute(
             action = { authenticateWithBiometricUseCase() },
             onLoading = { newState { it.copy(biometricsLoading = true, biometricsResult = null) } },
-            onSuccess = { result -> newState { it.copy(biometricsLoading = false, biometricsResult = result) } },
+            onSuccess = { result ->
+                newState { it.copy(biometricsLoading = false, biometricsResult = result.toUiModel()) }
+            },
             onError = { error ->
-                val result = BiometricResult.SystemError(error.message.orEmpty())
+                val result = BiometricUiModel(BiometricUiStatus.FAILED, error.message?.takeIf { it.isNotBlank() })
                 newState { it.copy(biometricsLoading = false, biometricsResult = result) }
             }
         )
@@ -149,18 +150,19 @@ class PlatformApisViewModel(
     }
 }
 
+@Immutable
 data class PlatformApisUiState(
     val copiedToClipboard: Boolean = false,
-    val location: Location? = null,
+    val location: LocationUiModel? = null,
     val locationLoading: Boolean = false,
     val locationError: Boolean = false,
     val isTrackingLocation: Boolean = false,
     val shouldTrackLocation: Boolean = false,
-    val trackedLocation: Location? = null,
+    val trackedLocation: LocationUiModel? = null,
     val locationUpdatesError: Boolean = false,
     val biometricsAvailable: Boolean = false,
     val biometricsLoading: Boolean = false,
-    val biometricsResult: BiometricResult? = null,
+    val biometricsResult: BiometricUiModel? = null,
     val flashlightAvailable: Boolean = false,
     val flashlightOn: Boolean = false,
 )
