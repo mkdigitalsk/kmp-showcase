@@ -21,7 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mk.kmpshowcase.domain.model.User
 import com.mk.kmpshowcase.presentation.base.lifecycleAwareViewModel
 import com.mk.kmpshowcase.presentation.component.CircularProgress
 import com.mk.kmpshowcase.presentation.component.ErrorView
@@ -82,7 +81,7 @@ private fun EmptyContent() {
 
 @Composable
 private fun UserListContent(
-    users: List<User>,
+    users: List<UserUiModel>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit
 ) {
@@ -127,7 +126,7 @@ private fun UserListContent(
 }
 
 @Composable
-private fun UserCard(user: User) {
+private fun UserCard(user: UserUiModel) {
     AppElevatedCard(
         modifier = Modifier
             .fillMaxWidth()

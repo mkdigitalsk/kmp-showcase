@@ -34,7 +34,7 @@ class NetworkingViewModelTest {
         return NetworkingViewModel(GetUsersUseCase(repository))
     }
 
-    private fun createTestUser(id: Long = 1, name: String = "John Doe") = User(
+    private fun createTestUserUiModel(id: Long = 1, name: String = "John Doe") = UserUiModel(
         id = id,
         name = name,
         email = "john@example.com",
@@ -70,7 +70,7 @@ class NetworkingViewModelTest {
 
     @Test
     fun `NetworkingUiState can hold users`() {
-        val users = listOf(createTestUser(1), createTestUser(2))
+        val users = listOf(createTestUserUiModel(1), createTestUserUiModel(2))
         val state = NetworkingUiState(users = users)
         assertEquals(2, state.users.size)
     }

@@ -29,7 +29,7 @@ internal class NetworkingScreenPreviewParams : PreviewParameterProvider<Networki
                     email = "mir.kusnir@gmail.com",
                     id = 1L,
                     name = "Miroslav Coder"
-                )
+                ).toUiModel()
             )
         )
     )
