@@ -23,9 +23,8 @@ expect class HttpClientProvider() {
 fun HttpClientConfig<*>.applyCommonConfig() {
     defaultRequest {
         url {
-            protocol = URLProtocol.HTTP
+            protocol = URLProtocol.HTTPS
             host = BASE_URL
-            port = BASE_PORT
             path("api/${ApiVersion.CURRENT}/")
         }
         contentType(ContentType.Application.Json)
@@ -53,7 +52,6 @@ fun HttpClientConfig<*>.applyCommonConfig() {
 }
 
 internal expect val BASE_URL: String
-internal const val BASE_PORT = 8080
 private const val REQUEST_TIME_OUT_MILLIS: Long = 30_000
 private const val CONNECT_TIME_OUT_MILLIS: Long = 30_000
 
