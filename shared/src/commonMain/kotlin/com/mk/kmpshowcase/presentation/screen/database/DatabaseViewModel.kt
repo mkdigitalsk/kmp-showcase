@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import com.mk.kmpshowcase.domain.model.Note
 import com.mk.kmpshowcase.domain.model.NoteSortOption
 import com.mk.kmpshowcase.domain.useCase.base.invoke
@@ -20,7 +18,6 @@ import com.mk.kmpshowcase.domain.useCase.notes.SearchNotesUseCase
 import com.mk.kmpshowcase.presentation.base.BaseViewModel
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Instant
 
 private val SEARCH_DEBOUNCE = 300.milliseconds
 
@@ -137,26 +134,3 @@ data class DatabaseUiState(
     val sortOption: NoteSortOption = NoteSortOption.DATE_DESC,
     val showFilterMenu: Boolean = false,
 )
-
-@Immutable
-data class NoteUiModel(
-    val id: Long,
-    val title: String,
-    val content: String,
-    val createdAt: String,
-)
-
-fun Note.toUiModel() = NoteUiModel(
-    id = id,
-    title = title,
-    content = content,
-    createdAt = formatTimestamp(createdAt),
-)
-
-private fun formatTimestamp(timestamp: Long): String {
-    val instant = Instant.fromEpochMilliseconds(timestamp)
-    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-    return "${localDateTime.date} ${localDateTime.hour.toString().padStart(2, '0')}:${
-        localDateTime.minute.toString().padStart(2, '0')
-    }"
-}
