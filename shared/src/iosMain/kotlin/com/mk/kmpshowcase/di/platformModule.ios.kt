@@ -2,6 +2,8 @@ package com.mk.kmpshowcase.di
 
 import com.mk.kmpshowcase.data.analytics.AnalyticsClient
 import com.mk.kmpshowcase.data.analytics.IOSAnalyticsClient
+import com.mk.kmpshowcase.util.IosLogger
+import com.mk.kmpshowcase.util.Logger
 import com.mk.kmpshowcase.data.client.BiometricClient
 import com.mk.kmpshowcase.data.client.BiometricClientImpl
 import com.mk.kmpshowcase.data.client.FlashlightClient
@@ -36,6 +38,7 @@ actual val platformModule: Module = module {
     singleOf(::BiometricClientImpl) { bind<BiometricClient>() }
     singleOf(::FlashlightClientImpl) { bind<FlashlightClient>() }
     singleOf(::IOSAnalyticsClient) { bind<AnalyticsClient>() }
+    singleOf(::IosLogger) { bind<Logger>() }
 
     singleOf(::LocalNotificationServiceImpl) { bind<LocalNotificationService>() }
     single<PushNotificationService> {

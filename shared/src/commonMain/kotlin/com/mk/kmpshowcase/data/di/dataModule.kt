@@ -40,13 +40,14 @@ import com.mk.kmpshowcase.domain.repository.NotificationRepository
 import com.mk.kmpshowcase.domain.repository.SettingsRepository
 import com.mk.kmpshowcase.domain.repository.StorageRepository
 import com.mk.kmpshowcase.domain.repository.UserRepository
-import com.mk.kmpshowcase.util.Logger
+import com.mk.kmpshowcase.util.DefaultDispatcherProvider
+import com.mk.kmpshowcase.util.DispatcherProvider
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val dataModule = module {
-    singleOf(::Logger)
+    singleOf(::DefaultDispatcherProvider) { bind<DispatcherProvider>() }
     single { provideHttpClient(get()) }
     singleOf(::AuthClientImpl) { bind<AuthClient>() }
     singleOf(::UserClientImpl) { bind<UserClient>() }

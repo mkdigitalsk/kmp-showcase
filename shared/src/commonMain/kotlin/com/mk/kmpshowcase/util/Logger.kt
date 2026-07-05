@@ -1,8 +1,6 @@
 package com.mk.kmpshowcase.util
 
-import com.mk.kmpshowcase.data.analytics.AnalyticsClient
-
-expect class Logger(analyticsClient: AnalyticsClient) {
+interface Logger {
 
     fun e(log: String)
 
