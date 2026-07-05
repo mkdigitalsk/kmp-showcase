@@ -7,6 +7,7 @@ import com.mk.kmpshowcase.data.database.AppDatabase
 import com.mk.kmpshowcase.data.repository.NoteRepositoryImpl
 import com.mk.kmpshowcase.domain.model.Note
 import com.mk.kmpshowcase.domain.model.NoteSortOption
+import com.mk.kmpshowcase.util.TestDispatcherProvider
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -25,7 +26,7 @@ class NoteRepositoryImplTest {
         val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
         AppDatabase.Schema.create(driver)
         database = AppDatabase(driver)
-        repository = NoteRepositoryImpl(database)
+        repository = NoteRepositoryImpl(database, TestDispatcherProvider())
     }
 
     @AfterTest

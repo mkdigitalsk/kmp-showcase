@@ -2,6 +2,7 @@
 # CORE - Shared across all modules
 kotlin = "2.3.0"
 kotlinx-coroutines = "1.10.2"
+turbine = "1.2.1"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.10.0"
 kotlinx-html = "0.11.0"
@@ -178,6 +179,7 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 # TESTING
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }

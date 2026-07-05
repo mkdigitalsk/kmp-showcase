@@ -146,6 +146,7 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.coroutines.test)
+            implementation(libs.turbine)
         }
 
         // androidHostTest inherits from commonTest, runs on JVM without device
