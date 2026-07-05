@@ -8,31 +8,14 @@ import com.mk.kmpshowcase.domain.useCase.auth.LoginUseCase
 import com.mk.kmpshowcase.domain.useCase.auth.LoginWithTokenUseCase
 import com.mk.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometricUseCase
 import com.mk.kmpshowcase.domain.useCase.biometric.IsBiometricEnabledUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
+import com.mk.kmpshowcase.presentation.base.BaseViewModelTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
-class LoginViewModelTest {
-
-    @BeforeTest
-    fun setup() {
-        Dispatchers.setMain(StandardTestDispatcher())
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+class LoginViewModelTest : BaseViewModelTest() {
 
     private class FakeBiometricRepository(
         private val enabled: Boolean = false,

@@ -10,12 +10,13 @@ import com.mk.kmpshowcase.domain.useCase.notes.DeleteAllNotesUseCase
 import com.mk.kmpshowcase.domain.useCase.notes.DeleteNoteUseCase
 import com.mk.kmpshowcase.domain.useCase.notes.InsertNoteUseCase
 import com.mk.kmpshowcase.domain.useCase.notes.SearchNotesUseCase
+import com.mk.kmpshowcase.presentation.base.BaseViewModelTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class DatabaseViewModelTest {
+class DatabaseViewModelTest : BaseViewModelTest() {
 
     private class FakeNoteRepository(
         initialNotes: List<Note> = emptyList()
