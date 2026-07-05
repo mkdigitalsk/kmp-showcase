@@ -9,8 +9,14 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.maven.publish)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.mokkery)
     alias(libs.plugins.sqldelight)
+}
+
+// Opens @Mockable-annotated classes (e.g. the UseCase base) so Mokkery can mock them.
+allOpen {
+    annotation("com.mk.kmpshowcase.util.Mockable")
 }
 
 kotlin {

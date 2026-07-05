@@ -215,6 +215,7 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 
 # TESTING
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 

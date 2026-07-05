@@ -1,14 +1,15 @@
 package com.mk.kmpshowcase.presentation.screen.login
 
 import com.mk.kmpshowcase.domain.model.AuthSession
-import com.mk.kmpshowcase.domain.model.BiometricResult
-import com.mk.kmpshowcase.domain.repository.AuthRepository
-import com.mk.kmpshowcase.domain.repository.BiometricRepository
 import com.mk.kmpshowcase.domain.useCase.auth.LoginUseCase
 import com.mk.kmpshowcase.domain.useCase.auth.LoginWithTokenUseCase
 import com.mk.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometricUseCase
 import com.mk.kmpshowcase.domain.useCase.biometric.IsBiometricEnabledUseCase
 import com.mk.kmpshowcase.presentation.base.BaseViewModelTest
+import dev.mokkery.answering.returns
+import dev.mokkery.everySuspend
+import dev.mokkery.matcher.any
+import dev.mokkery.mock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -17,34 +18,19 @@ import kotlin.test.assertTrue
 
 class LoginViewModelTest : BaseViewModelTest() {
 
-    private class FakeBiometricRepository(
-        private val enabled: Boolean = false,
-        private val authResult: BiometricResult = BiometricResult.Success
-    ) : BiometricRepository {
-        override fun enabled(): Boolean = enabled
-        override suspend fun authenticate(): BiometricResult = authResult
-    }
+    private val loginUseCase = mock<LoginUseCase>()
+    private val loginWithTokenUseCase = mock<LoginWithTokenUseCase>()
+    private val isBiometricEnabledUseCase = mock<IsBiometricEnabledUseCase>()
+    private val authenticateWithBiometricUseCase = mock<AuthenticateWithBiometricUseCase>()
 
-    private class FakeAuthRepository : AuthRepository {
-        private val session = AuthSession(token = "token", userId = 1L, email = "test@example.com", name = "Test")
-        override suspend fun login(email: String, password: String): AuthSession = session
-        override suspend fun register(name: String, email: String, password: String): AuthSession = session
-        override suspend fun loginWithToken(): AuthSession? = null
-        override suspend fun logout() = Unit
-        override suspend fun getToken(): String? = null
-    }
-
-    private fun createViewModel(
-        biometricEnabled: Boolean = false,
-        biometricResult: BiometricResult = BiometricResult.Success
-    ): LoginViewModel {
-        val repository = FakeBiometricRepository(biometricEnabled, biometricResult)
-        val authRepository = FakeAuthRepository()
+    private fun createViewModel(): LoginViewModel {
+        everySuspend { loginUseCase(any()) } returns
+            AuthSession(token = "token", userId = 1L, email = "test@example.com", name = "Test")
         return LoginViewModel(
-            loginUseCase = LoginUseCase(authRepository),
-            loginWithTokenUseCase = LoginWithTokenUseCase(authRepository),
-            isBiometricEnabledUseCase = IsBiometricEnabledUseCase(repository),
-            authenticateWithBiometricUseCase = AuthenticateWithBiometricUseCase(repository)
+            loginUseCase = loginUseCase,
+            loginWithTokenUseCase = loginWithTokenUseCase,
+            isBiometricEnabledUseCase = isBiometricEnabledUseCase,
+            authenticateWithBiometricUseCase = authenticateWithBiometricUseCase,
         )
     }
 

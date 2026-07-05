@@ -1,7 +1,9 @@
 package com.mk.kmpshowcase.domain.useCase.base
 
+import com.mk.kmpshowcase.util.Mockable
 import kotlinx.coroutines.flow.Flow
 
+@Mockable
 abstract class FlowUseCase<in Params, out Result> {
 
     protected abstract fun run(params: Params): Flow<Result>

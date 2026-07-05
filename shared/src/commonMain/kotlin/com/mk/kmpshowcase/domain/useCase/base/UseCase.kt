@@ -1,5 +1,8 @@
 package com.mk.kmpshowcase.domain.useCase.base
 
+import com.mk.kmpshowcase.util.Mockable
+
+@Mockable
 abstract class UseCase<in Params, out Result> {
 
     protected abstract suspend fun run(params: Params): Result
