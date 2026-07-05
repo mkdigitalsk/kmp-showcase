@@ -1,6 +1,5 @@
 package com.mk.kmpshowcase.presentation.screen.networking
 
-import com.mk.kmpshowcase.domain.model.Address
 import com.mk.kmpshowcase.domain.model.User
 import com.mk.kmpshowcase.domain.repository.UserRepository
 import com.mk.kmpshowcase.domain.useCase.GetUsersUseCase
@@ -16,7 +15,7 @@ class NetworkingViewModelTest {
         private val users: List<User> = emptyList(),
         private val shouldThrow: Boolean = false
     ) : UserRepository {
-        override suspend fun getUser(id: Int): User {
+        override suspend fun getUser(id: Long): User {
             if (shouldThrow) throw RuntimeException("Network error")
             return users.first { it.id == id }
         }
@@ -35,16 +34,10 @@ class NetworkingViewModelTest {
         return NetworkingViewModel(GetUsersUseCase(repository))
     }
 
-    private fun createTestUser(id: Int = 1, name: String = "John Doe") = User(
+    private fun createTestUser(id: Long = 1, name: String = "John Doe") = User(
         id = id,
         name = name,
         email = "john@example.com",
-        address = Address(
-            city = "New York",
-            street = "Main St",
-            suite = "Apt 1",
-            zipcode = "10001"
-        )
     )
 
 

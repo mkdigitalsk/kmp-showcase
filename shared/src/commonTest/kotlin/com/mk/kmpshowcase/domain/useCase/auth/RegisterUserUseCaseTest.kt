@@ -7,7 +7,7 @@ import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import kotlinx.coroutines.test.runTest
 import com.mk.kmpshowcase.domain.BaseTest
-import com.mk.kmpshowcase.domain.model.RegisteredUser
+import com.mk.kmpshowcase.domain.model.AuthSession
 import com.mk.kmpshowcase.domain.repository.AuthRepository
 import com.mk.kmpshowcase.domain.test
 import kotlin.test.Test
@@ -24,27 +24,26 @@ class RegisterUserUseCaseTest : BaseTest<RegisterUserUseCase>() {
     }
 
     @Test
-    fun `invoke registers user and returns registered user`() = runTest {
+    fun `invoke registers user and returns auth session`() = runTest {
         val name = "John Doe"
         val email = "john@example.com"
         val password = "Test123!"
-        val expectedUser = RegisteredUser(
-            id = 1,
-            name = name,
+        val expectedSession = AuthSession(
+            token = "jwt-token",
+            userId = 1L,
             email = email,
-            password = password,
-            createdAt = 1234567890L
+            name = name
         )
 
         test(
             given = {
-                everySuspend { authRepository.register(name, email, password) } returns expectedUser
+                everySuspend { authRepository.register(name, email, password) } returns expectedSession
             },
             whenAction = {
                 classUnderTest(RegisterUserUseCase.Params(name, email, password))
             },
             then = { result ->
-                assertEquals(expectedUser, result)
+                assertEquals(expectedSession, result)
                 verifySuspend { authRepository.register(name, email, password) }
             }
         )

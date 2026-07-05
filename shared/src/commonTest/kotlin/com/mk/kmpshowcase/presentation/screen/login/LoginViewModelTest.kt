@@ -1,16 +1,38 @@
 package com.mk.kmpshowcase.presentation.screen.login
 
+import com.mk.kmpshowcase.domain.model.AuthSession
 import com.mk.kmpshowcase.domain.model.BiometricResult
+import com.mk.kmpshowcase.domain.repository.AuthRepository
 import com.mk.kmpshowcase.domain.repository.BiometricRepository
+import com.mk.kmpshowcase.domain.useCase.auth.LoginUseCase
+import com.mk.kmpshowcase.domain.useCase.auth.LoginWithTokenUseCase
 import com.mk.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometricUseCase
 import com.mk.kmpshowcase.domain.useCase.biometric.IsBiometricEnabledUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
+
+    @BeforeTest
+    fun setup() {
+        Dispatchers.setMain(StandardTestDispatcher())
+    }
+
+    @AfterTest
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     private class FakeBiometricRepository(
         private val enabled: Boolean = false,
@@ -20,12 +42,24 @@ class LoginViewModelTest {
         override suspend fun authenticate(): BiometricResult = authResult
     }
 
+    private class FakeAuthRepository : AuthRepository {
+        private val session = AuthSession(token = "token", userId = 1L, email = "test@example.com", name = "Test")
+        override suspend fun login(email: String, password: String): AuthSession = session
+        override suspend fun register(name: String, email: String, password: String): AuthSession = session
+        override suspend fun loginWithToken(): AuthSession? = null
+        override suspend fun logout() = Unit
+        override suspend fun getToken(): String? = null
+    }
+
     private fun createViewModel(
         biometricEnabled: Boolean = false,
         biometricResult: BiometricResult = BiometricResult.Success
     ): LoginViewModel {
         val repository = FakeBiometricRepository(biometricEnabled, biometricResult)
+        val authRepository = FakeAuthRepository()
         return LoginViewModel(
+            loginUseCase = LoginUseCase(authRepository),
+            loginWithTokenUseCase = LoginWithTokenUseCase(authRepository),
             isBiometricEnabledUseCase = IsBiometricEnabledUseCase(repository),
             authenticateWithBiometricUseCase = AuthenticateWithBiometricUseCase(repository)
         )

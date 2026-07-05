@@ -6,7 +6,6 @@ import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import kotlinx.coroutines.test.runTest
 import com.mk.kmpshowcase.domain.BaseTest
-import com.mk.kmpshowcase.domain.model.Address
 import com.mk.kmpshowcase.domain.model.User
 import com.mk.kmpshowcase.domain.repository.UserRepository
 import com.mk.kmpshowcase.domain.test
@@ -29,15 +28,13 @@ class GetUsersUseCaseTest : BaseTest<GetUsersUseCase>() {
     fun `invoke returns list of users from repository`() = runTest {
         val users = listOf(
             User(
-                address = Address(city = "New York", street = "5th Avenue", suite = "Apt 1", zipcode = "10001"),
                 email = "john@example.com",
-                id = 1,
+                id = 1L,
                 name = "John Doe"
             ),
             User(
-                address = Address(city = "Los Angeles", street = "Sunset Blvd", suite = "Suite 200", zipcode = "90001"),
                 email = "jane@example.com",
-                id = 2,
+                id = 2L,
                 name = "Jane Smith"
             )
         )

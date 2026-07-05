@@ -4,7 +4,7 @@ import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.mock
 import dev.mokkery.verify
-import com.mk.kmpshowcase.data.flashlight.FlashlightClient
+import com.mk.kmpshowcase.data.client.FlashlightClient
 import com.mk.kmpshowcase.domain.BaseTest
 import com.mk.kmpshowcase.domain.repository.FlashlightRepository
 import kotlin.test.Test

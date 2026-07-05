@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.data.repository.user
 
+import com.mk.kmpshowcase.contracts.user.ThemeModeDTO
 import com.mk.kmpshowcase.contracts.user.UserResponseDTO
 import com.mk.kmpshowcase.data.client.UserClient
 import com.mk.kmpshowcase.data.repository.UserRepositoryImpl
@@ -52,4 +53,13 @@ private fun testUserResponseDTO(
     name: String = "Test User",
     email: String = "test@example.com",
     createdAt: Long = 0L,
-) = UserResponseDTO(id = id, email = email, name = name, createdAt = createdAt)
+    themeMode: ThemeModeDTO = ThemeModeDTO.SYSTEM,
+    locale: String = "en-GB",
+) = UserResponseDTO(
+    id = id,
+    email = email,
+    name = name,
+    createdAt = createdAt,
+    themeMode = themeMode,
+    locale = locale,
+)
