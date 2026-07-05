@@ -21,9 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import com.mk.kmpshowcase.domain.model.Note
 import com.mk.kmpshowcase.domain.model.NoteSortOption
 import com.mk.kmpshowcase.presentation.base.lifecycleAwareViewModel
 import com.mk.kmpshowcase.presentation.component.AppSearchField
@@ -59,7 +56,6 @@ import com.mk.kmpshowcase.shared.generated.resources.database_sort_title_desc
 import com.mk.kmpshowcase.shared.generated.resources.database_title_hint
 import com.mk.kmpshowcase.shared.generated.resources.database_title_label
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Instant
 
 @Composable
 fun DatabaseScreen(viewModel: DatabaseViewModel = lifecycleAwareViewModel()) {
@@ -261,7 +257,7 @@ private fun AddNoteCard(
 
 @Composable
 private fun NoteCard(
-    note: Note,
+    note: NoteUiModel,
     onDeleteClick: () -> Unit,
 ) {
     AppElevatedCard(modifier = Modifier.fillMaxWidth().padding(space4)) {
@@ -277,7 +273,7 @@ private fun NoteCard(
                     TextBodyMediumNeutral80(note.content)
                 }
                 Spacer2()
-                TextBodySmallNeutral80(formatTimestamp(note.createdAt))
+                TextBodySmallNeutral80(note.createdAt)
             }
             IconButton(onClick = onDeleteClick) {
                 AppIconNeutral80(
@@ -287,12 +283,4 @@ private fun NoteCard(
             }
         }
     }
-}
-
-private fun formatTimestamp(timestamp: Long): String {
-    val instant = Instant.fromEpochMilliseconds(timestamp)
-    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-    return "${localDateTime.date} ${localDateTime.hour.toString().padStart(2, '0')}:${
-        localDateTime.minute.toString().padStart(2, '0')
-    }"
 }

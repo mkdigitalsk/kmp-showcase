@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.presentation.screen.database
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -7,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import com.mk.kmpshowcase.domain.model.Note
 import com.mk.kmpshowcase.domain.model.NoteSortOption
 import com.mk.kmpshowcase.domain.useCase.base.invoke
@@ -16,8 +19,10 @@ import com.mk.kmpshowcase.domain.useCase.notes.InsertNoteUseCase
 import com.mk.kmpshowcase.domain.useCase.notes.SearchNotesUseCase
 import com.mk.kmpshowcase.presentation.base.BaseViewModel
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Instant
 
-private const val SEARCH_DEBOUNCE_MS = 300L
+private val SEARCH_DEBOUNCE = 300.milliseconds
 
 class DatabaseViewModel(
     private val searchNotesUseCase: SearchNotesUseCase,
@@ -34,7 +39,7 @@ class DatabaseViewModel(
     override fun onResumed() {
         super.onResumed()
         debounceJob = searchTrigger
-            .debounce(SEARCH_DEBOUNCE_MS)
+            .debounce(SEARCH_DEBOUNCE)
             .onEach { trigger -> executeSearch(trigger.query, trigger.sortOption) }
             .launchIn(viewModelScope)
 
@@ -53,7 +58,9 @@ class DatabaseViewModel(
         searchJob?.cancel()
         searchJob = observe(
             flow = searchNotesUseCase(SearchNotesUseCase.Params(query, sortOption)),
-            onEach = { notes -> newState { it.copy(notes = notes, isLoading = false) } },
+            onEach = { notes ->
+                newState { it.copy(notes = notes.map { note -> note.toUiModel() }, isLoading = false) }
+            },
             onError = { newState { it.copy(isLoading = false, error = true) } }
         )
     }
@@ -119,8 +126,9 @@ class DatabaseViewModel(
     )
 }
 
+@Immutable
 data class DatabaseUiState(
-    val notes: List<Note> = emptyList(),
+    val notes: List<NoteUiModel> = emptyList(),
     val isLoading: Boolean = true,
     val error: Boolean = false,
     val newNoteTitle: String = "",
@@ -129,3 +137,26 @@ data class DatabaseUiState(
     val sortOption: NoteSortOption = NoteSortOption.DATE_DESC,
     val showFilterMenu: Boolean = false,
 )
+
+@Immutable
+data class NoteUiModel(
+    val id: Long,
+    val title: String,
+    val content: String,
+    val createdAt: String,
+)
+
+fun Note.toUiModel() = NoteUiModel(
+    id = id,
+    title = title,
+    content = content,
+    createdAt = formatTimestamp(createdAt),
+)
+
+private fun formatTimestamp(timestamp: Long): String {
+    val instant = Instant.fromEpochMilliseconds(timestamp)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return "${localDateTime.date} ${localDateTime.hour.toString().padStart(2, '0')}:${
+        localDateTime.minute.toString().padStart(2, '0')
+    }"
+}

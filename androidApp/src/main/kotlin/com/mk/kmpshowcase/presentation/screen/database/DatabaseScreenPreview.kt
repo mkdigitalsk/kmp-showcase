@@ -26,10 +26,8 @@ internal class DatabaseScreenPreviewParams : PreviewParameterProvider<DatabaseUi
         DatabaseUiState(error = true),
         DatabaseUiState(
             notes = listOf(
-                Note(id = 1, title = "title", content = "content", createdAt = 0),
-                Note(
-                    id = 2, title = "title2", content = "content2", createdAt = 1769344378
-                ),
+                Note(id = 1, title = "title", content = "content", createdAt = 0).toUiModel(),
+                Note(id = 2, title = "title2", content = "content2", createdAt = 1769344378).toUiModel(),
             ),
             newNoteTitle = "New Note",
             newNoteContent = "Content",

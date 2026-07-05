@@ -75,18 +75,6 @@ class DatabaseViewModelTest {
         return viewModel to repository
     }
 
-    private fun createTestNote(
-        id: Long = 1,
-        title: String = "Test Note",
-        content: String = "Test Content"
-    ) = Note(
-        id = id,
-        title = title,
-        content = content,
-        createdAt = 1234567890L
-    )
-
-
     @Test
     fun `default state has empty notes list`() {
         val (viewModel, _) = createViewModel()
@@ -247,7 +235,10 @@ class DatabaseViewModelTest {
 
     @Test
     fun `DatabaseUiState can hold notes`() {
-        val notes = listOf(createTestNote(1), createTestNote(2))
+        val notes = listOf(
+            NoteUiModel(id = 1, title = "Test Note", content = "Test Content", createdAt = "2009-02-13 23:31"),
+            NoteUiModel(id = 2, title = "Test Note", content = "Test Content", createdAt = "2009-02-13 23:31"),
+        )
         val state = DatabaseUiState(notes = notes)
         assertEquals(2, state.notes.size)
     }
