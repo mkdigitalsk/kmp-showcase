@@ -2,7 +2,7 @@ package com.mk.kmpshowcase.server.feature.lead.persistence
 
 import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
 import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 
 internal object LeadsTable : LongIdTable("leads") {
     val email = varchar("email", EMAIL_LENGTH)

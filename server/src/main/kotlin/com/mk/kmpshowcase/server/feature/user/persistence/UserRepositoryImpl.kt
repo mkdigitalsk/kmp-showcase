@@ -5,32 +5,33 @@ import com.mk.kmpshowcase.server.core.persistence.mapToSingleOrNull
 import com.mk.kmpshowcase.server.feature.user.service.Role
 import com.mk.kmpshowcase.server.feature.user.service.ThemeMode
 import com.mk.kmpshowcase.server.feature.user.service.User
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.jdbc.update
 
 internal class UserRepositoryImpl : UserRepository {
 
-    override suspend fun findAll(): List<User> = newSuspendedTransaction {
+    override suspend fun findAll(): List<User> = suspendTransaction {
         UsersTable.selectAll().map { it.toUser() }
     }
 
-    override suspend fun findByEmail(email: String): User? = newSuspendedTransaction {
+    override suspend fun findByEmail(email: String): User? = suspendTransaction {
         UsersTable.selectAll()
             .where { UsersTable.email eq email }
             .mapToSingleOrNull { it.toUser() }
     }
 
-    override suspend fun findById(id: Long): User? = newSuspendedTransaction {
+    override suspend fun findById(id: Long): User? = suspendTransaction {
         UsersTable.selectAll()
             .where { UsersTable.id eq id }
             .mapToSingleOrNull { it.toUser() }
     }
 
     override suspend fun create(email: String, password: String, name: String, role: Role): User =
-        newSuspendedTransaction {
+        suspendTransaction {
             val now = System.currentTimeMillis()
             val passwordHash = BCrypt.withDefaults().hashToString(BCRYPT_COST, password.toCharArray())
 
@@ -54,7 +55,7 @@ internal class UserRepositoryImpl : UserRepository {
             )
         }
 
-    override suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = newSuspendedTransaction {
+    override suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = suspendTransaction {
         val updated = UsersTable.update({ UsersTable.id eq id }) {
             it[UsersTable.themeMode] = themeMode
         }
@@ -67,7 +68,7 @@ internal class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun updateLocale(id: Long, locale: String): User? = newSuspendedTransaction {
+    override suspend fun updateLocale(id: Long, locale: String): User? = suspendTransaction {
         val updated = UsersTable.update({ UsersTable.id eq id }) {
             it[UsersTable.locale] = locale
         }
@@ -80,11 +81,11 @@ internal class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun authenticate(email: String, password: String): User? = newSuspendedTransaction {
+    override suspend fun authenticate(email: String, password: String): User? = suspendTransaction {
         val row = UsersTable.selectAll()
             .where { UsersTable.email eq email }
             .singleOrNull()
-            ?: return@newSuspendedTransaction null
+            ?: return@suspendTransaction null
 
         val matches = BCrypt.verifyer()
             .verify(password.toCharArray(), row[UsersTable.passwordHash])

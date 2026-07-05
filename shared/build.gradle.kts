@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import kotlin.time.ExperimentalTime
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -20,7 +19,7 @@ allOpen {
 }
 
 kotlin {
-    androidLibrary {
+    android {
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
         namespace = "com.mk.kmpshowcase.shared"
         minSdk = libs.versions.androidMinSdk.get().toInt()

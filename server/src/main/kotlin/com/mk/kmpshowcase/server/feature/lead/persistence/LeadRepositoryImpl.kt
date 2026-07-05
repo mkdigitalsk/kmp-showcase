@@ -5,27 +5,28 @@ import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifact
 import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
 import com.mk.kmpshowcase.server.feature.lead.service.LeadDraft
 import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.jdbc.update
 
 internal class LeadRepositoryImpl : LeadRepository {
 
-    override suspend fun findAll(): List<Lead> = newSuspendedTransaction {
+    override suspend fun findAll(): List<Lead> = suspendTransaction {
         LeadsTable.selectAll()
             .orderBy(LeadsTable.createdAt, SortOrder.DESC)
             .map { it.toLead() }
     }
 
-    override suspend fun findByEmail(email: String): Lead? = newSuspendedTransaction {
+    override suspend fun findByEmail(email: String): Lead? = suspendTransaction {
         latestByEmail(email)
     }
 
-    override suspend fun create(draft: LeadDraft): Lead = newSuspendedTransaction {
+    override suspend fun create(draft: LeadDraft): Lead = suspendTransaction {
         val now = System.currentTimeMillis()
         val newId = LeadsTable.insert {
             it[email] = draft.email
@@ -55,12 +56,12 @@ internal class LeadRepositoryImpl : LeadRepository {
         )
     }
 
-    override suspend fun updateStatus(email: String, status: LeadStatus): Lead? = newSuspendedTransaction {
+    override suspend fun updateStatus(email: String, status: LeadStatus): Lead? = suspendTransaction {
         val updated = LeadsTable.update({ LeadsTable.email eq email }) { it[LeadsTable.status] = status }
         if (updated == 0) null else latestByEmail(email)
     }
 
-    override suspend fun findArtifacts(email: String): List<LeadArtifact> = newSuspendedTransaction {
+    override suspend fun findArtifacts(email: String): List<LeadArtifact> = suspendTransaction {
         LeadArtifactsTable.selectAll()
             .where { LeadArtifactsTable.email eq email }
             .map {
@@ -73,7 +74,7 @@ internal class LeadRepositoryImpl : LeadRepository {
     }
 
     override suspend fun upsertArtifact(email: String, stage: LeadArtifactStage, content: String) {
-        newSuspendedTransaction {
+        suspendTransaction {
             val now = System.currentTimeMillis()
             val updated = LeadArtifactsTable.update(
                 { (LeadArtifactsTable.email eq email) and (LeadArtifactsTable.stage eq stage) },

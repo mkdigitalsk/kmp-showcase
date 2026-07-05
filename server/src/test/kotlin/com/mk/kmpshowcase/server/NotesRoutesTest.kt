@@ -7,6 +7,7 @@ import com.mk.kmpshowcase.server.core.mail.MailConfig
 import com.mk.kmpshowcase.contracts.ApiVersion
 import com.mk.kmpshowcase.contracts.note.CreateNoteRequestDTO
 import com.mk.kmpshowcase.contracts.note.NoteResponseDTO
+import com.mk.kmpshowcase.server.feature.user.persistence.UserRepository
 import com.mk.kmpshowcase.server.feature.user.persistence.UserRepositoryImpl
 import com.mk.kmpshowcase.server.plugins.configureAuth
 import com.mk.kmpshowcase.server.plugins.configureRouting
@@ -53,10 +54,10 @@ class NotesRoutesTest {
     }
 
     private fun createTestUser(): Pair<Long, String> = runBlocking {
-        val userRepository = UserRepositoryImpl()
+        val userRepository: UserRepository = UserRepositoryImpl()
         val uniqueEmail = "test-${UUID.randomUUID()}@test.com"
         val user = userRepository.create(uniqueEmail, "password123", "Test User")
-        val token = jwtConfig.generateToken(user.id, user.email)
+        val token = jwtConfig.generateToken(user.id, user.email, user.role.name)
         user.id to token
     }
 

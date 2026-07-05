@@ -2,7 +2,7 @@ package com.mk.kmpshowcase.server.feature.user.persistence
 
 import com.mk.kmpshowcase.server.feature.user.service.Role
 import com.mk.kmpshowcase.server.feature.user.service.ThemeMode
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 
 internal object UsersTable : LongIdTable("users") {
     val email = varchar("email", EMAIL_LENGTH).uniqueIndex()
