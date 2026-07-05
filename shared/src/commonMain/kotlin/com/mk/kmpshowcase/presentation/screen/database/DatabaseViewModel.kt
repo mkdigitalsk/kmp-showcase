@@ -2,7 +2,6 @@ package com.mk.kmpshowcase.presentation.screen.database
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -32,7 +31,6 @@ class DatabaseViewModel(
     private var searchJob: Job? = null
     private var debounceJob: Job? = null
 
-    @OptIn(FlowPreview::class)
     override fun onResumed() {
         super.onResumed()
         debounceJob = searchTrigger
