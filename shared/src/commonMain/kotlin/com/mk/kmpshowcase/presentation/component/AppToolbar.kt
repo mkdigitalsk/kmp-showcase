@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.mk.kmpshowcase.presentation.component.ext.noRippleClickable
+import com.mk.kmpshowcase.presentation.foundation.appColorScheme
 import com.mk.kmpshowcase.presentation.foundation.space6
 import com.mk.kmpshowcase.shared.generated.resources.Res
 import com.mk.kmpshowcase.shared.generated.resources.content_description_back
@@ -36,10 +37,10 @@ fun TopAppBar(
         modifier = modifier.fillMaxWidth().statusBarsPadding(),
         title = { title?.let { Text(text = title, style = MaterialTheme.typography.titleLarge) } },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.appColorScheme.brandBar,
+            titleContentColor = MaterialTheme.appColorScheme.onBrandBar,
+            navigationIconContentColor = MaterialTheme.appColorScheme.onBrandBar,
+            actionIconContentColor = MaterialTheme.appColorScheme.onBrandBar
         ),
         navigationIcon = {
             navIcon?.let {

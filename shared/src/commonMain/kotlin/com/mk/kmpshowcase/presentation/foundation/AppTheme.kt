@@ -77,6 +77,8 @@ private val LightColorPalette = AppColors(
     neutral100 = Neutral100Light,
     success = SuccessLight,
     warning = WarningLight,
+    brandBar = BrandBarLight,
+    onBrandBar = OnBrandBarLight,
 )
 
 private val DarkColorPalette = AppColors(
@@ -108,4 +110,6 @@ private val DarkColorPalette = AppColors(
     neutral100 = Neutral100Dark,
     success = SuccessDark,
     warning = WarningDark,
+    brandBar = BrandBarDark,
+    onBrandBar = OnBrandBarDark,
 )
