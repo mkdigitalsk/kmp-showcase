@@ -7,6 +7,7 @@ import com.mk.kmpshowcase.server.feature.user.service.ThemeMode
 import com.mk.kmpshowcase.server.feature.user.service.User
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -16,6 +17,12 @@ internal class UserRepositoryImpl : UserRepository {
 
     override suspend fun findAll(): List<User> = suspendTransaction {
         UsersTable.selectAll().map { it.toUser() }
+    }
+
+    override suspend fun findByRoles(roles: Set<Role>): List<User> = suspendTransaction {
+        UsersTable.selectAll()
+            .where { UsersTable.role inList roles }
+            .map { it.toUser() }
     }
 
     override suspend fun findByEmail(email: String): User? = suspendTransaction {

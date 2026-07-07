@@ -20,7 +20,7 @@ internal class UserService(
 
     suspend fun getById(id: Long): User? = repository.findById(id)
 
-    suspend fun getAll(): List<User> = repository.findAll()
+    suspend fun getVisibleTo(viewerRole: Role): List<User> = repository.findByRoles(viewerRole.visibleRoles)
 
     suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = repository.updateThemeMode(id, themeMode)
 

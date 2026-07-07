@@ -3,7 +3,9 @@ package com.mk.kmpshowcase.server.feature.user.api
 import com.mk.kmpshowcase.contracts.ApiVersion
 import com.mk.kmpshowcase.contracts.user.UpdateLocaleRequestDTO
 import com.mk.kmpshowcase.contracts.user.UpdateThemeModeRequestDTO
+import com.mk.kmpshowcase.server.core.auth.role
 import com.mk.kmpshowcase.server.core.auth.userId
+import com.mk.kmpshowcase.server.feature.user.service.Role
 import com.mk.kmpshowcase.server.feature.user.service.UserService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
@@ -18,7 +20,9 @@ internal fun Route.userRoutes(userService: UserService) {
     route("${ApiVersion.BASE}/users") {
         authenticate("auth-jwt") {
             get {
-                call.respond(userService.getAll().map { it.toUserResponseDTO() })
+                val role = call.role()?.let { runCatching { Role.valueOf(it) }.getOrNull() }
+                    ?: return@get call.respond(HttpStatusCode.Forbidden)
+                call.respond(userService.getVisibleTo(role).map { it.toUserResponseDTO() })
             }
             get("/me") {
                 val userId = call.userId() ?: return@get call.respond(HttpStatusCode.Unauthorized)
