@@ -14,7 +14,8 @@ class App : Application() {
         AppConfig(
             buildType = if (BuildConfig.DEBUG) BuildType.DEBUG else BuildType.RELEASE,
             versionName = BuildConfig.VERSION_NAME,
-            versionCode = BuildConfig.VERSION_CODE.toString()
+            versionCode = BuildConfig.VERSION_CODE.toString(),
+            baseUrl = BuildConfig.BASE_URL,
         )
     }
 

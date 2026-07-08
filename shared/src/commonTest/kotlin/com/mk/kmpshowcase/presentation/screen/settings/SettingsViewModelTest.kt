@@ -163,19 +163,19 @@ class SettingsViewModelTest {
 
     @Test
     fun `AppConfig stores buildType correctly`() {
-        val config = AppConfig(BuildType.RELEASE, "2.0.0", "10")
+        val config = AppConfig(BuildType.RELEASE, "2.0.0", "10", "test.example.com")
         assertEquals(BuildType.RELEASE, config.buildType)
     }
 
     @Test
     fun `AppConfig stores versionName correctly`() {
-        val config = AppConfig(BuildType.DEBUG, "2.0.0", "10")
+        val config = AppConfig(BuildType.DEBUG, "2.0.0", "10", "test.example.com")
         assertEquals("2.0.0", config.versionName)
     }
 
     @Test
     fun `AppConfig stores versionCode correctly`() {
-        val config = AppConfig(BuildType.DEBUG, "2.0.0", "10")
+        val config = AppConfig(BuildType.DEBUG, "2.0.0", "10", "test.example.com")
         assertEquals("10", config.versionCode)
     }
 }

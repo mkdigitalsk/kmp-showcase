@@ -6,10 +6,10 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
 
-actual class HttpClientProvider {
+actual class HttpClientProvider actual constructor(private val baseUrl: String) {
     actual fun create(): HttpClient {
         return HttpClient(Darwin) {
-            applyCommonConfig()
+            applyCommonConfig(baseUrl)
             defaultRequest { header(HttpHeaders.AcceptEncoding, "identity") }
             engine {
                 configureRequest {

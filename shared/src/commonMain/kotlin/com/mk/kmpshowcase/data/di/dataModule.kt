@@ -5,6 +5,7 @@ import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.plugin
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
+import com.mk.kmpshowcase.AppConfig
 import com.mk.kmpshowcase.data.database.AppDatabase
 import com.mk.kmpshowcase.data.local.database.DatabaseDriverFactory
 import com.mk.kmpshowcase.data.local.StorageLocalStore
@@ -48,7 +49,7 @@ import org.koin.dsl.module
 
 val dataModule = module {
     singleOf(::DefaultDispatcherProvider) { bind<DispatcherProvider>() }
-    single { provideHttpClient(get()) }
+    single { provideHttpClient(get(), get<AppConfig>().baseUrl) }
     singleOf(::AuthClientImpl) { bind<AuthClient>() }
     singleOf(::UserClientImpl) { bind<UserClient>() }
     singleOf(::AuthRepositoryImpl) { bind<AuthRepository>() }
@@ -72,8 +73,8 @@ val dataModule = module {
     single { AppDatabase(get<DatabaseDriverFactory>().createDriver()) }
 }
 
-fun provideHttpClient(preferences: PersistentPreferences): HttpClient {
-    val client = HttpClientProvider().create()
+fun provideHttpClient(preferences: PersistentPreferences, baseUrl: String): HttpClient {
+    val client = HttpClientProvider(baseUrl).create()
     client.plugin(HttpSend).intercept { request ->
         val token = preferences.getToken()
         if (token != null) {

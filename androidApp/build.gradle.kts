@@ -77,12 +77,14 @@ android {
         debug {
             isDefault = true
             isDebuggable = true
+            buildConfigField("String", "BASE_URL", "\"kmp-showcase-staging.up.railway.app\"")
         }
 
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
+            buildConfigField("String", "BASE_URL", "\"kmp-showcase-production.up.railway.app\"")
 
             val extraProguardFiles = fileTree("$projectDir/proguard") {
                 include("*.pro")

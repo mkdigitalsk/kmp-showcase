@@ -20,6 +20,8 @@
 	<string>1</string>
 	<key>BuildType</key>
 	<string>$(BUILD_TYPE)</string>
+	<key>ApiBaseUrl</key>
+	<string>$(API_BASE_URL)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

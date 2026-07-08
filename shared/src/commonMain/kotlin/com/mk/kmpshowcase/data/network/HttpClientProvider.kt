@@ -16,15 +16,15 @@ import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-expect class HttpClientProvider() {
+expect class HttpClientProvider(baseUrl: String) {
     fun create(): HttpClient
 }
 
-fun HttpClientConfig<*>.applyCommonConfig() {
+fun HttpClientConfig<*>.applyCommonConfig(baseUrl: String) {
     defaultRequest {
         url {
             protocol = URLProtocol.HTTPS
-            host = BASE_URL
+            host = baseUrl
             path("api/${ApiVersion.CURRENT}/")
         }
         contentType(ContentType.Application.Json)
@@ -51,7 +51,6 @@ fun HttpClientConfig<*>.applyCommonConfig() {
     }
 }
 
-internal expect val BASE_URL: String
 private const val REQUEST_TIME_OUT_MILLIS: Long = 30_000
 private const val CONNECT_TIME_OUT_MILLIS: Long = 30_000
 

@@ -20,11 +20,16 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
         Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
     }
 
+    private var baseUrl: String {
+        Bundle.main.object(forInfoDictionaryKey: "ApiBaseUrl") as? String ?? "kmp-showcase-production.up.railway.app"
+    }
+
     private lazy var appConfig: AppConfig = {
         return AppConfig(
             buildType: BuildType.companion.from(name: buildTypeString),
             versionName: versionName,
-            versionCode: versionCode
+            versionCode: versionCode,
+            baseUrl: baseUrl
         )
     }()
 
