@@ -16,8 +16,12 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.ApplicationTestBuilder
@@ -105,5 +109,14 @@ class UserRoutesTest {
     fun `get users without auth returns unauthorized`() = usersTest {
         val response = client.get("${ApiVersion.BASE}/users")
         assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    @Test
+    fun `login with missing fields returns 400 not 500`() = usersTest {
+        val response = client.post("${ApiVersion.BASE}/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody("{}")
+        }
+        assertEquals(HttpStatusCode.BadRequest, response.status)
     }
 }

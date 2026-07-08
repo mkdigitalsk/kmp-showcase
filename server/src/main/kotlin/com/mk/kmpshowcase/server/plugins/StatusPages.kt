@@ -1,8 +1,10 @@
 package com.mk.kmpshowcase.server.plugins
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.ContentConvertException
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import kotlinx.serialization.Serializable
@@ -12,6 +14,14 @@ private val logger = LoggerFactory.getLogger("StatusPages")
 
 internal fun Application.configureStatusPages() {
     install(StatusPages) {
+        exception<BadRequestException> { call, cause ->
+            logger.debug("Malformed request body: ${cause.message}")
+            call.respond(HttpStatusCode.BadRequest, ErrorResponse("Invalid or malformed request body"))
+        }
+        exception<ContentConvertException> { call, cause ->
+            logger.debug("Body deserialization failed: ${cause.message}")
+            call.respond(HttpStatusCode.BadRequest, ErrorResponse("Invalid or malformed request body"))
+        }
         exception<IllegalArgumentException> { call, cause ->
             logger.debug("Bad request: ${cause.message}")
             call.respond(HttpStatusCode.BadRequest, ErrorResponse(cause.message ?: "Bad request"))
