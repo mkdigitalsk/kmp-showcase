@@ -2,7 +2,7 @@
 #include "Config.xcconfig"
 
 BUILD_TYPE = debug
-API_BASE_URL = kmp-showcase-staging.up.railway.app
+API_BASE_URL = api.staging.mkdigital.sk
 BUNDLE_ID = com.mk.kmpshowcase
 APP_NAME = KMP Showcase Debug
 APP_DISPLAY_NAME = KMP Showcase Debug

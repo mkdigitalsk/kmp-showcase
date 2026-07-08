@@ -38,22 +38,22 @@ docker compose up --build
 ### Auth
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login user |
+| POST | `/v1/auth/register` | Register new user |
+| POST | `/v1/auth/login` | Login user |
 
 ### Users (Protected)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/users/me` | Get current user |
+| GET | `/v1/users/me` | Get current user |
 
 ### Notes (Protected)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/notes` | Get all notes |
-| GET | `/api/notes/{id}` | Get note by ID |
-| POST | `/api/notes` | Create note |
-| PUT | `/api/notes/{id}` | Update note |
-| DELETE | `/api/notes/{id}` | Delete note |
+| GET | `/v1/notes` | Get all notes |
+| GET | `/v1/notes/{id}` | Get note by ID |
+| POST | `/v1/notes` | Create note |
+| PUT | `/v1/notes/{id}` | Update note |
+| DELETE | `/v1/notes/{id}` | Delete note |
 
 ## Configuration
 
@@ -74,21 +74,21 @@ Config lives in [`src/main/resources/application.yaml`](src/main/resources/appli
 
 ### Register
 ```bash
-curl -X POST http://localhost:8080/api/auth/register \
+curl -X POST http://localhost:8080/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123","name":"Test User"}'
 ```
 
 ### Login
 ```bash
-curl -X POST http://localhost:8080/api/auth/login \
+curl -X POST http://localhost:8080/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
 ```
 
 ### Create Note (with token)
 ```bash
-curl -X POST http://localhost:8080/api/notes \
+curl -X POST http://localhost:8080/v1/notes \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -d '{"title":"My Note","content":"Note content"}'

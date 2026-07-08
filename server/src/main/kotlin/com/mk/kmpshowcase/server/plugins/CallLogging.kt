@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.server.plugins
 
+import com.mk.kmpshowcase.contracts.ApiVersion
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.calllogging.CallLogging
@@ -18,7 +19,8 @@ internal fun Application.configureCallLogging() {
         }
         filter { call ->
             // Log only API calls, skip health checks etc.
-            call.request.path().startsWith("/api")
+            val path = call.request.path()
+            path.startsWith(ApiVersion.BASE) || path.startsWith("/api")
         }
     }
 }

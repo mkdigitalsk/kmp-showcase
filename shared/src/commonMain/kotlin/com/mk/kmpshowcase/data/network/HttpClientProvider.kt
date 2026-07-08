@@ -25,7 +25,7 @@ fun HttpClientConfig<*>.applyCommonConfig(baseUrl: String) {
         url {
             protocol = URLProtocol.HTTPS
             host = baseUrl
-            path("api/${ApiVersion.CURRENT}/")
+            path("${ApiVersion.CURRENT}/")
         }
         contentType(ContentType.Application.Json)
     }

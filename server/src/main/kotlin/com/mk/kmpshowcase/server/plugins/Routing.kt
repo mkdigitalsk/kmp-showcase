@@ -9,7 +9,9 @@ import com.mk.kmpshowcase.server.feature.user.api.userRoutes
 import io.ktor.server.application.Application
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 
 internal fun Application.configureRouting(dependencies: AppDependencies) {
@@ -25,10 +27,18 @@ internal fun Application.configureRouting(dependencies: AppDependencies) {
         // Public static assets (e.g. the email logo PNG) — no auth.
         staticResources("/assets", "assets")
 
-        authRoutes(dependencies.userService, dependencies.jwtConfig)
-        userRoutes(dependencies.userService)
-        noteRoutes(dependencies.noteService)
-        leadRoutes(dependencies.leadService)
-        adminRoutes(dependencies.leadService)
+        apiRoutes(dependencies)
+        // Legacy /api/v1 alias — deprecated. Kept so already-shipped clients (old railway host,
+        // installed mobile builds) keep working during the custom-domain + /v1 migration.
+        // TODO: remove once every client ships on /v1.
+        route("/api") { apiRoutes(dependencies) }
     }
+}
+
+private fun Route.apiRoutes(dependencies: AppDependencies) {
+    authRoutes(dependencies.userService, dependencies.jwtConfig)
+    userRoutes(dependencies.userService)
+    noteRoutes(dependencies.noteService)
+    leadRoutes(dependencies.leadService)
+    adminRoutes(dependencies.leadService)
 }

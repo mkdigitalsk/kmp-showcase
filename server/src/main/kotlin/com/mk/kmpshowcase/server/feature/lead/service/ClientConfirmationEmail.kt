@@ -209,8 +209,7 @@ internal object ClientConfirmationEmail {
     private const val OUTER = "background:#f4f6f8;padding:24px 12px;"
     private const val CARD = "max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;"
     private const val HEADER = "background:#0E2A47;padding:20px 32px;border-bottom:3px solid #37C2B4;"
-    // TODO: switch to api.mkdigital.sk once the API custom domain is set up.
-    private const val LOGO_URL = "https://kmp-showcase-production.up.railway.app/assets/mk-digital-logo.png"
+    private const val LOGO_URL = "https://api.mkdigital.sk/assets/mk-digital-logo.png"
     private const val LOGO_IMG = "display:block;width:240px;max-width:60%;height:auto;border:0;"
     private const val CONTENT = "padding:32px;"
     private const val GREETING = "margin:0 0 18px;font-size:16px;color:#0E2A47;"

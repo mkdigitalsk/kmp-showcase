@@ -2,7 +2,7 @@
 #include "Config.xcconfig"
 
 BUILD_TYPE = release
-API_BASE_URL = kmp-showcase-production.up.railway.app
+API_BASE_URL = api.mkdigital.sk
 BUNDLE_ID = com.mk.kmpshowcase
 APP_NAME = KMP Showcase
 APP_DISPLAY_NAME = KMP Showcase

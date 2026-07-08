@@ -11,5 +11,5 @@ package com.mk.kmpshowcase.contracts
 object ApiVersion {
     const val V1 = "v1"
     const val CURRENT = V1
-    const val BASE = "/api/" + CURRENT // "/api/v1" — server route base
+    const val BASE = "/" + CURRENT // api. subdomain already signals "API" — no redundant /api prefix
 }

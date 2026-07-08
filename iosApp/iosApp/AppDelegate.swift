@@ -21,7 +21,7 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
     }
 
     private var baseUrl: String {
-        Bundle.main.object(forInfoDictionaryKey: "ApiBaseUrl") as? String ?? "kmp-showcase-production.up.railway.app"
+        Bundle.main.object(forInfoDictionaryKey: "ApiBaseUrl") as? String ?? "api.mkdigital.sk"
     }
 
     private lazy var appConfig: AppConfig = {
