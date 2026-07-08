@@ -17,6 +17,9 @@ database:
   user: "$DATABASE_USER:postgres"
   password: "$DATABASE_PASSWORD:postgres"
 
+cors:
+  allowedHosts: "$CORS_ALLOWED_HOSTS:*"
+
 mail:
   host: "$MAIL_HOST:smtp.m1.websupport.sk"
   port: "$MAIL_PORT:465"

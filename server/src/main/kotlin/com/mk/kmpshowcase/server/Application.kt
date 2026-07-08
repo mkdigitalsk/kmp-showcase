@@ -46,7 +46,7 @@ internal fun Application.module() {
     configureCallLogging()
     configureSerialization()
     configureStatusPages()
-    configureCORS()
+    configureCORS(config)
     configureAuth(jwtConfig)
     configureRouting(dependencies)
 }
