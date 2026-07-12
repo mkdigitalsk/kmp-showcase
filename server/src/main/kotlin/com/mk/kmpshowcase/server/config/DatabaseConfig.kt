@@ -46,6 +46,12 @@ internal object DatabaseConfig {
                 password = appConfig.property("database.password").getString()
             }
             maximumPoolSize = MAX_POOL_SIZE
+            // Neon scales the compute to zero after ~5 min idle. Hikari's default fixed pool
+            // (minimumIdle == maxPoolSize) keeps connections open and recycles them under that
+            // window, so the compute never suspends and burns CU-hours 24/7. Drain to zero when
+            // idle so Neon can suspend too.
+            minimumIdle = MIN_IDLE
+            idleTimeout = IDLE_TIMEOUT_MS
             isAutoCommit = false
             transactionIsolation = "TRANSACTION_REPEATABLE_READ"
             validate()
@@ -54,4 +60,6 @@ internal object DatabaseConfig {
     }
 
     private const val MAX_POOL_SIZE = 10
+    private const val MIN_IDLE = 0
+    private const val IDLE_TIMEOUT_MS = 60_000L
 }
