@@ -2,8 +2,9 @@ package com.mk.kmpshowcase.server.plugins
 
 import com.mk.kmpshowcase.server.di.AppDependencies
 import com.mk.kmpshowcase.server.feature.admin.api.adminRoutes
-import com.mk.kmpshowcase.server.feature.lead.api.clientRoutes
 import com.mk.kmpshowcase.server.feature.lead.api.leadRoutes
+import com.mk.kmpshowcase.server.feature.project.api.adminProjectRoutes
+import com.mk.kmpshowcase.server.feature.project.api.clientProjectRoutes
 import com.mk.kmpshowcase.server.feature.note.api.noteRoutes
 import com.mk.kmpshowcase.server.feature.user.api.authRoutes
 import com.mk.kmpshowcase.server.feature.user.api.userRoutes
@@ -43,7 +44,8 @@ private fun Route.apiRoutes(dependencies: AppDependencies) {
         userRoutes(dependencies.userService)
         noteRoutes(dependencies.noteService)
         leadRoutes(dependencies.leadService)
-        clientRoutes(dependencies.leadService)
         adminRoutes(dependencies.leadService)
+        clientProjectRoutes(dependencies.projectService)
+        adminProjectRoutes(dependencies.projectService)
     }
 }

@@ -5,10 +5,6 @@ import com.mk.kmpshowcase.server.config.DatabaseConfig
 import com.mk.kmpshowcase.server.core.mail.MailConfig
 import com.mk.kmpshowcase.server.core.security.JwtConfig
 import com.mk.kmpshowcase.server.di.AppDependencies
-import com.mk.kmpshowcase.server.feature.lead.persistence.LeadRepositoryImpl
-import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
-import com.mk.kmpshowcase.server.feature.lead.service.LeadDraft
-import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
 import com.mk.kmpshowcase.server.feature.user.persistence.UserRepositoryImpl
 import com.mk.kmpshowcase.server.feature.user.service.Role
 import com.mk.kmpshowcase.server.plugins.configureAuth
@@ -38,7 +34,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class EngagementRoutesTest {
+class ProjectRoutesTest {
 
     companion object {
         private var initialized = false
@@ -58,14 +54,7 @@ class EngagementRoutesTest {
         jwtConfig.generateToken(user.id, user.email, user.role.name)
     }
 
-    private fun seedLead(email: String, status: LeadStatus) = runBlocking {
-        val repo = LeadRepositoryImpl()
-        repo.create(LeadDraft(email, "Fintech", listOf("iOS"), listOf("Auth"), "Jana", null, null, true, null))
-        repo.updateStatus(email, status)
-        repo
-    }
-
-    private fun engagementTest(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
+    private fun projectTest(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
         environment { config = MapApplicationConfig() }
         application {
             configureSerialization()
@@ -78,66 +67,67 @@ class EngagementRoutesTest {
     }
 
     @Test
-    fun `client with no lead gets 404`() = engagementTest {
-        val clientToken = token("noeng-${UUID.randomUUID()}@test.com", Role.CLIENT)
-        val res = client.get("${ApiVersion.BASE}/me/engagement") {
+    fun `client with no project gets 404`() = projectTest {
+        val clientToken = token("noproj-${UUID.randomUUID()}@test.com", Role.CLIENT)
+        val res = client.get("${ApiVersion.BASE}/me/project") {
             header(HttpHeaders.Authorization, "Bearer $clientToken")
         }
         assertEquals(HttpStatusCode.NotFound, res.status)
     }
 
     @Test
-    fun `engagement returns 401 without a token`() = engagementTest {
-        assertEquals(HttpStatusCode.Unauthorized, client.get("${ApiVersion.BASE}/me/engagement").status)
+    fun `project returns 401 without a token`() = projectTest {
+        assertEquals(HttpStatusCode.Unauthorized, client.get("${ApiVersion.BASE}/me/project").status)
     }
 
     @Test
-    fun `client sees released demo + proposal but not unreleased demo`() = engagementTest {
+    fun `admin builds a project and client sees it with released demos only`() = projectTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
-        val email = "eng-${UUID.randomUUID()}@test.com"
-        val repo = seedLead(email, LeadStatus.PROPOSAL_SENT)
-        runBlocking { repo.upsertArtifact(email, LeadArtifactStage.PROPOSAL, "Your proposal body") }
-        val adminToken = token("admin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        val email = "proj-${UUID.randomUUID()}@test.com"
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
 
-        fun admin(path: String, body: String) = runBlocking {
-            jsonClient.post("${ApiVersion.BASE}/admin/leads/$email/$path") {
+        fun admin(method: String, path: String, body: String) = runBlocking {
+            jsonClient.post("${ApiVersion.BASE}/admin/projects/$email$path") {
                 header(HttpHeaders.Authorization, "Bearer $adminToken")
                 contentType(ContentType.Application.Json); setBody(body)
             }.status
         }
-        assertEquals(HttpStatusCode.Created, admin("milestones", """{"title":"Design","status":"DONE","position":0}"""))
-        assertEquals(HttpStatusCode.Created, admin("demos", """{"title":"Beta","url":"https://x","released":true}"""))
-        assertEquals(HttpStatusCode.Created, admin("demos", """{"title":"WIP","url":"https://y","released":false}"""))
+        assertEquals(HttpStatusCode.Created, admin("POST", "", """{"startDate":1000,"targetEndDate":9000,"health":"AMBER"}"""))
+        assertEquals(HttpStatusCode.Created, admin("POST", "/milestones", """{"title":"Design","status":"DONE","plannedDate":2000,"position":0}"""))
+        assertEquals(HttpStatusCode.Created, admin("POST", "/documents", """{"type":"CONTRACT","title":"Signed contract","url":"https://x/c.pdf"}"""))
+        assertEquals(HttpStatusCode.Created, admin("POST", "/demos", """{"title":"Beta","url":"https://x/beta","released":true}"""))
+        assertEquals(HttpStatusCode.Created, admin("POST", "/demos", """{"title":"WIP","url":"https://x/wip","released":false}"""))
 
         val clientToken = token(email, Role.CLIENT)
-        val res = jsonClient.get("${ApiVersion.BASE}/me/engagement") {
+        val res = jsonClient.get("${ApiVersion.BASE}/me/project") {
             header(HttpHeaders.Authorization, "Bearer $clientToken")
         }
         assertEquals(HttpStatusCode.OK, res.status)
         val body = res.bodyAsText()
-        assertTrue(body.contains("PROPOSAL_READY"), "stage mapped to client-safe value")
-        assertTrue(body.contains("Your proposal body"), "proposal visible once sent")
+        assertTrue(body.contains("AMBER"), "health present")
         assertTrue(body.contains("Design"), "milestone present")
+        assertTrue(body.contains("Signed contract"), "document present")
         assertTrue(body.contains("Beta"), "released demo present")
         assertFalse(body.contains("WIP"), "unreleased demo must NOT reach the client")
     }
 
     @Test
-    fun `admin client-preview returns the client projection and non-admin is forbidden`() = engagementTest {
+    fun `admin client-preview returns projection and non-admin is forbidden`() = projectTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
         val email = "prev-${UUID.randomUUID()}@test.com"
-        val repo = seedLead(email, LeadStatus.PROPOSAL_SENT)
-        runBlocking { repo.upsertArtifact(email, LeadArtifactStage.PROPOSAL, "Preview proposal") }
-
         val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
-        val ok = jsonClient.get("${ApiVersion.BASE}/admin/leads/$email/client-preview") {
+        jsonClient.post("${ApiVersion.BASE}/admin/projects/$email") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json); setBody("""{"startDate":1000}""")
+        }
+
+        val ok = jsonClient.get("${ApiVersion.BASE}/admin/projects/$email/client-preview") {
             header(HttpHeaders.Authorization, "Bearer $adminToken")
         }
         assertEquals(HttpStatusCode.OK, ok.status)
-        assertTrue(ok.bodyAsText().contains("Preview proposal"), "admin sees the client projection")
 
         val clientToken = token("pcli-${UUID.randomUUID()}@test.com", Role.CLIENT)
-        val forbidden = jsonClient.get("${ApiVersion.BASE}/admin/leads/$email/client-preview") {
+        val forbidden = jsonClient.get("${ApiVersion.BASE}/admin/projects/$email/client-preview") {
             header(HttpHeaders.Authorization, "Bearer $clientToken")
         }
         assertEquals(HttpStatusCode.Forbidden, forbidden.status)

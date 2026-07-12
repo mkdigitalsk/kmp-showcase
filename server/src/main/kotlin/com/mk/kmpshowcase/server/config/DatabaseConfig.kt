@@ -1,9 +1,11 @@
 package com.mk.kmpshowcase.server.config
 
-import com.mk.kmpshowcase.server.feature.lead.persistence.DemosTable
 import com.mk.kmpshowcase.server.feature.lead.persistence.LeadArtifactsTable
 import com.mk.kmpshowcase.server.feature.lead.persistence.LeadsTable
-import com.mk.kmpshowcase.server.feature.lead.persistence.MilestonesTable
+import com.mk.kmpshowcase.server.feature.project.persistence.DemosTable
+import com.mk.kmpshowcase.server.feature.project.persistence.DocumentsTable
+import com.mk.kmpshowcase.server.feature.project.persistence.MilestonesTable
+import com.mk.kmpshowcase.server.feature.project.persistence.ProjectsTable
 import com.mk.kmpshowcase.server.feature.note.persistence.NotesTable
 import com.mk.kmpshowcase.server.feature.user.persistence.UsersTable
 import com.zaxxer.hikari.HikariConfig
@@ -26,7 +28,8 @@ internal object DatabaseConfig {
             // createMissingTablesAndColumns (not create) so additive migrations — the leads.status
             // column + the lead_artifacts table — land on an already-populated DB.
             SchemaUtils.createMissingTablesAndColumns(
-                UsersTable, NotesTable, LeadsTable, LeadArtifactsTable, MilestonesTable, DemosTable,
+                UsersTable, NotesTable, LeadsTable, LeadArtifactsTable,
+                ProjectsTable, MilestonesTable, DemosTable, DocumentsTable,
             )
             logger.info("Database tables created/verified")
         }
