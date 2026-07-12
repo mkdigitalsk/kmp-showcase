@@ -7,6 +7,9 @@ import io.ktor.server.auth.principal
 internal fun ApplicationCall.userId(): Long? =
     principal<JWTPrincipal>()?.payload?.getClaim("userId")?.asLong()
 
+internal fun ApplicationCall.email(): String? =
+    principal<JWTPrincipal>()?.payload?.getClaim("email")?.asString()
+
 internal fun ApplicationCall.role(): String? =
     principal<JWTPrincipal>()?.payload?.getClaim("role")?.asString()
 

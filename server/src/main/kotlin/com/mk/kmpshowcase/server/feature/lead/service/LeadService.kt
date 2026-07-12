@@ -27,6 +27,35 @@ internal class LeadService(
     suspend fun saveArtifact(email: String, stage: LeadArtifactStage, content: String) =
         repository.upsertArtifact(email, stage, content)
 
+    // Client-facing: the caller's own engagement as a safe projection — friendly stage, proposal only
+    // once sent, released demos only. Never leaks internal statuses or unreleased work.
+    suspend fun getClientEngagement(email: String): ClientEngagement? {
+        val lead = repository.findByEmail(email) ?: return null
+        val proposal = if (lead.status.proposalVisible()) {
+            repository.findArtifacts(email).firstOrNull { it.stage == LeadArtifactStage.PROPOSAL }
+        } else {
+            null
+        }
+        return ClientEngagement(
+            lead = lead,
+            stage = lead.status.toClientStage(),
+            proposal = proposal,
+            milestones = repository.findMilestones(email),
+            demos = repository.findDemos(email).filter { it.released },
+        )
+    }
+
+    // Admin management — everything, including unreleased demos.
+    suspend fun getEngagement(email: String): AdminEngagement =
+        AdminEngagement(repository.findMilestones(email), repository.findDemos(email))
+
+    suspend fun addMilestone(email: String, draft: MilestoneDraft): Milestone = repository.addMilestone(email, draft)
+    suspend fun updateMilestone(id: Long, draft: MilestoneDraft): Milestone? = repository.updateMilestone(id, draft)
+    suspend fun deleteMilestone(id: Long): Boolean = repository.deleteMilestone(id)
+    suspend fun addDemo(email: String, draft: DemoDraft): Demo = repository.addDemo(email, draft)
+    suspend fun updateDemo(id: Long, draft: DemoDraft): Demo? = repository.updateDemo(id, draft)
+    suspend fun deleteDemo(id: Long): Boolean = repository.deleteDemo(id)
+
     suspend fun submit(draft: LeadDraft): Lead {
         require(EMAIL_REGEX.matches(draft.email)) { "A valid email is required" }
         require(draft.appType.isNotBlank()) { "App type is required" }
