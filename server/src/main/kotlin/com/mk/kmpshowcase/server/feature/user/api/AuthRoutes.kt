@@ -7,8 +7,10 @@ import com.mk.kmpshowcase.contracts.auth.RegisterRequestDTO
 import com.mk.kmpshowcase.server.core.auth.userId
 import com.mk.kmpshowcase.server.core.security.JwtConfig
 import com.mk.kmpshowcase.server.feature.user.service.UserService
+import com.mk.kmpshowcase.server.plugins.AuthRateLimit
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
+import io.ktor.server.plugins.ratelimit.rateLimit
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -21,12 +23,28 @@ private val logger = LoggerFactory.getLogger("AuthRoutes")
 
 internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
     route("${ApiVersion.BASE}/auth") {
-        post("/register") {
-            val request = call.receive<RegisterRequestDTO>()
-            val user = userService.register(request.email, request.password, request.name)
-            val token = jwtConfig.generateToken(user.id, user.email, user.role.name)
-            logger.info("User registered: ${user.id} (${user.email})")
-            call.respond(HttpStatusCode.Created, AuthResponseDTO(token, user.toAuthUserDTO()))
+        // Throttle the credential-accepting endpoints per client IP (brute-force / spray defense).
+        rateLimit(AuthRateLimit) {
+            post("/register") {
+                val request = call.receive<RegisterRequestDTO>()
+                val user = userService.register(request.email, request.password, request.name)
+                val token = jwtConfig.generateToken(user.id, user.email, user.role.name)
+                logger.info("User registered: ${user.id} (${user.email})")
+                call.respond(HttpStatusCode.Created, AuthResponseDTO(token, user.toAuthUserDTO()))
+            }
+
+            post("/login") {
+                val request = call.receive<LoginRequestDTO>()
+                val user = userService.authenticate(request.email, request.password)
+                    ?: run {
+                        logger.warn("Login failed: invalid credentials for ${request.email}")
+                        call.respond(HttpStatusCode.Unauthorized, mapOf("message" to "Invalid credentials"))
+                        return@post
+                    }
+                val token = jwtConfig.generateToken(user.id, user.email, user.role.name)
+                logger.info("User logged in: ${user.id} (${user.email})")
+                call.respond(AuthResponseDTO(token, user.toAuthUserDTO()))
+            }
         }
 
         authenticate("auth-jwt") {
@@ -38,19 +56,6 @@ internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
                 logger.info("Token login: ${user.id} (${user.email})")
                 call.respond(AuthResponseDTO(jwtConfig.generateToken(user.id, user.email, user.role.name), user.toAuthUserDTO()))
             }
-        }
-
-        post("/login") {
-            val request = call.receive<LoginRequestDTO>()
-            val user = userService.authenticate(request.email, request.password)
-                ?: run {
-                    logger.warn("Login failed: invalid credentials for ${request.email}")
-                    call.respond(HttpStatusCode.Unauthorized, mapOf("message" to "Invalid credentials"))
-                    return@post
-                }
-            val token = jwtConfig.generateToken(user.id, user.email, user.role.name)
-            logger.info("User logged in: ${user.id} (${user.email})")
-            call.respond(AuthResponseDTO(token, user.toAuthUserDTO()))
         }
     }
 }

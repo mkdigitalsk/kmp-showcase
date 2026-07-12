@@ -8,6 +8,7 @@ import com.mk.kmpshowcase.server.feature.user.api.authRoutes
 import com.mk.kmpshowcase.server.feature.user.api.userRoutes
 import io.ktor.server.application.Application
 import io.ktor.server.http.content.staticResources
+import io.ktor.server.plugins.ratelimit.rateLimit
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
@@ -36,9 +37,11 @@ internal fun Application.configureRouting(dependencies: AppDependencies) {
 }
 
 private fun Route.apiRoutes(dependencies: AppDependencies) {
-    authRoutes(dependencies.userService, dependencies.jwtConfig)
-    userRoutes(dependencies.userService)
-    noteRoutes(dependencies.noteService)
-    leadRoutes(dependencies.leadService)
-    adminRoutes(dependencies.leadService)
+    rateLimit(ApiRateLimit) {
+        authRoutes(dependencies.userService, dependencies.jwtConfig)
+        userRoutes(dependencies.userService)
+        noteRoutes(dependencies.noteService)
+        leadRoutes(dependencies.leadService)
+        adminRoutes(dependencies.leadService)
+    }
 }

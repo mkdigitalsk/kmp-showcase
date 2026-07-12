@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.server.plugins
 
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.ContentConvertException
 import io.ktor.server.application.Application
@@ -33,6 +34,12 @@ internal fun Application.configureStatusPages() {
         exception<NoSuchElementException> { call, cause ->
             logger.debug("Not found: ${cause.message}")
             call.respond(HttpStatusCode.NotFound, ErrorResponse(cause.message ?: "Not found"))
+        }
+        // The RateLimit plugin emits a bodiless 429 + Retry-After; give it a body matching our errors.
+        status(HttpStatusCode.TooManyRequests) { call, status ->
+            val retryAfter = call.response.headers[HttpHeaders.RetryAfter]
+            val suffix = retryAfter?.let { " Retry after $it seconds." } ?: ""
+            call.respond(status, ErrorResponse("Too many requests.$suffix"))
         }
         exception<Throwable> { call, cause ->
             logger.error("Internal server error", cause)

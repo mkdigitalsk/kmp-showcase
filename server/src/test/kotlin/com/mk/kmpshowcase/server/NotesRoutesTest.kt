@@ -10,6 +10,7 @@ import com.mk.kmpshowcase.contracts.note.NoteResponseDTO
 import com.mk.kmpshowcase.server.feature.user.persistence.UserRepository
 import com.mk.kmpshowcase.server.feature.user.persistence.UserRepositoryImpl
 import com.mk.kmpshowcase.server.plugins.configureAuth
+import com.mk.kmpshowcase.server.plugins.configureRateLimit
 import com.mk.kmpshowcase.server.plugins.configureRouting
 import com.mk.kmpshowcase.server.plugins.configureSerialization
 import com.mk.kmpshowcase.server.plugins.configureStatusPages
@@ -67,6 +68,7 @@ class NotesRoutesTest {
             configureSerialization()
             configureStatusPages()
             configureAuth(jwtConfig)
+            configureRateLimit()
             configureRouting(AppDependencies(jwtConfig, MailConfig("", 0, "", "", "", "", "")))
         }
         block()

@@ -7,6 +7,7 @@ import com.mk.kmpshowcase.server.di.AppDependencies
 import com.mk.kmpshowcase.server.plugins.configureAuth
 import com.mk.kmpshowcase.server.plugins.configureCORS
 import com.mk.kmpshowcase.server.plugins.configureCallLogging
+import com.mk.kmpshowcase.server.plugins.configureRateLimit
 import com.mk.kmpshowcase.server.plugins.configureRouting
 import com.mk.kmpshowcase.server.plugins.configureSerialization
 import com.mk.kmpshowcase.server.plugins.configureStatusPages
@@ -48,5 +49,6 @@ internal fun Application.module() {
     configureStatusPages()
     configureCORS(config)
     configureAuth(jwtConfig)
+    configureRateLimit()
     configureRouting(dependencies)
 }

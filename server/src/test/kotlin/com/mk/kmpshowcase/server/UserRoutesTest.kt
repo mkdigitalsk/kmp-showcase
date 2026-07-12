@@ -9,6 +9,7 @@ import com.mk.kmpshowcase.server.di.AppDependencies
 import com.mk.kmpshowcase.server.feature.user.persistence.UserRepositoryImpl
 import com.mk.kmpshowcase.server.feature.user.service.Role
 import com.mk.kmpshowcase.server.plugins.configureAuth
+import com.mk.kmpshowcase.server.plugins.configureRateLimit
 import com.mk.kmpshowcase.server.plugins.configureRouting
 import com.mk.kmpshowcase.server.plugins.configureSerialization
 import com.mk.kmpshowcase.server.plugins.configureStatusPages
@@ -66,6 +67,7 @@ class UserRoutesTest {
             configureSerialization()
             configureStatusPages()
             configureAuth(jwtConfig)
+            configureRateLimit()
             configureRouting(AppDependencies(jwtConfig, MailConfig("", 0, "", "", "", "", "")))
         }
         block()
@@ -119,4 +121,20 @@ class UserRoutesTest {
         }
         assertEquals(HttpStatusCode.BadRequest, response.status)
     }
+
+    @Test
+    fun `repeated login attempts are rate limited with 429`() = usersTest {
+        val statuses = (1..LOGIN_ATTEMPTS).map {
+            client.post("${ApiVersion.BASE}/auth/login") {
+                contentType(ContentType.Application.Json)
+                setBody("""{"email":"spray@test.com","password":"wrong"}""")
+            }.status
+        }
+        assertTrue(
+            statuses.contains(HttpStatusCode.TooManyRequests),
+            "login must return 429 once the per-IP rate limit is exceeded",
+        )
+    }
 }
+
+private const val LOGIN_ATTEMPTS = 15
