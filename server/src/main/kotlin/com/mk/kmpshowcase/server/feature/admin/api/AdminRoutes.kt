@@ -2,6 +2,7 @@ package com.mk.kmpshowcase.server.feature.admin.api
 
 import com.mk.kmpshowcase.contracts.ApiVersion
 import com.mk.kmpshowcase.server.core.auth.isAdmin
+import com.mk.kmpshowcase.server.feature.lead.api.toDTO
 import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
 import com.mk.kmpshowcase.server.feature.lead.service.LeadService
 import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
@@ -56,6 +57,16 @@ internal fun Route.adminRoutes(leadService: LeadService) {
                 if (!call.isAdmin()) return@get call.respond(HttpStatusCode.Forbidden)
                 val email = call.emailParam() ?: return@get call.respond(HttpStatusCode.BadRequest)
                 call.respond(leadService.getEngagement(email).toDTO())
+            }
+
+            // Read-only "view as client" — the same client-safe projection the client gets, admin-gated.
+            // Best practice over impersonation: no session takeover, no over-exposure (already client-safe).
+            get("/leads/{email}/client-preview") {
+                if (!call.isAdmin()) return@get call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                val engagement = leadService.getClientEngagement(email)
+                    ?: return@get call.respond(HttpStatusCode.NotFound)
+                call.respond(engagement.toDTO())
             }
 
             post("/leads/{email}/milestones") {

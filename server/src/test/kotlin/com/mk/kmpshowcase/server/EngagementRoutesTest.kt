@@ -121,4 +121,25 @@ class EngagementRoutesTest {
         assertTrue(body.contains("Beta"), "released demo present")
         assertFalse(body.contains("WIP"), "unreleased demo must NOT reach the client")
     }
+
+    @Test
+    fun `admin client-preview returns the client projection and non-admin is forbidden`() = engagementTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "prev-${UUID.randomUUID()}@test.com"
+        val repo = seedLead(email, LeadStatus.PROPOSAL_SENT)
+        runBlocking { repo.upsertArtifact(email, LeadArtifactStage.PROPOSAL, "Preview proposal") }
+
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        val ok = jsonClient.get("${ApiVersion.BASE}/admin/leads/$email/client-preview") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+        }
+        assertEquals(HttpStatusCode.OK, ok.status)
+        assertTrue(ok.bodyAsText().contains("Preview proposal"), "admin sees the client projection")
+
+        val clientToken = token("pcli-${UUID.randomUUID()}@test.com", Role.CLIENT)
+        val forbidden = jsonClient.get("${ApiVersion.BASE}/admin/leads/$email/client-preview") {
+            header(HttpHeaders.Authorization, "Bearer $clientToken")
+        }
+        assertEquals(HttpStatusCode.Forbidden, forbidden.status)
+    }
 }
