@@ -75,8 +75,9 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
 
             delete("/{email}/documents/{id}") {
                 if (!call.isAdmin()) return@delete call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
                 val id = call.idParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
-                if (projectService.deleteDocument(id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
+                if (projectService.deleteDocument(email, id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
             }
 
             post("/{email}/milestones") {
@@ -87,16 +88,18 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
 
             patch("/{email}/milestones/{id}") {
                 if (!call.isAdmin()) return@patch call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
                 val id = call.idParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
-                val milestone = projectService.updateMilestone(id, call.receive<MilestoneRequestDTO>().toDraft())
+                val milestone = projectService.updateMilestone(email, id, call.receive<MilestoneRequestDTO>().toDraft())
                     ?: return@patch call.respond(HttpStatusCode.NotFound)
                 call.respond(milestone.toDTO())
             }
 
             delete("/{email}/milestones/{id}") {
                 if (!call.isAdmin()) return@delete call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
                 val id = call.idParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
-                if (projectService.deleteMilestone(id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
+                if (projectService.deleteMilestone(email, id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
             }
 
             post("/{email}/demos") {
@@ -107,16 +110,18 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
 
             patch("/{email}/demos/{id}") {
                 if (!call.isAdmin()) return@patch call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
                 val id = call.idParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
-                val demo = projectService.updateDemo(id, call.receive<DemoRequestDTO>().toDraft())
+                val demo = projectService.updateDemo(email, id, call.receive<DemoRequestDTO>().toDraft())
                     ?: return@patch call.respond(HttpStatusCode.NotFound)
                 call.respond(demo.toDTO())
             }
 
             delete("/{email}/demos/{id}") {
                 if (!call.isAdmin()) return@delete call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
                 val id = call.idParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
-                if (projectService.deleteDemo(id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
+                if (projectService.deleteDemo(email, id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
             }
         }
     }

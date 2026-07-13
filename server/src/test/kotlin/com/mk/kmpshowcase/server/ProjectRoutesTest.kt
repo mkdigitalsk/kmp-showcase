@@ -108,7 +108,9 @@ class ProjectRoutesTest {
         assertTrue(body.contains("Design"), "milestone present")
         assertTrue(body.contains("Signed contract"), "document present")
         assertTrue(body.contains("Beta"), "released demo present")
-        assertFalse(body.contains("WIP"), "unreleased demo must NOT reach the client")
+        assertFalse(body.contains("WIP"), "unreleased demo (or its history event) must NOT reach the client")
+        assertTrue(body.contains("STARTED"), "client history records the project start")
+        assertFalse(body.contains("DEMO_ADDED"), "granular admin events must NOT reach the client history")
     }
 
     @Test

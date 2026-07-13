@@ -76,6 +76,15 @@ internal data class DocumentDraft(
     val url: String,
 )
 
+// Append-only history — every project change is recorded as an immutable event (never updated or
+// deleted), giving a permanent audit trail that a current-state-only model cannot reconstruct.
+internal enum class ProjectEventType {
+    STARTED, HEALTH_CHANGED, MILESTONE_ADDED, MILESTONE_UPDATED, MILESTONE_REMOVED,
+    DOCUMENT_ADDED, DOCUMENT_REMOVED, DEMO_ADDED, DEMO_UPDATED, DEMO_REMOVED, COMPLETED, ARCHIVED,
+}
+
+internal data class ProjectEvent(val id: Long, val type: ProjectEventType, val detail: String?, val at: Long)
+
 // What a logged-in client sees for their own project (released demos only). Same shape reused by the
 // admin read-only preview.
 internal data class ClientProject(
@@ -83,6 +92,7 @@ internal data class ClientProject(
     val documents: List<Document>,
     val milestones: List<Milestone>,
     val demos: List<Demo>,
+    val history: List<ProjectEvent>,
 )
 
 // What the admin manages — everything, including unreleased demos.
@@ -91,4 +101,5 @@ internal data class AdminProject(
     val documents: List<Document>,
     val milestones: List<Milestone>,
     val demos: List<Demo>,
+    val history: List<ProjectEvent>,
 )

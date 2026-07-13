@@ -8,6 +8,8 @@ import com.mk.kmpshowcase.server.feature.project.service.Milestone
 import com.mk.kmpshowcase.server.feature.project.service.MilestoneDraft
 import com.mk.kmpshowcase.server.feature.project.service.Project
 import com.mk.kmpshowcase.server.feature.project.service.ProjectDraft
+import com.mk.kmpshowcase.server.feature.project.service.ProjectEvent
+import com.mk.kmpshowcase.server.feature.project.service.ProjectEventType
 import com.mk.kmpshowcase.server.feature.project.service.ProjectHealth
 import com.mk.kmpshowcase.server.feature.project.service.ProjectState
 
@@ -35,4 +37,7 @@ internal interface ProjectRepository {
     suspend fun addDemo(email: String, draft: DemoDraft): Demo
     suspend fun updateDemo(id: Long, draft: DemoDraft): Demo?
     suspend fun deleteDemo(id: Long): Boolean
+
+    suspend fun appendEvent(email: String, type: ProjectEventType, detail: String?)
+    suspend fun findEvents(email: String): List<ProjectEvent>
 }

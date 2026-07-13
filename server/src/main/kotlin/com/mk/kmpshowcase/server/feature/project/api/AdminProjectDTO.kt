@@ -28,6 +28,7 @@ internal data class AdminProjectDTO(
     val documents: List<AdminDocumentDTO>,
     val milestones: List<AdminMilestoneDTO>,
     val demos: List<AdminDemoDTO>,
+    val history: List<ProjectEventDTO>,
 )
 
 @Serializable
@@ -87,6 +88,7 @@ internal fun AdminProject.toDTO() = AdminProjectDTO(
     documents = documents.map { it.toDTO() },
     milestones = milestones.map { it.toDTO() },
     demos = demos.map { it.toDTO() },
+    history = history.map { ProjectEventDTO(it.type.name, it.detail, it.at.toIso()) },
 )
 
 // Bad enum / blank required field throws IllegalArgumentException → 400 via StatusPages.

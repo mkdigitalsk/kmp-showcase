@@ -8,6 +8,8 @@ import com.mk.kmpshowcase.server.feature.project.service.Milestone
 import com.mk.kmpshowcase.server.feature.project.service.MilestoneDraft
 import com.mk.kmpshowcase.server.feature.project.service.Project
 import com.mk.kmpshowcase.server.feature.project.service.ProjectDraft
+import com.mk.kmpshowcase.server.feature.project.service.ProjectEvent
+import com.mk.kmpshowcase.server.feature.project.service.ProjectEventType
 import com.mk.kmpshowcase.server.feature.project.service.ProjectHealth
 import com.mk.kmpshowcase.server.feature.project.service.ProjectState
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -149,6 +151,31 @@ internal class ProjectRepositoryImpl : ProjectRepository {
     override suspend fun deleteDemo(id: Long): Boolean = suspendTransaction {
         DemosTable.deleteWhere { DemosTable.id eq id } > 0
     }
+
+    override suspend fun appendEvent(email: String, type: ProjectEventType, detail: String?) {
+        suspendTransaction {
+            ProjectEventsTable.insert {
+                it[ProjectEventsTable.email] = email
+                it[ProjectEventsTable.type] = type
+                it[ProjectEventsTable.detail] = detail
+                it[at] = System.currentTimeMillis()
+            }
+        }
+    }
+
+    override suspend fun findEvents(email: String): List<ProjectEvent> = suspendTransaction {
+        ProjectEventsTable.selectAll()
+            .where { ProjectEventsTable.email eq email }
+            .orderBy(ProjectEventsTable.at, SortOrder.DESC)
+            .map { it.toEvent() }
+    }
+
+    private fun ResultRow.toEvent() = ProjectEvent(
+        id = this[ProjectEventsTable.id].value,
+        type = this[ProjectEventsTable.type],
+        detail = this[ProjectEventsTable.detail],
+        at = this[ProjectEventsTable.at],
+    )
 
     private fun ResultRow.toProject() = Project(
         email = this[ProjectsTable.email],

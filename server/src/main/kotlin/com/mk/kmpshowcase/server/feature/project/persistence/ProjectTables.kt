@@ -2,6 +2,7 @@ package com.mk.kmpshowcase.server.feature.project.persistence
 
 import com.mk.kmpshowcase.server.feature.project.service.DocumentType
 import com.mk.kmpshowcase.server.feature.project.service.MilestoneStatus
+import com.mk.kmpshowcase.server.feature.project.service.ProjectEventType
 import com.mk.kmpshowcase.server.feature.project.service.ProjectHealth
 import com.mk.kmpshowcase.server.feature.project.service.ProjectState
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
@@ -47,4 +48,12 @@ internal object DocumentsTable : LongIdTable("documents") {
     val title = varchar("title", TITLE_LENGTH)
     val url = varchar("url", URL_LENGTH)
     val updatedAt = long("updated_at")
+}
+
+// Append-only: rows are only ever inserted — never updated or deleted (immutable project history).
+internal object ProjectEventsTable : LongIdTable("project_events") {
+    val email = varchar("email", EMAIL_LENGTH)
+    val type = enumerationByName("type", ENUM_LENGTH, ProjectEventType::class)
+    val detail = varchar("detail", TITLE_LENGTH).nullable()
+    val at = long("at")
 }

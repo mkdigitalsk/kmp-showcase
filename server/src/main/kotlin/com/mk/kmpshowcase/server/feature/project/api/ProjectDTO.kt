@@ -18,7 +18,11 @@ internal data class ClientProjectDTO(
     val documents: List<ClientDocumentDTO>,
     val milestones: List<ClientMilestoneDTO>,
     val demos: List<ClientDemoDTO>,
+    val history: List<ProjectEventDTO>,
 )
+
+@Serializable
+internal data class ProjectEventDTO(val type: String, val detail: String?, val at: String)
 
 @Serializable
 internal data class ClientDocumentDTO(val type: String, val title: String, val url: String)
@@ -47,4 +51,5 @@ internal fun ClientProject.toDTO() = ClientProjectDTO(
         ClientMilestoneDTO(it.title, it.description, it.status.name, it.plannedDate?.toIso(), it.completedDate?.toIso(), it.position)
     },
     demos = demos.map { ClientDemoDTO(it.title, it.url, it.updatedAt.toIso()) },
+    history = history.map { ProjectEventDTO(it.type.name, it.detail, it.at.toIso()) },
 )
