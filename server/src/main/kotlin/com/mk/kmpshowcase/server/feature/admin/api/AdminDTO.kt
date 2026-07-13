@@ -37,6 +37,15 @@ internal data class AdminLeadDetailDTO(
     val artifacts: List<AdminLeadArtifactDTO>,
 )
 
+// A Client = a WON lead (the account) joined with its delivery project's summary. projectState is null
+// when the deal is won but the project hasn't been started yet.
+@Serializable
+internal data class AdminClientDTO(
+    val lead: AdminLeadDTO,
+    val projectState: String?,
+    val projectHealth: String?,
+)
+
 @Serializable
 internal data class UpdateStatusRequestDTO(val status: String)
 

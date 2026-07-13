@@ -44,7 +44,7 @@ private fun Route.apiRoutes(dependencies: AppDependencies) {
         userRoutes(dependencies.userService)
         noteRoutes(dependencies.noteService)
         leadRoutes(dependencies.leadService)
-        adminRoutes(dependencies.leadService)
+        adminRoutes(dependencies.leadService, dependencies.projectService)
         clientProjectRoutes(dependencies.projectService)
         adminProjectRoutes(dependencies.projectService)
     }

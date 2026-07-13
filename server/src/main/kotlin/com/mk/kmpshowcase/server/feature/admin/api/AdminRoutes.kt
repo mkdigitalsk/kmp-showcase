@@ -5,6 +5,7 @@ import com.mk.kmpshowcase.server.core.auth.isAdmin
 import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
 import com.mk.kmpshowcase.server.feature.lead.service.LeadService
 import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
+import com.mk.kmpshowcase.server.feature.project.service.ProjectService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.auth.authenticate
@@ -18,12 +19,24 @@ import io.ktor.server.routing.route
 
 // Admin-only sales CRM (leads + pipeline artifacts). Role is enforced server-side per endpoint — a
 // non-admin token never reaches the data. Delivery lives in feature/project (adminProjectRoutes).
-internal fun Route.adminRoutes(leadService: LeadService) {
+internal fun Route.adminRoutes(leadService: LeadService, projectService: ProjectService) {
     route("${ApiVersion.BASE}/admin") {
         authenticate("auth-jwt") {
             get("/leads") {
                 if (!call.isAdmin()) return@get call.respond(HttpStatusCode.Forbidden)
                 call.respond(leadService.getAll().map { it.toAdminLeadDTO() })
+            }
+
+            // Clients = won leads joined with their delivery project's summary (state + health).
+            get("/clients") {
+                if (!call.isAdmin()) return@get call.respond(HttpStatusCode.Forbidden)
+                val clients = leadService.getAll()
+                    .filter { it.status == LeadStatus.WON }
+                    .map { lead ->
+                        val p = projectService.getAdminProject(lead.email)?.project
+                        AdminClientDTO(lead.toAdminLeadDTO(), p?.state?.name, p?.health?.name)
+                    }
+                call.respond(clients)
             }
 
             get("/leads/{email}") {
