@@ -45,7 +45,7 @@ internal data class ClientMilestoneDTO(
 )
 
 @Serializable
-internal data class ClientDemoDTO(val title: String, val url: String, val updatedAt: String)
+internal data class ClientDemoDTO(val title: String, val url: String, val thumbnailUrl: String?, val updatedAt: String)
 
 @Serializable
 internal data class ClientPaymentDTO(
@@ -71,7 +71,7 @@ internal fun ClientProject.toDTO() = ClientProjectDTO(
             it.completedDate?.toIso(), it.position, it.acceptanceCriteria,
         )
     },
-    demos = demos.map { ClientDemoDTO(it.title, it.url, it.updatedAt.toIso()) },
+    demos = demos.map { ClientDemoDTO(it.title, it.url, it.thumbnailUrl, it.updatedAt.toIso()) },
     payments = payments.map { ClientPaymentDTO(it.label, it.amountCents, it.currency.name, it.status.name, it.position) },
     history = history.map { ProjectEventDTO(it.type.name, it.detail, it.at.toIso()) },
 )

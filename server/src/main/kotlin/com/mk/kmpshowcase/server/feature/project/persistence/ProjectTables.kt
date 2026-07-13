@@ -53,6 +53,7 @@ internal object DemosTable : LongIdTable("demos") {
     val email = varchar("email", EMAIL_LENGTH)
     val title = varchar("title", TITLE_LENGTH)
     val url = varchar("url", URL_LENGTH)
+    val thumbnailUrl = varchar("thumbnail_url", URL_LENGTH).nullable()
     val released = bool("released").default(false)
     val updatedAt = long("updated_at")
 }

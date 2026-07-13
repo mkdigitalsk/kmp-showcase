@@ -61,6 +61,7 @@ internal data class Demo(
     val id: Long,
     val title: String,
     val url: String,
+    val thumbnailUrl: String?,
     val released: Boolean,
     val updatedAt: Long,
 )
@@ -68,6 +69,7 @@ internal data class Demo(
 internal data class DemoDraft(
     val title: String,
     val url: String,
+    val thumbnailUrl: String?,
     val released: Boolean,
 )
 

@@ -164,10 +164,11 @@ internal class ProjectRepositoryImpl : ProjectRepository {
             it[DemosTable.email] = email
             it[title] = draft.title
             it[url] = draft.url
+            it[thumbnailUrl] = draft.thumbnailUrl
             it[released] = draft.released
             it[updatedAt] = now
         } get DemosTable.id
-        Demo(newId.value, draft.title, draft.url, draft.released, now)
+        Demo(newId.value, draft.title, draft.url, draft.thumbnailUrl, draft.released, now)
     }
 
     override suspend fun updateDemo(id: Long, draft: DemoDraft): Demo? = suspendTransaction {
@@ -175,6 +176,7 @@ internal class ProjectRepositoryImpl : ProjectRepository {
         val updated = DemosTable.update({ DemosTable.id eq id }) {
             it[title] = draft.title
             it[url] = draft.url
+            it[thumbnailUrl] = draft.thumbnailUrl
             it[released] = draft.released
             it[updatedAt] = now
         }
@@ -279,6 +281,7 @@ internal class ProjectRepositoryImpl : ProjectRepository {
         id = this[DemosTable.id].value,
         title = this[DemosTable.title],
         url = this[DemosTable.url],
+        thumbnailUrl = this[DemosTable.thumbnailUrl],
         released = this[DemosTable.released],
         updatedAt = this[DemosTable.updatedAt],
     )

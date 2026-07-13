@@ -56,7 +56,7 @@ internal data class AdminMilestoneDTO(
 )
 
 @Serializable
-internal data class AdminDemoDTO(val id: Long, val title: String, val url: String, val released: Boolean, val updatedAt: String)
+internal data class AdminDemoDTO(val id: Long, val title: String, val url: String, val thumbnailUrl: String?, val released: Boolean, val updatedAt: String)
 
 @Serializable
 internal data class AdminPaymentDTO(
@@ -100,7 +100,7 @@ internal data class MilestoneRequestDTO(
 )
 
 @Serializable
-internal data class DemoRequestDTO(val title: String, val url: String, val released: Boolean = false)
+internal data class DemoRequestDTO(val title: String, val url: String, val thumbnailUrl: String? = null, val released: Boolean = false)
 
 @Serializable
 internal data class PaymentRequestDTO(
@@ -118,7 +118,7 @@ internal fun Milestone.toDTO() = AdminMilestoneDTO(
     acceptanceCriteria,
 )
 
-internal fun Demo.toDTO() = AdminDemoDTO(id, title, url, released, updatedAt.toIso())
+internal fun Demo.toDTO() = AdminDemoDTO(id, title, url, thumbnailUrl, released, updatedAt.toIso())
 
 internal fun Payment.toDTO() = AdminPaymentDTO(id, label, amountCents, currency.name, status.name, position)
 
@@ -176,7 +176,7 @@ internal fun MilestoneRequestDTO.toDraft(): MilestoneDraft {
 internal fun DemoRequestDTO.toDraft(): DemoDraft {
     require(title.isNotBlank()) { "Demo title is required" }
     require(url.isNotBlank()) { "Demo url is required" }
-    return DemoDraft(title.trim(), url.trim(), released)
+    return DemoDraft(title.trim(), url.trim(), thumbnailUrl?.trim()?.takeIf { it.isNotBlank() }, released)
 }
 
 internal fun PaymentRequestDTO.toDraft(): PaymentDraft {
