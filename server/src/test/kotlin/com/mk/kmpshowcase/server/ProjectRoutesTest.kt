@@ -92,11 +92,13 @@ class ProjectRoutesTest {
                 contentType(ContentType.Application.Json); setBody(body)
             }.status
         }
-        assertEquals(HttpStatusCode.Created, admin("POST", "", """{"startDate":1000,"targetEndDate":9000,"health":"AMBER"}"""))
-        assertEquals(HttpStatusCode.Created, admin("POST", "/milestones", """{"title":"Design","status":"DONE","plannedDate":2000,"position":0}"""))
+        val start = """{"startDate":1000,"targetEndDate":9000,"health":"AMBER","scope":[{"title":"Native KMP app","detail":"iOS + Android"}],"outOfScope":[{"title":"Web admin"}]}"""
+        assertEquals(HttpStatusCode.Created, admin("POST", "", start))
+        assertEquals(HttpStatusCode.Created, admin("POST", "/milestones", """{"title":"Design","status":"DONE","plannedDate":2000,"position":0,"acceptanceCriteria":["Figma approved"]}"""))
         assertEquals(HttpStatusCode.Created, admin("POST", "/documents", """{"type":"CONTRACT","title":"Signed contract","url":"https://x/c.pdf"}"""))
         assertEquals(HttpStatusCode.Created, admin("POST", "/demos", """{"title":"Beta","url":"https://x/beta","released":true}"""))
         assertEquals(HttpStatusCode.Created, admin("POST", "/demos", """{"title":"WIP","url":"https://x/wip","released":false}"""))
+        assertEquals(HttpStatusCode.Created, admin("POST", "/payments", """{"label":"Milestone 1","amountCents":500000,"currency":"EUR","status":"PAID","position":0}"""))
 
         val clientToken = token(email, Role.CLIENT)
         val res = jsonClient.get("${ApiVersion.BASE}/me/project") {
@@ -106,11 +108,15 @@ class ProjectRoutesTest {
         val body = res.bodyAsText()
         assertTrue(body.contains("AMBER"), "health present")
         assertTrue(body.contains("Design"), "milestone present")
+        assertTrue(body.contains("Native KMP app"), "scope present")
+        assertTrue(body.contains("Figma approved"), "acceptance criteria present")
         assertTrue(body.contains("Signed contract"), "document present")
         assertTrue(body.contains("Beta"), "released demo present")
+        assertTrue(body.contains("Milestone 1") && body.contains("500000"), "payment present and client-visible")
         assertFalse(body.contains("WIP"), "unreleased demo (or its history event) must NOT reach the client")
         assertTrue(body.contains("STARTED"), "client history records the project start")
         assertFalse(body.contains("DEMO_ADDED"), "granular admin events must NOT reach the client history")
+        assertFalse(body.contains("PAYMENT_ADDED"), "granular admin events must NOT reach the client history")
     }
 
     @Test

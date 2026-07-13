@@ -12,6 +12,7 @@ internal class ProjectService(private val repository: ProjectRepository) {
             documents = repository.findDocuments(email),
             milestones = repository.findMilestones(email),
             demos = repository.findDemos(email).filter { it.released },
+            payments = repository.findPayments(email),
             history = repository.findEvents(email).filter { it.type in CLIENT_VISIBLE },
         )
     }
@@ -24,6 +25,7 @@ internal class ProjectService(private val repository: ProjectRepository) {
             documents = repository.findDocuments(email),
             milestones = repository.findMilestones(email),
             demos = repository.findDemos(email),
+            payments = repository.findPayments(email),
             history = repository.findEvents(email),
         )
     }
@@ -34,9 +36,17 @@ internal class ProjectService(private val repository: ProjectRepository) {
         return repository.create(email, draft).also { repository.appendEvent(email, ProjectEventType.STARTED, null) }
     }
 
-    suspend fun updateProject(email: String, health: ProjectHealth, targetEndDate: Long?): Project? {
+    suspend fun updateProject(
+        email: String,
+        health: ProjectHealth,
+        targetEndDate: Long?,
+        scope: List<ScopeItem>,
+        outOfScope: List<ScopeItem>,
+    ): Project? {
         val current = repository.find(email) ?: return null
-        val updated = repository.update(email, current.state, health, targetEndDate, current.actualEndDate)
+        val updated = repository.update(
+            email, current.state, health, targetEndDate, current.actualEndDate, scope, outOfScope,
+        )
         if (updated != null && health != current.health) {
             repository.appendEvent(email, ProjectEventType.HEALTH_CHANGED, health.name)
         }
@@ -45,14 +55,18 @@ internal class ProjectService(private val repository: ProjectRepository) {
 
     suspend fun completeProject(email: String): Project? {
         val current = repository.find(email) ?: return null
-        return repository.update(email, ProjectState.COMPLETED, current.health, current.targetEndDate, System.currentTimeMillis())
-            ?.also { repository.appendEvent(email, ProjectEventType.COMPLETED, null) }
+        return repository.update(
+            email, ProjectState.COMPLETED, current.health, current.targetEndDate, System.currentTimeMillis(),
+            current.scope, current.outOfScope,
+        )?.also { repository.appendEvent(email, ProjectEventType.COMPLETED, null) }
     }
 
     suspend fun archiveProject(email: String): Project? {
         val current = repository.find(email) ?: return null
-        return repository.update(email, ProjectState.ARCHIVED, current.health, current.targetEndDate, current.actualEndDate)
-            ?.also { repository.appendEvent(email, ProjectEventType.ARCHIVED, null) }
+        return repository.update(
+            email, ProjectState.ARCHIVED, current.health, current.targetEndDate, current.actualEndDate,
+            current.scope, current.outOfScope,
+        )?.also { repository.appendEvent(email, ProjectEventType.ARCHIVED, null) }
     }
 
     suspend fun addDocument(email: String, draft: DocumentDraft): Document =
@@ -78,6 +92,15 @@ internal class ProjectService(private val repository: ProjectRepository) {
 
     suspend fun deleteDemo(email: String, id: Long): Boolean =
         repository.deleteDemo(id).also { if (it) repository.appendEvent(email, ProjectEventType.DEMO_REMOVED, null) }
+
+    suspend fun addPayment(email: String, draft: PaymentDraft): Payment =
+        repository.addPayment(email, draft).also { repository.appendEvent(email, ProjectEventType.PAYMENT_ADDED, it.label) }
+
+    suspend fun updatePayment(email: String, id: Long, draft: PaymentDraft): Payment? =
+        repository.updatePayment(id, draft)?.also { repository.appendEvent(email, ProjectEventType.PAYMENT_UPDATED, it.label) }
+
+    suspend fun deletePayment(email: String, id: Long): Boolean =
+        repository.deletePayment(id).also { if (it) repository.appendEvent(email, ProjectEventType.PAYMENT_REMOVED, null) }
 
     private companion object {
         // The client sees only project-level lifecycle events — never granular admin actions, which could

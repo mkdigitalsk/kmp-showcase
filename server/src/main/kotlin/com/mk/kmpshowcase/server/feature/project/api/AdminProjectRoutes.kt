@@ -48,8 +48,10 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
                 if (!call.isAdmin()) return@patch call.respond(HttpStatusCode.Forbidden)
                 val email = call.emailParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
                 val body = call.receive<UpdateProjectRequestDTO>()
-                projectService.updateProject(email, ProjectHealth.valueOf(body.health.uppercase()), body.targetEndDate)
-                    ?: return@patch call.respond(HttpStatusCode.NotFound)
+                projectService.updateProject(
+                    email, ProjectHealth.valueOf(body.health.uppercase()), body.targetEndDate,
+                    body.scope.toDomain(), body.outOfScope.toDomain(),
+                ) ?: return@patch call.respond(HttpStatusCode.NotFound)
                 call.respond(projectService.getAdminProject(email)!!.toDTO())
             }
 
@@ -122,6 +124,28 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
                 val email = call.emailParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
                 val id = call.idParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
                 if (projectService.deleteDemo(email, id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
+            }
+
+            post("/{email}/payments") {
+                if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                call.respond(HttpStatusCode.Created, projectService.addPayment(email, call.receive<PaymentRequestDTO>().toDraft()).toDTO())
+            }
+
+            patch("/{email}/payments/{id}") {
+                if (!call.isAdmin()) return@patch call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
+                val id = call.idParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
+                val payment = projectService.updatePayment(email, id, call.receive<PaymentRequestDTO>().toDraft())
+                    ?: return@patch call.respond(HttpStatusCode.NotFound)
+                call.respond(payment.toDTO())
+            }
+
+            delete("/{email}/payments/{id}") {
+                if (!call.isAdmin()) return@delete call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
+                val id = call.idParam() ?: return@delete call.respond(HttpStatusCode.BadRequest)
+                if (projectService.deletePayment(email, id)) call.respond(HttpStatusCode.NoContent) else call.respond(HttpStatusCode.NotFound)
             }
         }
     }

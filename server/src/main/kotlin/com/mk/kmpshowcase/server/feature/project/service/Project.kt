@@ -1,5 +1,10 @@
 package com.mk.kmpshowcase.server.feature.project.service
 
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class ScopeItem(val title: String, val detail: String? = null)
+
 // The delivery side of the relationship — a signed client's live project, from kickoff through
 // completion to a permanent read-only archive. Separate bounded context from the sales `lead`.
 // Keyed by client email (one active project per client for now); see architecture notes.
@@ -16,12 +21,16 @@ internal data class Project(
     val startDate: Long,
     val targetEndDate: Long?,
     val actualEndDate: Long?,
+    val scope: List<ScopeItem>,
+    val outOfScope: List<ScopeItem>,
 )
 
 internal data class ProjectDraft(
     val startDate: Long,
     val targetEndDate: Long?,
     val health: ProjectHealth,
+    val scope: List<ScopeItem>,
+    val outOfScope: List<ScopeItem>,
 )
 
 internal enum class MilestoneStatus { PENDING, IN_PROGRESS, DONE }
@@ -35,6 +44,7 @@ internal data class Milestone(
     val completedDate: Long?,
     val position: Int,
     val updatedAt: Long,
+    val acceptanceCriteria: List<String>,
 )
 
 internal data class MilestoneDraft(
@@ -44,6 +54,7 @@ internal data class MilestoneDraft(
     val plannedDate: Long?,
     val completedDate: Long?,
     val position: Int,
+    val acceptanceCriteria: List<String>,
 )
 
 internal data class Demo(
@@ -76,11 +87,35 @@ internal data class DocumentDraft(
     val url: String,
 )
 
+internal enum class PaymentStatus { DUE, PAID }
+
+// Curated ISO 4217 subset — the currencies the studio invoices in.
+internal enum class Currency { EUR, USD, GBP, CZK }
+
+// A payment stage tied to an acceptance gate (client-visible, per the transparency decision).
+internal data class Payment(
+    val id: Long,
+    val label: String,
+    val amountCents: Long,
+    val currency: Currency,
+    val status: PaymentStatus,
+    val position: Int,
+)
+
+internal data class PaymentDraft(
+    val label: String,
+    val amountCents: Long,
+    val currency: Currency,
+    val status: PaymentStatus,
+    val position: Int,
+)
+
 // Append-only history — every project change is recorded as an immutable event (never updated or
 // deleted), giving a permanent audit trail that a current-state-only model cannot reconstruct.
 internal enum class ProjectEventType {
     STARTED, HEALTH_CHANGED, MILESTONE_ADDED, MILESTONE_UPDATED, MILESTONE_REMOVED,
-    DOCUMENT_ADDED, DOCUMENT_REMOVED, DEMO_ADDED, DEMO_UPDATED, DEMO_REMOVED, COMPLETED, ARCHIVED,
+    DOCUMENT_ADDED, DOCUMENT_REMOVED, DEMO_ADDED, DEMO_UPDATED, DEMO_REMOVED,
+    PAYMENT_ADDED, PAYMENT_UPDATED, PAYMENT_REMOVED, COMPLETED, ARCHIVED,
 }
 
 internal data class ProjectEvent(val id: Long, val type: ProjectEventType, val detail: String?, val at: Long)
@@ -92,6 +127,7 @@ internal data class ClientProject(
     val documents: List<Document>,
     val milestones: List<Milestone>,
     val demos: List<Demo>,
+    val payments: List<Payment>,
     val history: List<ProjectEvent>,
 )
 
@@ -101,5 +137,6 @@ internal data class AdminProject(
     val documents: List<Document>,
     val milestones: List<Milestone>,
     val demos: List<Demo>,
+    val payments: List<Payment>,
     val history: List<ProjectEvent>,
 )

@@ -1,7 +1,9 @@
 package com.mk.kmpshowcase.server.feature.project.persistence
 
+import com.mk.kmpshowcase.server.feature.project.service.Currency
 import com.mk.kmpshowcase.server.feature.project.service.DocumentType
 import com.mk.kmpshowcase.server.feature.project.service.MilestoneStatus
+import com.mk.kmpshowcase.server.feature.project.service.PaymentStatus
 import com.mk.kmpshowcase.server.feature.project.service.ProjectEventType
 import com.mk.kmpshowcase.server.feature.project.service.ProjectHealth
 import com.mk.kmpshowcase.server.feature.project.service.ProjectState
@@ -11,6 +13,7 @@ private const val EMAIL_LENGTH = 320
 private const val TITLE_LENGTH = 200
 private const val URL_LENGTH = 2048
 private const val ENUM_LENGTH = 20
+private const val CURRENCY_LENGTH = 8
 
 // One project per client (email) for now — a unique index enforces it. project_id FKs are the future
 // move if a client ever has multiple projects (YAGNI today).
@@ -21,6 +24,8 @@ internal object ProjectsTable : LongIdTable("projects") {
     val startDate = long("start_date")
     val targetEndDate = long("target_end_date").nullable()
     val actualEndDate = long("actual_end_date").nullable()
+    val scope = text("scope").nullable()
+    val outOfScope = text("out_of_scope").nullable()
 }
 
 internal object MilestonesTable : LongIdTable("milestones") {
@@ -32,6 +37,16 @@ internal object MilestonesTable : LongIdTable("milestones") {
     val completedDate = long("completed_date").nullable()
     val position = integer("position")
     val updatedAt = long("updated_at")
+    val acceptanceCriteria = text("acceptance_criteria").nullable()
+}
+
+internal object PaymentsTable : LongIdTable("payments") {
+    val email = varchar("email", EMAIL_LENGTH)
+    val label = varchar("label", TITLE_LENGTH)
+    val amountCents = long("amount_cents")
+    val currency = enumerationByName("currency", CURRENCY_LENGTH, Currency::class).default(Currency.EUR)
+    val status = enumerationByName("status", ENUM_LENGTH, PaymentStatus::class).default(PaymentStatus.DUE)
+    val position = integer("position")
 }
 
 internal object DemosTable : LongIdTable("demos") {
