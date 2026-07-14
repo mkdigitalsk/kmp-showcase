@@ -15,6 +15,7 @@ import com.mk.kmpshowcase.server.plugins.configureSerialization
 import com.mk.kmpshowcase.server.plugins.configureStatusPages
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.statement.bodyAsText
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -114,12 +115,20 @@ class UserRoutesTest {
     }
 
     @Test
-    fun `login with missing fields returns 400 not 500`() = usersTest {
+    fun `login with missing fields returns 400 as RFC 9457 problem detail`() = usersTest {
         val response = client.post("${ApiVersion.BASE}/auth/login") {
             contentType(ContentType.Application.Json)
             setBody("{}")
         }
         assertEquals(HttpStatusCode.BadRequest, response.status)
+        assertTrue(
+            response.headers[HttpHeaders.ContentType]?.startsWith("application/problem+json") == true,
+            "error body must be served as application/problem+json (RFC 9457)",
+        )
+        val body = response.bodyAsText()
+        assertTrue(body.contains("\"status\":400"), "problem detail carries the status")
+        assertTrue(body.contains("\"title\""), "problem detail carries a title")
+        assertTrue(body.contains("\"detail\""), "problem detail carries a detail")
     }
 
     @Test
