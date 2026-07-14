@@ -9,6 +9,7 @@ import com.mk.kmpshowcase.server.plugins.configureCORS
 import com.mk.kmpshowcase.server.plugins.configureCallLogging
 import com.mk.kmpshowcase.server.plugins.configureRateLimit
 import com.mk.kmpshowcase.server.plugins.configureRouting
+import com.mk.kmpshowcase.server.plugins.configureSecurityHeaders
 import com.mk.kmpshowcase.server.plugins.configureSerialization
 import com.mk.kmpshowcase.server.plugins.configureStatusPages
 import io.ktor.server.application.Application
@@ -44,6 +45,7 @@ internal fun Application.module() {
         resendApiKey = config.property("mail.resendApiKey").getString(),
     )
     val dependencies = AppDependencies(jwtConfig, mailConfig)
+    configureSecurityHeaders()
     configureCallLogging()
     configureSerialization()
     configureStatusPages()
