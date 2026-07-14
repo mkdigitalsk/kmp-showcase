@@ -19,3 +19,6 @@ xcuserdata
 skills-lock.json
 # Lead intake — client-confidential (analyze-lead skill outputs)
 leads/
+
+# Local session handoff (not shared)
+/session.md
