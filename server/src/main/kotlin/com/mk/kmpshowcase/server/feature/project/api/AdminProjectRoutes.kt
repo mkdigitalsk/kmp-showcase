@@ -69,6 +69,13 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
                 call.respond(projectService.getAdminProject(email)!!.toDTO())
             }
 
+            post("/{email}/unarchive") {
+                if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                projectService.unarchiveProject(email) ?: return@post call.respond(HttpStatusCode.NotFound)
+                call.respond(projectService.getAdminProject(email)!!.toDTO())
+            }
+
             post("/{email}/documents") {
                 if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
                 val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)

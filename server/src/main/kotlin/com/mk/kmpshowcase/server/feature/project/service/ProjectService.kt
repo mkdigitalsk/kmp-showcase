@@ -69,6 +69,15 @@ internal class ProjectService(private val repository: ProjectRepository) {
         )?.also { repository.appendEvent(email, ProjectEventType.ARCHIVED, null) }
     }
 
+    // Reopen an archived project into active management, clearing the recorded end date.
+    suspend fun unarchiveProject(email: String): Project? {
+        val current = repository.find(email) ?: return null
+        return repository.update(
+            email, ProjectState.ACTIVE, current.health, current.targetEndDate, null,
+            current.scope, current.outOfScope,
+        )?.also { repository.appendEvent(email, ProjectEventType.UNARCHIVED, null) }
+    }
+
     suspend fun addDocument(email: String, draft: DocumentDraft): Document =
         repository.addDocument(email, draft).also { repository.appendEvent(email, ProjectEventType.DOCUMENT_ADDED, it.title) }
 
@@ -110,6 +119,7 @@ internal class ProjectService(private val repository: ProjectRepository) {
             ProjectEventType.HEALTH_CHANGED,
             ProjectEventType.COMPLETED,
             ProjectEventType.ARCHIVED,
+            ProjectEventType.UNARCHIVED,
         )
     }
 }
