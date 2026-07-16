@@ -26,6 +26,9 @@ internal object ProjectsTable : LongIdTable("projects") {
     val actualEndDate = long("actual_end_date").nullable()
     val scope = text("scope").nullable()
     val outOfScope = text("out_of_scope").nullable()
+    val jiraBoardUrl = varchar("jira_board_url", URL_LENGTH).nullable()
+    val specUrl = varchar("spec_url", URL_LENGTH).nullable()
+    val designUrl = varchar("design_url", URL_LENGTH).nullable()
 }
 
 internal object MilestonesTable : LongIdTable("milestones") {

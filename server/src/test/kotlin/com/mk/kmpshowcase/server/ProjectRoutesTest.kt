@@ -15,6 +15,7 @@ import com.mk.kmpshowcase.server.plugins.configureStatusPages
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -117,6 +118,39 @@ class ProjectRoutesTest {
         assertTrue(body.contains("STARTED"), "client history records the project start")
         assertFalse(body.contains("DEMO_ADDED"), "granular admin events must NOT reach the client history")
         assertFalse(body.contains("PAYMENT_ADDED"), "granular admin events must NOT reach the client history")
+    }
+
+    @Test
+    fun `admin updates tooling links, blank clears, client never sees them`() = projectTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "links-${UUID.randomUUID()}@test.com"
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        jsonClient.post("${ApiVersion.BASE}/admin/projects/$email") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json); setBody("""{"startDate":1000}""")
+        }
+
+        val patched = jsonClient.patch("${ApiVersion.BASE}/admin/projects/$email/links") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json)
+            setBody("""{"jiraBoardUrl":"https://x.atlassian.net/board/1","specUrl":"https://x.atlassian.net/wiki/spec","designUrl":"  "}""")
+        }
+        assertEquals(HttpStatusCode.OK, patched.status)
+        val adminBody = patched.bodyAsText()
+        assertTrue(adminBody.contains("board/1"), "links visible to admin")
+        assertTrue(adminBody.contains(""""designUrl":null"""), "blank link cleared to null")
+
+        val clientToken = token(email, Role.CLIENT)
+        val clientBody = jsonClient.get("${ApiVersion.BASE}/me/project") {
+            header(HttpHeaders.Authorization, "Bearer $clientToken")
+        }.bodyAsText()
+        assertFalse(clientBody.contains("board/1"), "internal tooling links must NOT reach the client")
+
+        val forbidden = jsonClient.patch("${ApiVersion.BASE}/admin/projects/$email/links") {
+            header(HttpHeaders.Authorization, "Bearer $clientToken")
+            contentType(ContentType.Application.Json); setBody("""{}""")
+        }
+        assertEquals(HttpStatusCode.Forbidden, forbidden.status)
     }
 
     @Test

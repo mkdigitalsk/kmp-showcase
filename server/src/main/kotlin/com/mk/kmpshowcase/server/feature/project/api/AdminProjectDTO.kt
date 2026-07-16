@@ -32,6 +32,9 @@ internal data class AdminProjectDTO(
     val actualEndDate: String?,
     val scope: List<ScopeItemDTO>,
     val outOfScope: List<ScopeItemDTO>,
+    val jiraBoardUrl: String?,
+    val specUrl: String?,
+    val designUrl: String?,
     val documents: List<AdminDocumentDTO>,
     val milestones: List<AdminMilestoneDTO>,
     val demos: List<AdminDemoDTO>,
@@ -85,6 +88,14 @@ internal data class UpdateProjectRequestDTO(
     val outOfScope: List<ScopeItemDTO> = emptyList(),
 )
 
+// Internal tooling links (admin-only). Blank → null clears a link.
+@Serializable
+internal data class UpdateLinksRequestDTO(
+    val jiraBoardUrl: String? = null,
+    val specUrl: String? = null,
+    val designUrl: String? = null,
+)
+
 @Serializable
 internal data class DocumentRequestDTO(val type: String, val title: String, val url: String)
 
@@ -131,6 +142,9 @@ internal fun AdminProject.toDTO() = AdminProjectDTO(
     actualEndDate = project.actualEndDate?.toIso(),
     scope = project.scope.map { ScopeItemDTO(it.title, it.detail) },
     outOfScope = project.outOfScope.map { ScopeItemDTO(it.title, it.detail) },
+    jiraBoardUrl = project.jiraBoardUrl,
+    specUrl = project.specUrl,
+    designUrl = project.designUrl,
     documents = documents.map { it.toDTO() },
     milestones = milestones.map { it.toDTO() },
     demos = demos.map { it.toDTO() },
@@ -144,6 +158,8 @@ internal fun List<ScopeItemDTO>.toDomain(): List<ScopeItem> = mapNotNull { item 
 }
 
 private fun List<String>.cleaned(): List<String> = map { it.trim() }.filter { it.isNotEmpty() }
+
+internal fun String?.blankToNull(): String? = this?.trim()?.takeIf { it.isNotEmpty() }
 
 // Bad enum / blank required field throws IllegalArgumentException → 400 via StatusPages.
 internal fun StartProjectRequestDTO.toDraft() = ProjectDraft(

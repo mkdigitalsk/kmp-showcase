@@ -53,6 +53,10 @@ internal class ProjectService(private val repository: ProjectRepository) {
         return updated
     }
 
+    suspend fun updateLinks(email: String, jiraBoardUrl: String?, specUrl: String?, designUrl: String?): Project? =
+        repository.updateLinks(email, jiraBoardUrl, specUrl, designUrl)
+            ?.also { repository.appendEvent(email, ProjectEventType.LINKS_UPDATED, null) }
+
     suspend fun completeProject(email: String): Project? {
         val current = repository.find(email) ?: return null
         return repository.update(

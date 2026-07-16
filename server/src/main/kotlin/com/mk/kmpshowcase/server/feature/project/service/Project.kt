@@ -23,6 +23,10 @@ internal data class Project(
     val actualEndDate: Long?,
     val scope: List<ScopeItem>,
     val outOfScope: List<ScopeItem>,
+    // Internal tooling links (admin-only — never in the client projection).
+    val jiraBoardUrl: String? = null,
+    val specUrl: String? = null,
+    val designUrl: String? = null,
 )
 
 internal data class ProjectDraft(
@@ -115,7 +119,7 @@ internal data class PaymentDraft(
 // Append-only history — every project change is recorded as an immutable event (never updated or
 // deleted), giving a permanent audit trail that a current-state-only model cannot reconstruct.
 internal enum class ProjectEventType {
-    STARTED, HEALTH_CHANGED, MILESTONE_ADDED, MILESTONE_UPDATED, MILESTONE_REMOVED,
+    STARTED, HEALTH_CHANGED, LINKS_UPDATED, MILESTONE_ADDED, MILESTONE_UPDATED, MILESTONE_REMOVED,
     DOCUMENT_ADDED, DOCUMENT_REMOVED, DEMO_ADDED, DEMO_UPDATED, DEMO_REMOVED,
     PAYMENT_ADDED, PAYMENT_UPDATED, PAYMENT_REMOVED, COMPLETED, ARCHIVED, UNARCHIVED,
 }

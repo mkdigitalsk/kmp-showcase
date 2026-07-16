@@ -83,6 +83,20 @@ internal class ProjectRepositoryImpl : ProjectRepository {
         if (updated == 0) null else ProjectsTable.selectAll().where { ProjectsTable.email eq email }.first().toProject()
     }
 
+    override suspend fun updateLinks(
+        email: String,
+        jiraBoardUrl: String?,
+        specUrl: String?,
+        designUrl: String?,
+    ): Project? = suspendTransaction {
+        val updated = ProjectsTable.update({ ProjectsTable.email eq email }) {
+            it[ProjectsTable.jiraBoardUrl] = jiraBoardUrl
+            it[ProjectsTable.specUrl] = specUrl
+            it[ProjectsTable.designUrl] = designUrl
+        }
+        if (updated == 0) null else ProjectsTable.selectAll().where { ProjectsTable.email eq email }.first().toProject()
+    }
+
     override suspend fun findDocuments(email: String): List<Document> = suspendTransaction {
         DocumentsTable.selectAll()
             .where { DocumentsTable.email eq email }
@@ -255,6 +269,9 @@ internal class ProjectRepositoryImpl : ProjectRepository {
         actualEndDate = this[ProjectsTable.actualEndDate],
         scope = this[ProjectsTable.scope].decodeScope(),
         outOfScope = this[ProjectsTable.outOfScope].decodeScope(),
+        jiraBoardUrl = this[ProjectsTable.jiraBoardUrl],
+        specUrl = this[ProjectsTable.specUrl],
+        designUrl = this[ProjectsTable.designUrl],
     )
 
     private fun ResultRow.toDocument() = Document(

@@ -29,6 +29,8 @@ internal interface ProjectRepository {
         outOfScope: List<ScopeItem>,
     ): Project?
 
+    suspend fun updateLinks(email: String, jiraBoardUrl: String?, specUrl: String?, designUrl: String?): Project?
+
     suspend fun findDocuments(email: String): List<Document>
     suspend fun addDocument(email: String, draft: DocumentDraft): Document
     suspend fun deleteDocument(id: Long): Boolean

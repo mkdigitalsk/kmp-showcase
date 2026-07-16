@@ -55,6 +55,17 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
                 call.respond(projectService.getAdminProject(email)!!.toDTO())
             }
 
+            // Internal tooling links — separate from the full project PATCH so lifecycle updates never touch them.
+            patch("/{email}/links") {
+                if (!call.isAdmin()) return@patch call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
+                val body = call.receive<UpdateLinksRequestDTO>()
+                projectService.updateLinks(
+                    email, body.jiraBoardUrl.blankToNull(), body.specUrl.blankToNull(), body.designUrl.blankToNull(),
+                ) ?: return@patch call.respond(HttpStatusCode.NotFound)
+                call.respond(projectService.getAdminProject(email)!!.toDTO())
+            }
+
             post("/{email}/complete") {
                 if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
                 val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
