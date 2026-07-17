@@ -78,6 +78,10 @@ internal class LeadService(
             appendLine()
             appendLine("Client has their own documentation / spec.")
         }
+        if (lead.hasDesign) {
+            appendLine()
+            appendLine("Client has their own design (Figma / wireframes / screens).")
+        }
         lead.note?.let {
             appendLine()
             appendLine("Note:")

@@ -13,6 +13,7 @@ internal data class LeadRequestDTO(
     val phone: String? = null,
     val note: String? = null,
     val hasDoc: Boolean = false,
+    val hasDesign: Boolean = false,
     val locale: String? = null,
 )
 
@@ -28,5 +29,6 @@ internal fun LeadRequestDTO.toDraft() = LeadDraft(
     phone = phone?.trim()?.takeIf { it.isNotEmpty() },
     note = note?.trim()?.takeIf { it.isNotEmpty() },
     hasDoc = hasDoc,
+    hasDesign = hasDesign,
     locale = locale?.trim()?.takeIf { it.isNotEmpty() },
 )

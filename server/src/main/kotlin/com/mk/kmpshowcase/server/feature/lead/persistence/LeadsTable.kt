@@ -13,6 +13,7 @@ internal object LeadsTable : LongIdTable("leads") {
     val phone = varchar("phone", PHONE_LENGTH).nullable()
     val note = text("note").nullable()
     val hasDoc = bool("has_doc")
+    val hasDesign = bool("has_design").default(false)
     val createdAt = long("created_at")
     val status = enumerationByName("status", STATUS_LENGTH, LeadStatus::class).default(LeadStatus.NEW)
     val locale = varchar("locale", LOCALE_LENGTH).nullable()

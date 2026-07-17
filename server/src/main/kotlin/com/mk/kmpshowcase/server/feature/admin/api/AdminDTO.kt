@@ -20,6 +20,7 @@ internal data class AdminLeadDTO(
     val phone: String?,
     val note: String?,
     val hasDoc: Boolean,
+    val hasDesign: Boolean,
     val createdAt: String,
     val status: String,
 )
@@ -62,6 +63,7 @@ internal fun Lead.toAdminLeadDTO() = AdminLeadDTO(
     phone = phone,
     note = note,
     hasDoc = hasDoc,
+    hasDesign = hasDesign,
     createdAt = createdAt.toIso(),
     status = status.name,
 )

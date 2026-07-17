@@ -10,6 +10,7 @@ internal data class Lead(
     val phone: String?,
     val note: String?,
     val hasDoc: Boolean,
+    val hasDesign: Boolean,
     val createdAt: Long,
     val status: LeadStatus,
     val locale: String? = null,
@@ -24,5 +25,6 @@ internal data class LeadDraft(
     val phone: String?,
     val note: String?,
     val hasDoc: Boolean,
+    val hasDesign: Boolean,
     val locale: String?,
 )

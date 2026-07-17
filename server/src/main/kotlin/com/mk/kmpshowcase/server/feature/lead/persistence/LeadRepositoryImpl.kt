@@ -37,6 +37,7 @@ internal class LeadRepositoryImpl : LeadRepository {
             it[phone] = draft.phone
             it[note] = draft.note
             it[hasDoc] = draft.hasDoc
+            it[hasDesign] = draft.hasDesign
             it[createdAt] = now
             it[status] = LeadStatus.NEW
             it[locale] = draft.locale
@@ -52,6 +53,7 @@ internal class LeadRepositoryImpl : LeadRepository {
             phone = draft.phone,
             note = draft.note,
             hasDoc = draft.hasDoc,
+            hasDesign = draft.hasDesign,
             createdAt = now,
             status = LeadStatus.NEW,
             locale = draft.locale,
@@ -113,6 +115,7 @@ internal class LeadRepositoryImpl : LeadRepository {
         phone = this[LeadsTable.phone],
         note = this[LeadsTable.note],
         hasDoc = this[LeadsTable.hasDoc],
+        hasDesign = this[LeadsTable.hasDesign],
         createdAt = this[LeadsTable.createdAt],
         status = this[LeadsTable.status],
         locale = this[LeadsTable.locale],
