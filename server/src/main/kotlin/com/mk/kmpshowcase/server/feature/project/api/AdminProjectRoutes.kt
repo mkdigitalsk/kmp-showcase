@@ -87,6 +87,14 @@ internal fun Route.adminProjectRoutes(projectService: ProjectService) {
                 call.respond(projectService.getAdminProject(email)!!.toDTO())
             }
 
+            // Upload a small signed document (base64 JSON body) — stored in-DB, served by /v1/documents/{id}/file.
+            post("/{email}/documents/upload") {
+                if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                val (draft, file) = call.receive<UploadDocumentRequestDTO>().toDraftAndFile()
+                call.respond(HttpStatusCode.Created, projectService.uploadDocument(email, draft, file).toDTO())
+            }
+
             post("/{email}/documents") {
                 if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
                 val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)

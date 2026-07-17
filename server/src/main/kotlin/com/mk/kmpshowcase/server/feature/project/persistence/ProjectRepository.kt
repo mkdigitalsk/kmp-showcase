@@ -4,6 +4,7 @@ import com.mk.kmpshowcase.server.feature.project.service.Demo
 import com.mk.kmpshowcase.server.feature.project.service.DemoDraft
 import com.mk.kmpshowcase.server.feature.project.service.Document
 import com.mk.kmpshowcase.server.feature.project.service.DocumentDraft
+import com.mk.kmpshowcase.server.feature.project.service.DocumentFile
 import com.mk.kmpshowcase.server.feature.project.service.Milestone
 import com.mk.kmpshowcase.server.feature.project.service.MilestoneDraft
 import com.mk.kmpshowcase.server.feature.project.service.Payment
@@ -33,6 +34,8 @@ internal interface ProjectRepository {
 
     suspend fun findDocuments(email: String): List<Document>
     suspend fun addDocument(email: String, draft: DocumentDraft): Document
+    suspend fun addDocumentWithFile(email: String, draft: DocumentDraft, file: DocumentFile): Document
+    suspend fun findDocumentFile(id: Long): Pair<String, DocumentFile>?
     suspend fun deleteDocument(id: Long): Boolean
 
     suspend fun findMilestones(email: String): List<Milestone>

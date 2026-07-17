@@ -93,6 +93,8 @@ internal data class DocumentDraft(
     val url: String,
 )
 
+internal data class DocumentFile(val filename: String, val contentType: String, val bytes: ByteArray)
+
 internal enum class PaymentStatus { DUE, PAID }
 
 // Curated ISO 4217 subset — the currencies the studio invoices in.

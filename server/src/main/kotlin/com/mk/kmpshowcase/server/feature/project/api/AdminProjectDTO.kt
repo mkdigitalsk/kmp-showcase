@@ -5,6 +5,7 @@ import com.mk.kmpshowcase.server.feature.project.service.Demo
 import com.mk.kmpshowcase.server.feature.project.service.DemoDraft
 import com.mk.kmpshowcase.server.feature.project.service.Document
 import com.mk.kmpshowcase.server.feature.project.service.DocumentDraft
+import com.mk.kmpshowcase.server.feature.project.service.DocumentFile
 import com.mk.kmpshowcase.server.feature.project.service.DocumentType
 import com.mk.kmpshowcase.server.feature.project.service.Milestone
 import com.mk.kmpshowcase.server.feature.project.service.MilestoneDraft
@@ -99,6 +100,16 @@ internal data class UpdateLinksRequestDTO(
 @Serializable
 internal data class DocumentRequestDTO(val type: String, val title: String, val url: String)
 
+// Small signed PDFs travel as base64 JSON (10 MB service cap); long documentation stays a URL document.
+@Serializable
+internal data class UploadDocumentRequestDTO(
+    val type: String,
+    val title: String,
+    val filename: String,
+    val contentType: String,
+    val base64: String,
+)
+
 @Serializable
 internal data class MilestoneRequestDTO(
     val title: String,
@@ -174,6 +185,16 @@ internal fun DocumentRequestDTO.toDraft(): DocumentDraft {
     require(title.isNotBlank()) { "Document title is required" }
     require(url.isNotBlank()) { "Document url is required" }
     return DocumentDraft(DocumentType.valueOf(type.uppercase()), title.trim(), url.trim())
+}
+
+internal fun UploadDocumentRequestDTO.toDraftAndFile(): Pair<DocumentDraft, DocumentFile> {
+    require(title.isNotBlank()) { "Document title is required" }
+    require(filename.isNotBlank()) { "Filename is required" }
+    val decoded = runCatching { java.util.Base64.getDecoder().decode(base64) }
+        .getOrElse { throw IllegalArgumentException("Invalid base64 content") }
+    require(decoded.isNotEmpty()) { "File content is empty" }
+    return DocumentDraft(DocumentType.valueOf(type.uppercase()), title.trim(), url = "") to
+        DocumentFile(filename.trim(), contentType.trim().ifEmpty { "application/octet-stream" }, decoded)
 }
 
 internal fun MilestoneRequestDTO.toDraft(): MilestoneDraft {

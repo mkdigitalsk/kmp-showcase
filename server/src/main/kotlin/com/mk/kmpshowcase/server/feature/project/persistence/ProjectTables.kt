@@ -69,6 +69,18 @@ internal object DocumentsTable : LongIdTable("documents") {
     val updatedAt = long("updated_at")
 }
 
+// Uploaded document bytes, in-DB (small signed PDFs at low volume — backed up with the data; object
+// storage is the scale-up path). One optional file per document; URL-only documents have no row here.
+internal object DocumentFilesTable : LongIdTable("document_files") {
+    val documentId = long("document_id").uniqueIndex()
+    val filename = varchar("filename", TITLE_LENGTH)
+    val contentType = varchar("content_type", CONTENT_TYPE_LENGTH)
+    val bytes = blob("bytes")
+    val size = long("size")
+
+    private const val CONTENT_TYPE_LENGTH = 100
+}
+
 // Append-only: rows are only ever inserted — never updated or deleted (immutable project history).
 internal object ProjectEventsTable : LongIdTable("project_events") {
     val email = varchar("email", EMAIL_LENGTH)

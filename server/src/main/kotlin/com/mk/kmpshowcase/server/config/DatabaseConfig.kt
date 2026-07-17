@@ -3,6 +3,7 @@ package com.mk.kmpshowcase.server.config
 import com.mk.kmpshowcase.server.feature.lead.persistence.LeadArtifactsTable
 import com.mk.kmpshowcase.server.feature.lead.persistence.LeadsTable
 import com.mk.kmpshowcase.server.feature.project.persistence.DemosTable
+import com.mk.kmpshowcase.server.feature.project.persistence.DocumentFilesTable
 import com.mk.kmpshowcase.server.feature.project.persistence.DocumentsTable
 import com.mk.kmpshowcase.server.feature.project.persistence.MilestonesTable
 import com.mk.kmpshowcase.server.feature.project.persistence.PaymentsTable
@@ -32,7 +33,7 @@ internal object DatabaseConfig {
             // column + the lead_artifacts table — land on an already-populated DB.
             SchemaUtils.createMissingTablesAndColumns(
                 UsersTable, InvitesTable, NotesTable, LeadsTable, LeadArtifactsTable,
-                ProjectsTable, MilestonesTable, DemosTable, DocumentsTable, PaymentsTable, ProjectEventsTable,
+                ProjectsTable, MilestonesTable, DemosTable, DocumentsTable, DocumentFilesTable, PaymentsTable, ProjectEventsTable,
             )
             logger.info("Database tables created/verified")
         }

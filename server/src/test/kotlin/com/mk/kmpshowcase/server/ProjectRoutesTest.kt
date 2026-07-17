@@ -154,6 +154,42 @@ class ProjectRoutesTest {
     }
 
     @Test
+    fun `uploaded document downloads for admin and owner only`() = projectTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "docs-${UUID.randomUUID()}@test.com"
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        jsonClient.post("${ApiVersion.BASE}/admin/projects/$email") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json); setBody("""{"startDate":1000}""")
+        }
+
+        val pdfBase64 = java.util.Base64.getEncoder().encodeToString("fake-pdf-bytes".toByteArray())
+        val uploaded = jsonClient.post("${ApiVersion.BASE}/admin/projects/$email/documents/upload") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json)
+            setBody("""{"type":"CONTRACT","title":"Signed SOW","filename":"sow.pdf","contentType":"application/pdf","base64":"$pdfBase64"}""")
+        }
+        assertEquals(HttpStatusCode.Created, uploaded.status)
+        val uploadedBody = uploaded.bodyAsText()
+        val docUrl = Regex(""""url":\s*"([^"]+)"""").find(uploadedBody)?.groupValues?.get(1)
+            ?: error("no url in upload response: $uploadedBody")
+        assertTrue(docUrl.contains("/documents/"), "url points at the served file")
+
+        val ownerToken = token(email, Role.CLIENT)
+        val owner = jsonClient.get(docUrl) { header(HttpHeaders.Authorization, "Bearer $ownerToken") }
+        assertEquals(HttpStatusCode.OK, owner.status)
+        assertEquals("fake-pdf-bytes", owner.bodyAsText())
+
+        val strangerToken = token("stranger-${UUID.randomUUID()}@test.com", Role.CLIENT)
+        assertEquals(
+            HttpStatusCode.NotFound,
+            jsonClient.get(docUrl) { header(HttpHeaders.Authorization, "Bearer $strangerToken") }.status,
+            "foreign client gets 404, never the file",
+        )
+        assertEquals(HttpStatusCode.Unauthorized, jsonClient.get(docUrl).status)
+    }
+
+    @Test
     fun `admin client-preview returns projection and non-admin is forbidden`() = projectTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
         val email = "prev-${UUID.randomUUID()}@test.com"

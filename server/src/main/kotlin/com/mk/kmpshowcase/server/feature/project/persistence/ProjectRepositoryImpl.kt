@@ -4,6 +4,7 @@ import com.mk.kmpshowcase.server.feature.project.service.Demo
 import com.mk.kmpshowcase.server.feature.project.service.DemoDraft
 import com.mk.kmpshowcase.server.feature.project.service.Document
 import com.mk.kmpshowcase.server.feature.project.service.DocumentDraft
+import com.mk.kmpshowcase.server.feature.project.service.DocumentFile
 import com.mk.kmpshowcase.server.feature.project.service.Milestone
 import com.mk.kmpshowcase.server.feature.project.service.MilestoneDraft
 import com.mk.kmpshowcase.server.feature.project.service.Payment
@@ -20,6 +21,7 @@ import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.core.statements.api.ExposedBlob
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -116,7 +118,42 @@ internal class ProjectRepositoryImpl : ProjectRepository {
         Document(newId.value, draft.type, draft.title, draft.url, now)
     }
 
+    // Document + its bytes land in ONE transaction; the row's url is the server's own download path.
+    override suspend fun addDocumentWithFile(email: String, draft: DocumentDraft, file: DocumentFile): Document =
+        suspendTransaction {
+            val now = System.currentTimeMillis()
+            val newId = DocumentsTable.insert {
+                it[DocumentsTable.email] = email
+                it[type] = draft.type
+                it[title] = draft.title
+                it[url] = ""
+                it[updatedAt] = now
+            } get DocumentsTable.id
+            val servedUrl = "/v1/documents/${newId.value}/file"
+            DocumentsTable.update({ DocumentsTable.id eq newId }) { it[url] = servedUrl }
+            DocumentFilesTable.insert {
+                it[documentId] = newId.value
+                it[filename] = file.filename
+                it[contentType] = file.contentType
+                it[bytes] = ExposedBlob(file.bytes)
+                it[size] = file.bytes.size.toLong()
+            }
+            Document(newId.value, draft.type, draft.title, servedUrl, now)
+        }
+
+    override suspend fun findDocumentFile(id: Long): Pair<String, DocumentFile>? = suspendTransaction {
+        val doc = DocumentsTable.selectAll().where { DocumentsTable.id eq id }.firstOrNull() ?: return@suspendTransaction null
+        val file = DocumentFilesTable.selectAll().where { DocumentFilesTable.documentId eq id }.firstOrNull()
+            ?: return@suspendTransaction null
+        doc[DocumentsTable.email] to DocumentFile(
+            filename = file[DocumentFilesTable.filename],
+            contentType = file[DocumentFilesTable.contentType],
+            bytes = file[DocumentFilesTable.bytes].bytes,
+        )
+    }
+
     override suspend fun deleteDocument(id: Long): Boolean = suspendTransaction {
+        DocumentFilesTable.deleteWhere { DocumentFilesTable.documentId eq id }
         DocumentsTable.deleteWhere { DocumentsTable.id eq id } > 0
     }
 

@@ -85,6 +85,14 @@ internal class ProjectService(private val repository: ProjectRepository) {
     suspend fun addDocument(email: String, draft: DocumentDraft): Document =
         repository.addDocument(email, draft).also { repository.appendEvent(email, ProjectEventType.DOCUMENT_ADDED, it.title) }
 
+    suspend fun uploadDocument(email: String, draft: DocumentDraft, file: DocumentFile): Document {
+        require(file.bytes.size <= MAX_FILE_BYTES) { "File too large (max 10 MB)" }
+        return repository.addDocumentWithFile(email, draft, file)
+            .also { repository.appendEvent(email, ProjectEventType.DOCUMENT_ADDED, it.title) }
+    }
+
+    suspend fun getDocumentFile(id: Long): Pair<String, DocumentFile>? = repository.findDocumentFile(id)
+
     suspend fun deleteDocument(email: String, id: Long): Boolean =
         repository.deleteDocument(id).also { if (it) repository.appendEvent(email, ProjectEventType.DOCUMENT_REMOVED, null) }
 
@@ -116,6 +124,10 @@ internal class ProjectService(private val repository: ProjectRepository) {
         repository.deletePayment(id).also { if (it) repository.appendEvent(email, ProjectEventType.PAYMENT_REMOVED, null) }
 
     private companion object {
+        // In-DB files are for small signed instruments (contracts, SOW, invoices). Long documentation
+        // is a LINK document (Confluence/hosted). Heavier files → object storage; the url contract survives.
+        const val MAX_FILE_BYTES = 10 * 1024 * 1024
+
         // The client sees only project-level lifecycle events — never granular admin actions, which could
         // leak titles of unreleased/internal work. The admin keeps the full audit trail.
         val CLIENT_VISIBLE = setOf(
