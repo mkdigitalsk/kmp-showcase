@@ -44,6 +44,10 @@ internal object ClientConfirmationEmail {
             if (lead.features.isNotEmpty()) appendLine("  ${s.featuresLabel}: ${lead.features.joinToString(", ")}")
             appendLine()
             appendLine(s.replyLine)
+            if (lead.hasDoc) {
+                appendLine()
+                appendLine(s.docsLine)
+            }
             appendLine()
             appendLine("$COMPANY · ${s.tagline}")
             appendLine(ADDRESS)
@@ -69,7 +73,7 @@ internal object ClientConfirmationEmail {
             body {
                 style = BODY
                 div { style = PREHEADER; +s.preheader }
-                shell { card(greeting, s, rows) }
+                shell { card(greeting, s, rows, docsLine = s.docsLine.takeIf { lead.hasDoc }) }
             }
         }
     }
@@ -80,7 +84,7 @@ internal object ClientConfirmationEmail {
         }
     }
 
-    private fun TD.card(greeting: String, s: Strings, rows: List<Pair<String, String>>) {
+    private fun TD.card(greeting: String, s: Strings, rows: List<Pair<String, String>>, docsLine: String?) {
         presentationTable(CARD) {
             tr { td { style = HEADER; headerLockup() } }
             tr {
@@ -90,6 +94,7 @@ internal object ClientConfirmationEmail {
                     p { style = INTRO; +s.intro }
                     requestBox(s, rows)
                     p { style = REPLY; +s.replyLine }
+                    docsLine?.let { p { style = DOCS; +it } }
                 }
             }
             tr { td { style = FOOTER; footer(s) } }
@@ -169,6 +174,7 @@ internal object ClientConfirmationEmail {
             platformsLabel = bundle.getString("platformsLabel"),
             featuresLabel = bundle.getString("featuresLabel"),
             replyLine = bundle.getString("replyLine"),
+            docsLine = bundle.getString("docsLine"),
             tagline = bundle.getString("tagline"),
             footerReason = bundle.getString("footerReason"),
             privacy = bundle.getString("privacy"),
@@ -193,6 +199,7 @@ internal object ClientConfirmationEmail {
         val platformsLabel: String,
         val featuresLabel: String,
         val replyLine: String,
+        val docsLine: String,
         val tagline: String,
         val footerReason: String,
         val privacy: String,
@@ -220,6 +227,7 @@ internal object ClientConfirmationEmail {
     private const val ROW = "padding:4px 0;font-size:14px;line-height:1.5;color:#33414f;"
     private const val STRONG = "color:#0E2A47;"
     private const val REPLY = "margin:0;font-size:15px;line-height:1.6;color:#33414f;"
+    private const val DOCS = "margin:18px 0 0;font-size:15px;line-height:1.6;color:#33414f;"
     private const val FOOTER = "padding:22px 32px;border-top:1px solid #eaedf0;"
     private const val FOOTER_COMPANY = "margin:0 0 6px;font-size:13px;font-weight:700;color:#0E2A47;"
     private const val FOOTER_ADDR = "margin:0 0 12px;font-size:12px;line-height:1.6;color:#8a97a3;"

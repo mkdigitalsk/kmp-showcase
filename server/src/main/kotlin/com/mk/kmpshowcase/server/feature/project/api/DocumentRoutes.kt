@@ -8,11 +8,13 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
+import io.ktor.server.request.receive
 import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 
 // Auth-gated download of stored document files. Admin sees all; a client only their own project's —
@@ -31,6 +33,27 @@ internal fun Route.documentRoutes(projectService: ProjectService) {
                     """attachment; filename="${file.filename.replace("\"", "")}"""",
                 )
                 call.respondBytes(file.bytes, ContentType.parse(file.contentType))
+            }
+        }
+    }
+
+    // Client-scoped document management (admin) — documents attach to an email, project or not:
+    // a lead's spec arrives before any project exists; the project view later reads the same rows.
+    route("${ApiVersion.BASE}/admin/documents/{email}") {
+        authenticate("auth-jwt") {
+            get {
+                if (!call.isAdmin()) return@get call.respond(HttpStatusCode.Forbidden)
+                val email = call.parameters["email"]?.takeIf { it.isNotBlank() }
+                    ?: return@get call.respond(HttpStatusCode.BadRequest)
+                call.respond(projectService.getDocuments(email).map { it.toDTO() })
+            }
+
+            post("/upload") {
+                if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
+                val email = call.parameters["email"]?.takeIf { it.isNotBlank() }
+                    ?: return@post call.respond(HttpStatusCode.BadRequest)
+                val (draft, file) = call.receive<UploadDocumentRequestDTO>().toDraftAndFile()
+                call.respond(HttpStatusCode.Created, projectService.uploadDocument(email, draft, file).toDTO())
             }
         }
     }

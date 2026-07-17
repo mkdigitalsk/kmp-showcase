@@ -190,6 +190,42 @@ class ProjectRoutesTest {
     }
 
     @Test
+    fun `lead documents work before any project exists — admin uploads, lists and downloads by email`() = projectTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "lead-${UUID.randomUUID()}@test.com"   // deliberately NO project created
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+
+        val pdfBase64 = java.util.Base64.getEncoder().encodeToString("lead-spec-bytes".toByteArray())
+        val uploaded = jsonClient.post("${ApiVersion.BASE}/admin/documents/$email/upload") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json)
+            setBody("""{"type":"DOCUMENTATION","title":"Client spec","filename":"spec.pdf","contentType":"application/pdf","base64":"$pdfBase64"}""")
+        }
+        assertEquals(HttpStatusCode.Created, uploaded.status)
+
+        val list = jsonClient.get("${ApiVersion.BASE}/admin/documents/$email") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+        }
+        assertEquals(HttpStatusCode.OK, list.status)
+        val listBody = list.bodyAsText()
+        assertTrue(listBody.contains("Client spec"), "uploaded lead document listed by email")
+        val docUrl = Regex(""""url":\s*"([^"]+)"""").find(listBody)?.groupValues?.get(1)
+            ?: error("no url in list response: $listBody")
+        val file = jsonClient.get(docUrl) { header(HttpHeaders.Authorization, "Bearer $adminToken") }
+        assertEquals(HttpStatusCode.OK, file.status)
+        assertEquals("lead-spec-bytes", file.bodyAsText())
+
+        assertEquals(HttpStatusCode.Unauthorized, jsonClient.get("${ApiVersion.BASE}/admin/documents/$email").status)
+        val clientToken = token("dcli-${UUID.randomUUID()}@test.com", Role.CLIENT)
+        assertEquals(
+            HttpStatusCode.Forbidden,
+            jsonClient.get("${ApiVersion.BASE}/admin/documents/$email") {
+                header(HttpHeaders.Authorization, "Bearer $clientToken")
+            }.status,
+        )
+    }
+
+    @Test
     fun `admin client-preview returns projection and non-admin is forbidden`() = projectTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
         val email = "prev-${UUID.randomUUID()}@test.com"

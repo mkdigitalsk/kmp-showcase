@@ -82,6 +82,10 @@ internal class ProjectService(private val repository: ProjectRepository) {
         )?.also { repository.appendEvent(email, ProjectEventType.UNARCHIVED, null) }
     }
 
+    // Documents are client-scoped (email), not project-scoped — a lead's spec arrives before any
+    // project exists and must land in the same storage the project view reads later.
+    suspend fun getDocuments(email: String): List<Document> = repository.findDocuments(email)
+
     suspend fun addDocument(email: String, draft: DocumentDraft): Document =
         repository.addDocument(email, draft).also { repository.appendEvent(email, ProjectEventType.DOCUMENT_ADDED, it.title) }
 
