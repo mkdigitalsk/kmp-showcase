@@ -20,6 +20,9 @@ database:
 cors:
   allowedHosts: "$CORS_ALLOWED_HOSTS:*"
 
+portal:
+  baseUrl: "$PORTAL_BASE_URL:https://mkdigital.sk"
+
 mail:
   host: "$MAIL_HOST:smtp.m1.websupport.sk"
   port: "$MAIL_PORT:465"

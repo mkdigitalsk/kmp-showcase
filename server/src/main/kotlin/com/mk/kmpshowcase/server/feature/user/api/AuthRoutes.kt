@@ -6,6 +6,7 @@ import com.mk.kmpshowcase.contracts.auth.LoginRequestDTO
 import com.mk.kmpshowcase.contracts.auth.RegisterRequestDTO
 import com.mk.kmpshowcase.server.core.auth.userId
 import com.mk.kmpshowcase.server.core.security.JwtConfig
+import com.mk.kmpshowcase.server.feature.user.service.InviteService
 import com.mk.kmpshowcase.server.feature.user.service.UserService
 import com.mk.kmpshowcase.server.plugins.AuthRateLimit
 import io.ktor.http.HttpStatusCode
@@ -21,10 +22,19 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("AuthRoutes")
 
-internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
+internal fun Route.authRoutes(userService: UserService, inviteService: InviteService, jwtConfig: JwtConfig) {
     route("${ApiVersion.BASE}/auth") {
         // Throttle the credential-accepting endpoints per client IP (brute-force / spray defense).
         rateLimit(AuthRateLimit) {
+            // Portal is invite-only: consumes an invite token, creates the CLIENT user, signs them in.
+            post("/accept-invite") {
+                val request = call.receive<AcceptInviteRequestDTO>()
+                val user = inviteService.accept(request.token, request.password, request.name)
+                val token = jwtConfig.generateToken(user.id, user.email, user.role.name)
+                logger.info("Invite accepted: ${user.id} (${user.email})")
+                call.respond(HttpStatusCode.Created, AuthResponseDTO(token, user.toAuthUserDTO()))
+            }
+
             post("/register") {
                 val request = call.receive<RegisterRequestDTO>()
                 val user = userService.register(request.email, request.password, request.name)

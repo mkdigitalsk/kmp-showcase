@@ -9,6 +9,7 @@ import com.mk.kmpshowcase.server.feature.project.persistence.PaymentsTable
 import com.mk.kmpshowcase.server.feature.project.persistence.ProjectEventsTable
 import com.mk.kmpshowcase.server.feature.project.persistence.ProjectsTable
 import com.mk.kmpshowcase.server.feature.note.persistence.NotesTable
+import com.mk.kmpshowcase.server.feature.user.persistence.InvitesTable
 import com.mk.kmpshowcase.server.feature.user.persistence.UsersTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -30,7 +31,7 @@ internal object DatabaseConfig {
             // createMissingTablesAndColumns (not create) so additive migrations — the leads.status
             // column + the lead_artifacts table — land on an already-populated DB.
             SchemaUtils.createMissingTablesAndColumns(
-                UsersTable, NotesTable, LeadsTable, LeadArtifactsTable,
+                UsersTable, InvitesTable, NotesTable, LeadsTable, LeadArtifactsTable,
                 ProjectsTable, MilestonesTable, DemosTable, DocumentsTable, PaymentsTable, ProjectEventsTable,
             )
             logger.info("Database tables created/verified")

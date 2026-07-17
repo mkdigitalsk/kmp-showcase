@@ -44,7 +44,8 @@ internal fun Application.module() {
         recipient = config.property("mail.recipient").getString(),
         resendApiKey = config.property("mail.resendApiKey").getString(),
     )
-    val dependencies = AppDependencies(jwtConfig, mailConfig)
+    val portalBaseUrl = config.property("portal.baseUrl").getString()
+    val dependencies = AppDependencies(jwtConfig, mailConfig, portalBaseUrl)
     configureSecurityHeaders()
     configureCallLogging()
     configureSerialization()

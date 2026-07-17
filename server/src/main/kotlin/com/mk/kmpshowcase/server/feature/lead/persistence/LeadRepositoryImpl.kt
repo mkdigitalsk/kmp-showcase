@@ -39,6 +39,7 @@ internal class LeadRepositoryImpl : LeadRepository {
             it[hasDoc] = draft.hasDoc
             it[createdAt] = now
             it[status] = LeadStatus.NEW
+            it[locale] = draft.locale
         } get LeadsTable.id
 
         Lead(
@@ -53,6 +54,7 @@ internal class LeadRepositoryImpl : LeadRepository {
             hasDoc = draft.hasDoc,
             createdAt = now,
             status = LeadStatus.NEW,
+            locale = draft.locale,
         )
     }
 
@@ -113,6 +115,7 @@ internal class LeadRepositoryImpl : LeadRepository {
         hasDoc = this[LeadsTable.hasDoc],
         createdAt = this[LeadsTable.createdAt],
         status = this[LeadsTable.status],
+        locale = this[LeadsTable.locale],
     )
 
     private fun String.splitOrEmpty(): List<String> =

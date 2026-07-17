@@ -12,6 +12,7 @@ internal data class Lead(
     val hasDoc: Boolean,
     val createdAt: Long,
     val status: LeadStatus,
+    val locale: String? = null,
 )
 
 internal data class LeadDraft(

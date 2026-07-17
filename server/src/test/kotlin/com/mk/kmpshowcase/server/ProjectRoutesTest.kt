@@ -138,7 +138,7 @@ class ProjectRoutesTest {
         assertEquals(HttpStatusCode.OK, patched.status)
         val adminBody = patched.bodyAsText()
         assertTrue(adminBody.contains("board/1"), "links visible to admin")
-        assertTrue(adminBody.contains(""""designUrl":null"""), "blank link cleared to null")
+        assertFalse(adminBody.contains(""""designUrl":""""), "blank link cleared (null/omitted, never a blank string)")
 
         val clientToken = token(email, Role.CLIENT)
         val clientBody = jsonClient.get("${ApiVersion.BASE}/me/project") {

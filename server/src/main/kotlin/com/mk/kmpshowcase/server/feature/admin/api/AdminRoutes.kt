@@ -6,6 +6,7 @@ import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
 import com.mk.kmpshowcase.server.feature.lead.service.LeadService
 import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
 import com.mk.kmpshowcase.server.feature.project.service.ProjectService
+import com.mk.kmpshowcase.server.feature.user.service.InviteService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.auth.authenticate
@@ -14,14 +15,24 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.patch
+import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
 // Admin-only sales CRM (leads + pipeline artifacts). Role is enforced server-side per endpoint — a
 // non-admin token never reaches the data. Delivery lives in feature/project (adminProjectRoutes).
-internal fun Route.adminRoutes(leadService: LeadService, projectService: ProjectService) {
+internal fun Route.adminRoutes(leadService: LeadService, projectService: ProjectService, inviteService: InviteService) {
     route("${ApiVersion.BASE}/admin") {
         authenticate("auth-jwt") {
+            // Portal is invite-only — send (or re-send, replacing the token) the client's access invite.
+            post("/clients/{email}/invite") {
+                if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                val lead = leadService.getByEmail(email)?.lead
+                inviteService.invite(email, lead?.name, lead?.locale)
+                call.respond(HttpStatusCode.NoContent)
+            }
+
             get("/leads") {
                 if (!call.isAdmin()) return@get call.respond(HttpStatusCode.Forbidden)
                 call.respond(leadService.getAll().map { it.toAdminLeadDTO() })

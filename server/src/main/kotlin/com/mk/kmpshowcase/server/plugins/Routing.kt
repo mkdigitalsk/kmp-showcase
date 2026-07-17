@@ -40,11 +40,11 @@ internal fun Application.configureRouting(dependencies: AppDependencies) {
 
 private fun Route.apiRoutes(dependencies: AppDependencies) {
     rateLimit(ApiRateLimit) {
-        authRoutes(dependencies.userService, dependencies.jwtConfig)
+        authRoutes(dependencies.userService, dependencies.inviteService, dependencies.jwtConfig)
         userRoutes(dependencies.userService)
         noteRoutes(dependencies.noteService)
         leadRoutes(dependencies.leadService)
-        adminRoutes(dependencies.leadService, dependencies.projectService)
+        adminRoutes(dependencies.leadService, dependencies.projectService, dependencies.inviteService)
         clientProjectRoutes(dependencies.projectService)
         adminProjectRoutes(dependencies.projectService)
     }
