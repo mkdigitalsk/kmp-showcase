@@ -10,6 +10,7 @@ import kotlin.time.Duration.Companion.seconds
 
 internal val ApiRateLimit = RateLimitName("api")
 internal val AuthRateLimit = RateLimitName("auth")
+internal val LeadSubmitRateLimit = RateLimitName("lead-submit")
 
 internal fun Application.configureRateLimit() {
     // Behind Railway's proxy every request's remoteHost is the proxy IP; read the real client IP
@@ -27,9 +28,15 @@ internal fun Application.configureRateLimit() {
             rateLimiter(limit = AUTH_LIMIT, refillPeriod = WINDOW_SECONDS.seconds)
             requestKey { call -> call.request.origin.remoteHost }
         }
+        // Strict, the public lead form — an unauthenticated write endpoint is an abusable flow.
+        register(LeadSubmitRateLimit) {
+            rateLimiter(limit = LEAD_SUBMIT_LIMIT, refillPeriod = WINDOW_SECONDS.seconds)
+            requestKey { call -> call.request.origin.remoteHost }
+        }
     }
 }
 
 private const val API_LIMIT = 120
 private const val AUTH_LIMIT = 10
+private const val LEAD_SUBMIT_LIMIT = 5
 private const val WINDOW_SECONDS = 60

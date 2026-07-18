@@ -1,5 +1,6 @@
 package com.mk.kmpshowcase.server.feature.project.service
 
+import com.mk.kmpshowcase.server.core.PayloadTooLargeException
 import com.mk.kmpshowcase.server.feature.project.persistence.ProjectRepository
 
 internal class ProjectService(private val repository: ProjectRepository) {
@@ -90,7 +91,7 @@ internal class ProjectService(private val repository: ProjectRepository) {
         repository.addDocument(email, draft).also { repository.appendEvent(email, ProjectEventType.DOCUMENT_ADDED, it.title) }
 
     suspend fun uploadDocument(email: String, draft: DocumentDraft, file: DocumentFile): Document {
-        require(file.bytes.size <= MAX_FILE_BYTES) { "File too large (max 10 MB)" }
+        if (file.bytes.size > MAX_FILE_BYTES) throw PayloadTooLargeException("File too large (max 10 MB)")
         return repository.addDocumentWithFile(email, draft, file)
             .also { repository.appendEvent(email, ProjectEventType.DOCUMENT_ADDED, it.title) }
     }

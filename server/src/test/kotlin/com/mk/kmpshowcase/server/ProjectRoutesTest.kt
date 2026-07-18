@@ -226,6 +226,53 @@ class ProjectRoutesTest {
     }
 
     @Test
+    fun `upload over the 10MB cap returns 413`() = projectTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "big-${UUID.randomUUID()}@test.com"
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+
+        val oversized = java.util.Base64.getEncoder().encodeToString(ByteArray(10 * 1024 * 1024 + 1))
+        val res = jsonClient.post("${ApiVersion.BASE}/admin/documents/$email/upload") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json)
+            setBody("""{"type":"DOCUMENTATION","title":"Huge","filename":"huge.pdf","contentType":"application/pdf","base64":"$oversized"}""")
+        }
+        assertEquals(HttpStatusCode.PayloadTooLarge, res.status)
+    }
+
+    @Test
+    fun `starting a project twice returns 409`() = projectTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "twice-${UUID.randomUUID()}@test.com"
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+
+        suspend fun start() = jsonClient.post("${ApiVersion.BASE}/admin/projects/$email") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json); setBody("""{"startDate":1000}""")
+        }
+        assertEquals(HttpStatusCode.Created, start().status)
+        assertEquals(HttpStatusCode.Conflict, start().status)
+    }
+
+    @Test
+    fun `complete, archive and unarchive walk the state machine`() = projectTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "life-${UUID.randomUUID()}@test.com"
+        val adminToken = token("padmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        jsonClient.post("${ApiVersion.BASE}/admin/projects/$email") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json); setBody("""{"startDate":1000}""")
+        }
+
+        suspend fun transition(path: String) = jsonClient.post("${ApiVersion.BASE}/admin/projects/$email/$path") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+        }
+        assertTrue(transition("complete").bodyAsText().contains("COMPLETED"))
+        assertTrue(transition("archive").bodyAsText().contains("ARCHIVED"))
+        assertTrue(transition("unarchive").bodyAsText().contains("ACTIVE"))
+    }
+
+    @Test
     fun `admin client-preview returns projection and non-admin is forbidden`() = projectTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
         val email = "prev-${UUID.randomUUID()}@test.com"

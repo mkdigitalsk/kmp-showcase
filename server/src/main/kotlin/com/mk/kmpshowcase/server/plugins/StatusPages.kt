@@ -7,6 +7,7 @@ import io.ktor.serialization.ContentConvertException
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
+import com.mk.kmpshowcase.server.core.PayloadTooLargeException
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.uri
@@ -57,6 +58,10 @@ internal fun Application.configureStatusPages() {
         exception<IllegalArgumentException> { call, cause ->
             logger.debug("Bad request: ${cause.message}")
             call.respondProblem(HttpStatusCode.BadRequest, cause.message ?: "Bad request")
+        }
+        exception<PayloadTooLargeException> { call, cause ->
+            logger.debug("Payload too large: ${cause.message}")
+            call.respondProblem(HttpStatusCode.PayloadTooLarge, cause.message ?: "Payload too large")
         }
         exception<IllegalStateException> { call, cause ->
             logger.warn("Conflict: ${cause.message}")

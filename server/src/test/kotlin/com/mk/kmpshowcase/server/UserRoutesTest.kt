@@ -132,6 +132,34 @@ class UserRoutesTest {
     }
 
     @Test
+    fun `registered user is a CLIENT — no path to admin from the public API`() = usersTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+        val email = "reg-${UUID.randomUUID()}@test.com"
+        val registered = jsonClient.post("${ApiVersion.BASE}/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"email":"$email","password":"Password1@","name":"New User"}""")
+        }
+        assertEquals(HttpStatusCode.Created, registered.status)
+        val token = Regex(""""token":\s*"([^"]+)"""").find(registered.bodyAsText())?.groupValues?.get(1)
+            ?: error("no token in register response")
+
+        val adminSurface = jsonClient.get("${ApiVersion.BASE}/admin/leads") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        assertEquals(HttpStatusCode.Forbidden, adminSurface.status, "fresh registration must never reach admin data")
+    }
+
+    @Test
+    fun `login with a wrong password returns 401`() = usersTest {
+        val (email, _) = createUser(Role.CLIENT)
+        val response = client.post("${ApiVersion.BASE}/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"email":"$email","password":"wrong-password"}""")
+        }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    @Test
     fun `repeated login attempts are rate limited with 429`() = usersTest {
         val statuses = (1..LOGIN_ATTEMPTS).map {
             client.post("${ApiVersion.BASE}/auth/login") {
