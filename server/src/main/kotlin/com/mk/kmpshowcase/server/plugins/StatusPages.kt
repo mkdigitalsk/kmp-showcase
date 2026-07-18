@@ -8,6 +8,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
 import com.mk.kmpshowcase.server.core.PayloadTooLargeException
+import com.mk.kmpshowcase.server.core.maskEmails
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.uri
@@ -48,27 +49,27 @@ private suspend fun ApplicationCall.respondProblem(
 internal fun Application.configureStatusPages() {
     install(StatusPages) {
         exception<BadRequestException> { call, cause ->
-            logger.debug("Malformed request body: ${cause.message}")
+            logger.debug("Malformed request body: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.BadRequest, "Invalid or malformed request body")
         }
         exception<ContentConvertException> { call, cause ->
-            logger.debug("Body deserialization failed: ${cause.message}")
+            logger.debug("Body deserialization failed: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.BadRequest, "Invalid or malformed request body")
         }
         exception<IllegalArgumentException> { call, cause ->
-            logger.debug("Bad request: ${cause.message}")
+            logger.debug("Bad request: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.BadRequest, cause.message ?: "Bad request")
         }
         exception<PayloadTooLargeException> { call, cause ->
-            logger.debug("Payload too large: ${cause.message}")
+            logger.debug("Payload too large: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.PayloadTooLarge, cause.message ?: "Payload too large")
         }
         exception<IllegalStateException> { call, cause ->
-            logger.warn("Conflict: ${cause.message}")
+            logger.warn("Conflict: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.Conflict, cause.message ?: "Conflict")
         }
         exception<NoSuchElementException> { call, cause ->
-            logger.debug("Not found: ${cause.message}")
+            logger.debug("Not found: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.NotFound, cause.message ?: "Not found")
         }
         // The RateLimit plugin emits a bodiless 429 + Retry-After; give it a problem+json body like the rest.

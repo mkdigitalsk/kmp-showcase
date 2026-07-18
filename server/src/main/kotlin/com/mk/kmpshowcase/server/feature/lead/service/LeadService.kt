@@ -1,6 +1,7 @@
 package com.mk.kmpshowcase.server.feature.lead.service
 
 import com.mk.kmpshowcase.server.core.mail.Mailer
+import com.mk.kmpshowcase.server.core.maskEmail
 import com.mk.kmpshowcase.server.feature.lead.persistence.LeadRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -22,7 +23,8 @@ internal class LeadService(
         return LeadDetail(lead, repository.findArtifacts(email))
     }
 
-    suspend fun updateStatus(email: String, status: LeadStatus): Lead? = repository.updateStatus(email, status)
+    suspend fun updateStatus(email: String, status: LeadStatus): Lead? =
+        repository.updateStatus(email, status)?.also { logger.info("Lead ${it.id} status -> $status (${email.maskEmail()})") }
 
     suspend fun saveArtifact(email: String, stage: LeadArtifactStage, content: String) =
         repository.upsertArtifact(email, stage, content)
@@ -32,6 +34,7 @@ internal class LeadService(
         require(draft.appType.isNotBlank()) { "App type is required" }
 
         val lead = repository.create(draft)
+        logger.info("Lead ${lead.id} submitted: ${draft.appType} (${draft.email.maskEmail()}, docs=${draft.hasDoc}, design=${draft.hasDesign})")
 
         // Fire-and-forget: the response returns immediately; mail must never block or fail the lead.
         // Sequential (one launch) keeps the two sends from hitting the Resend rate limit at once.

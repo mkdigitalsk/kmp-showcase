@@ -8,6 +8,7 @@ import java.security.SecureRandom
 import java.util.Base64
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.mk.kmpshowcase.server.core.maskEmail
 import org.slf4j.LoggerFactory
 
 // Portal access is INVITE-ONLY (no self-registration). Admin invites a client → tokenized email →
@@ -30,11 +31,12 @@ internal class InviteService(
 
         val token = generateToken()
         inviteRepository.upsert(email, token.sha256(), name, System.currentTimeMillis() + VALIDITY_MS)
+        logger.info("Invite issued (token rotated): ${email.maskEmail()}")
 
         val link = "$portalBaseUrl/invite?token=$token"   // public route — /account/* sits behind the auth gate
         mailScope.launch {
             runCatching { mailer.send(email, InviteEmail.subject(locale), InviteEmail.text(name, link, locale)) }
-                .onFailure { logger.warn("Invite email to $email failed: ${it.message}") }
+                .onFailure { logger.warn("Invite email to ${email.maskEmail()} failed: ${it.message}") }
         }
         return token
     }
@@ -46,6 +48,7 @@ internal class InviteService(
         val resolvedName = name?.takeIf { it.isNotBlank() } ?: invite.name ?: invite.email.substringBefore("@")
         val user = userService.register(invite.email, password, resolvedName)
         inviteRepository.delete(invite.email)
+        logger.info("Invite accepted, user ${user.id} created: ${invite.email.maskEmail()}")
         return user
     }
 
