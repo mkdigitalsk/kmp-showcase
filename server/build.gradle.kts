@@ -9,13 +9,18 @@ application {
 }
 
 tasks.named<JavaExec>("run") {
+    // .env fills gaps only — an explicitly exported shell var ALWAYS wins. Without this guard,
+    // `USE_H2=true ./gradlew :server:run` would still be silently pointed at the staging DB.
     val envFile = rootProject.file(".env")
     if (envFile.exists()) {
         envFile.readLines()
             .filter { it.isNotBlank() && !it.startsWith("#") }
             .forEach { line ->
                 val idx = line.indexOf('=')
-                if (idx > 0) environment(line.substring(0, idx), line.substring(idx + 1))
+                if (idx > 0) {
+                    val key = line.substring(0, idx)
+                    if (System.getenv(key) == null) environment(key, line.substring(idx + 1))
+                }
             }
     }
 }

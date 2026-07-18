@@ -13,4 +13,5 @@ internal data class LeadArtifact(
 internal data class LeadDetail(
     val lead: Lead,
     val artifacts: List<LeadArtifact>,
+    val events: List<LeadEvent>,
 )

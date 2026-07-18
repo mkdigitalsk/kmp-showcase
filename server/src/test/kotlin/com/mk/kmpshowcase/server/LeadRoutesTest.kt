@@ -13,6 +13,7 @@ import com.mk.kmpshowcase.server.plugins.configureRouting
 import com.mk.kmpshowcase.server.plugins.configureSerialization
 import com.mk.kmpshowcase.server.plugins.configureStatusPages
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.patch
@@ -186,8 +187,15 @@ class LeadRoutesTest {
         }.bodyAsText()
         assertTrue(detail.contains("v2"), "latest artifact content present")
         assertFalse(detail.contains("v1"), "upsert replaced, not appended")
-        assertEquals(1, Regex("ANALYSIS").findAll(detail).count(), "single artifact row per stage")
+        assertEquals(1, Regex(""""stage":\s*"ANALYSIS"""").findAll(detail).count(), "single artifact row per stage")
     }
+
+    private suspend fun io.ktor.client.HttpClient.setStatus(email: String, adminToken: String, status: String, force: Boolean = false) =
+        patch("${ApiVersion.BASE}/admin/leads/$email/status") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json)
+            setBody("""{"status":"$status"${if (force) ""","force":true""" else ""}}""")
+        }
 
     @Test
     fun `clients list contains only WON leads`() = leadTest {
@@ -196,9 +204,9 @@ class LeadRoutesTest {
         val wonLead = "won-${UUID.randomUUID()}@test.com"
         client.submit(leadBody(newLead))
         client.submit(leadBody(wonLead))
-        client.patch("${ApiVersion.BASE}/admin/leads/$wonLead/status") {
-            header(HttpHeaders.Authorization, "Bearer $adminToken")
-            contentType(ContentType.Application.Json); setBody("""{"status":"WON"}""")
+        // Walk the legal path — WON is reachable only through the funnel (see transition tests).
+        for (status in listOf("REVIEWING", "ANALYZED", "PROPOSAL_SENT", "WON")) {
+            assertEquals(HttpStatusCode.OK, client.setStatus(wonLead, adminToken, status).status)
         }
 
         val clients = client.get("${ApiVersion.BASE}/admin/clients") {
@@ -206,5 +214,73 @@ class LeadRoutesTest {
         }.bodyAsText()
         assertTrue(clients.contains(wonLead), "WON lead is a client")
         assertFalse(clients.contains(newLead), "NEW lead is not a client")
+    }
+
+    @Test
+    fun `illegal transition returns 409 and force overrides with an audited event`() = leadTest {
+        val adminToken = token("ladmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        val email = "sm-${UUID.randomUUID()}@test.com"
+        client.submit(leadBody(email))
+
+        val jump = client.setStatus(email, adminToken, "WON")
+        assertEquals(HttpStatusCode.Conflict, jump.status, "NEW -> WON is not an allowed edge")
+
+        val forced = client.setStatus(email, adminToken, "WON", force = true)
+        assertEquals(HttpStatusCode.OK, forced.status, "force is the deliberate override")
+
+        val detail = client.get("${ApiVersion.BASE}/admin/leads/$email") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+        }.bodyAsText()
+        assertTrue(detail.contains("FORCED"), "forced transition is audited in the ledger")
+        assertTrue(detail.contains("SUBMITTED"), "submission is the first ledger entry")
+    }
+
+    @Test
+    fun `WON is terminal and LOST can reopen`() = leadTest {
+        val adminToken = token("ladmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        val email = "term-${UUID.randomUUID()}@test.com"
+        client.submit(leadBody(email))
+
+        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "LOST").status)
+        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "REVIEWING").status, "LOST reopens")
+        assertEquals(HttpStatusCode.Conflict, client.setStatus(email, adminToken, "WON").status)
+    }
+
+    @Test
+    fun `operator email records once and never twice`() = leadTest {
+        val adminToken = token("ladmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        val email = "mail-${UUID.randomUUID()}@test.com"
+        client.submit(leadBody(email))
+
+        suspend fun record() = client.post("${ApiVersion.BASE}/admin/leads/$email/emails") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json); setBody("""{"kind":"5a-in-personal-hands"}""")
+        }
+        assertEquals(HttpStatusCode.Created, record().status)
+        assertEquals(HttpStatusCode.Conflict, record().status, "the same kind must never record twice")
+
+        val unknown = client.post("${ApiVersion.BASE}/admin/leads/ghost-${UUID.randomUUID()}@test.com/emails") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+            contentType(ContentType.Application.Json); setBody("""{"kind":"5a-in-personal-hands"}""")
+        }
+        assertEquals(HttpStatusCode.NotFound, unknown.status)
+    }
+
+    @Test
+    fun `admin deletes a single lead row by id`() = leadTest {
+        val adminToken = token("ladmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        val email = "del-${UUID.randomUUID()}@test.com"
+        client.submit(leadBody(email))
+        val id = Regex(""""id":\s*(\d+)""").find(
+            client.get("${ApiVersion.BASE}/admin/leads/$email") {
+                header(HttpHeaders.Authorization, "Bearer $adminToken")
+            }.bodyAsText(),
+        )!!.groupValues[1]
+
+        suspend fun delete(target: String) = client.delete("${ApiVersion.BASE}/admin/leads/$target") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+        }
+        assertEquals(HttpStatusCode.NoContent, delete(id).status)
+        assertEquals(HttpStatusCode.NotFound, delete(id).status, "second delete finds nothing")
     }
 }

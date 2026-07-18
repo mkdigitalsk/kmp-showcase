@@ -1,6 +1,7 @@
 package com.mk.kmpshowcase.server.feature.lead.persistence
 
 import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
+import com.mk.kmpshowcase.server.feature.lead.service.LeadEventType
 import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 
@@ -24,6 +25,19 @@ internal object LeadsTable : LongIdTable("leads") {
     private const val PHONE_LENGTH = 40
     private const val STATUS_LENGTH = 20
     private const val LOCALE_LENGTH = 20
+}
+
+// Append-only lead ledger — audit trail + email-send idempotency (see LeadEvent). Email-keyed like
+// every lead table; rows are only ever inserted.
+internal object LeadEventsTable : LongIdTable("lead_events") {
+    val email = varchar("email", EMAIL_LENGTH)
+    val type = enumerationByName("type", TYPE_LENGTH, LeadEventType::class)
+    val detail = varchar("detail", DETAIL_LENGTH).nullable()
+    val at = long("at")
+
+    private const val EMAIL_LENGTH = 320
+    private const val TYPE_LENGTH = 20
+    private const val DETAIL_LENGTH = 200
 }
 
 // The documents the `analyze lead` pipeline produces for a lead (requirements, questions, analysis,

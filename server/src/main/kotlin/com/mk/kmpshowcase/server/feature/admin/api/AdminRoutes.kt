@@ -13,6 +13,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.patch
 import io.ktor.server.routing.post
@@ -30,6 +31,7 @@ internal fun Route.adminRoutes(leadService: LeadService, projectService: Project
                 val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
                 val lead = leadService.getByEmail(email)?.lead
                 inviteService.invite(email, lead?.name, lead?.locale)
+                if (lead != null) leadService.recordInviteSent(email)
                 call.respond(HttpStatusCode.NoContent)
             }
 
@@ -60,10 +62,31 @@ internal fun Route.adminRoutes(leadService: LeadService, projectService: Project
             patch("/leads/{email}/status") {
                 if (!call.isAdmin()) return@patch call.respond(HttpStatusCode.Forbidden)
                 val email = call.emailParam() ?: return@patch call.respond(HttpStatusCode.BadRequest)
-                val status = runCatching { LeadStatus.valueOf(call.receive<UpdateStatusRequestDTO>().status) }
+                val request = call.receive<UpdateStatusRequestDTO>()
+                val status = runCatching { LeadStatus.valueOf(request.status) }
                     .getOrNull() ?: return@patch call.respond(HttpStatusCode.BadRequest)
-                val updated = leadService.updateStatus(email, status) ?: return@patch call.respond(HttpStatusCode.NotFound)
+                // Invalid transition throws IllegalState → 409 via StatusPages; force is the audited override.
+                val updated = leadService.updateStatus(email, status, request.force)
+                    ?: return@patch call.respond(HttpStatusCode.NotFound)
                 call.respond(updated.toAdminLeadDTO())
+            }
+
+            // Corrective delete of a single lead row (duplicates, test submissions) — by id, not email.
+            delete("/leads/{id}") {
+                if (!call.isAdmin()) return@delete call.respond(HttpStatusCode.Forbidden)
+                val id = call.parameters["id"]?.toLongOrNull() ?: return@delete call.respond(HttpStatusCode.BadRequest)
+                if (leadService.deleteById(id)) call.respond(HttpStatusCode.NoContent)
+                else call.respond(HttpStatusCode.NotFound)
+            }
+
+            // Record an operator email as sent (the send itself is manual) — 409 if that kind was
+            // already recorded for this lead: the never-send-twice guard.
+            post("/leads/{email}/emails") {
+                if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                val kind = call.receive<RecordEmailRequestDTO>().kind
+                if (leadService.recordEmailSent(email, kind)) call.respond(HttpStatusCode.Created)
+                else call.respond(HttpStatusCode.NotFound)
             }
 
             put("/leads/{email}/artifacts/{stage}") {

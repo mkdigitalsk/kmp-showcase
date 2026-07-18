@@ -20,20 +20,55 @@ internal class LeadService(
 
     suspend fun getByEmail(email: String): LeadDetail? {
         val lead = repository.findByEmail(email) ?: return null
-        return LeadDetail(lead, repository.findArtifacts(email))
+        return LeadDetail(lead, repository.findArtifacts(email), repository.findEvents(email))
     }
 
-    suspend fun updateStatus(email: String, status: LeadStatus): Lead? =
-        repository.updateStatus(email, status)?.also { logger.info("Lead ${it.id} status -> $status (${email.maskEmail()})") }
+    // Jira-style workflow: the transition must be an edge in ALLOWED_TRANSITIONS. Anything else is a
+    // conflict (409) unless explicitly forced — the portal UI never forces; force is a deliberate,
+    // audited override (FORCED in the ledger).
+    suspend fun updateStatus(email: String, status: LeadStatus, force: Boolean = false): Lead? {
+        val current = repository.findByEmail(email) ?: return null
+        if (current.status == status) return current
+        val allowed = status in ALLOWED_TRANSITIONS.getValue(current.status)
+        check(allowed || force) { "Invalid status transition ${current.status} -> $status" }
+        return repository.updateStatus(email, status)?.also {
+            val detail = "${current.status} -> $status" + if (!allowed) " FORCED" else ""
+            repository.appendEvent(email, LeadEventType.STATUS_CHANGED, detail)
+            logger.info("Lead ${it.id} status $detail (${email.maskEmail()})")
+        }
+    }
 
-    suspend fun saveArtifact(email: String, stage: LeadArtifactStage, content: String) =
+    suspend fun deleteById(id: Long): Boolean =
+        repository.deleteById(id).also { if (it) logger.info("Lead $id deleted") }
+
+    suspend fun saveArtifact(email: String, stage: LeadArtifactStage, content: String) {
         repository.upsertArtifact(email, stage, content)
+        repository.appendEvent(email, LeadEventType.ARTIFACT_SAVED, stage.name)
+    }
+
+    // Operator-email ledger — the send is manual (Miro's mailbox); this records it durably so the same
+    // kind is NEVER offered twice for one lead (idempotency guard the flow checks before offering).
+    suspend fun recordEmailSent(email: String, kind: String): Boolean {
+        require(kind.isNotBlank()) { "Email kind is required" }
+        repository.findByEmail(email) ?: return false
+        check(!emailAlreadySent(email, kind)) { "Email '$kind' already recorded for this lead" }
+        repository.appendEvent(email, LeadEventType.EMAIL_SENT, kind)
+        logger.info("Email '$kind' recorded for ${email.maskEmail()}")
+        return true
+    }
+
+    suspend fun emailAlreadySent(email: String, kind: String): Boolean =
+        repository.findEvents(email).any { it.type == LeadEventType.EMAIL_SENT && it.detail == kind }
+
+    suspend fun recordInviteSent(email: String) =
+        repository.appendEvent(email, LeadEventType.INVITE_SENT, null)
 
     suspend fun submit(draft: LeadDraft): Lead {
         require(EMAIL_REGEX.matches(draft.email)) { "A valid email is required" }
         require(draft.appType.isNotBlank()) { "App type is required" }
 
         val lead = repository.create(draft)
+        repository.appendEvent(lead.email, LeadEventType.SUBMITTED, draft.appType)
         logger.info("Lead ${lead.id} submitted: ${draft.appType} (${draft.email.maskEmail()}, docs=${draft.hasDoc}, design=${draft.hasDesign})")
 
         // Fire-and-forget: the response returns immediately; mail must never block or fail the lead.
@@ -48,6 +83,7 @@ internal class LeadService(
 
     private suspend fun notifyAdmin(lead: Lead) {
         runCatching { mailer.send(recipient, "New lead: ${lead.appType}", adminBody(lead)) }
+            .onSuccess { repository.appendEvent(lead.email, LeadEventType.EMAIL_SENT, "admin-notify") }
             .onFailure { logger.error("Lead ${lead.id}: admin notification failed", it) }
     }
 
@@ -61,7 +97,9 @@ internal class LeadService(
                 html = ClientConfirmationEmail.html(lead, locale),
                 replyTo = recipient,
             )
-        }.onFailure { logger.error("Lead ${lead.id}: client confirmation failed", it) }
+        }
+            .onSuccess { repository.appendEvent(lead.email, LeadEventType.EMAIL_SENT, "confirmation") }
+            .onFailure { logger.error("Lead ${lead.id}: client confirmation failed", it) }
     }
 
     private fun adminBody(lead: Lead) = buildString {

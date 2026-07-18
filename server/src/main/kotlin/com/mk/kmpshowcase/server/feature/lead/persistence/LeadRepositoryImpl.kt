@@ -4,11 +4,14 @@ import com.mk.kmpshowcase.server.feature.lead.service.Lead
 import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifact
 import com.mk.kmpshowcase.server.feature.lead.service.LeadArtifactStage
 import com.mk.kmpshowcase.server.feature.lead.service.LeadDraft
+import com.mk.kmpshowcase.server.feature.lead.service.LeadEvent
+import com.mk.kmpshowcase.server.feature.lead.service.LeadEventType
 import com.mk.kmpshowcase.server.feature.lead.service.LeadStatus
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -60,9 +63,40 @@ internal class LeadRepositoryImpl : LeadRepository {
         )
     }
 
+    // Status belongs to the LATEST row — email is the identity, but resubmissions keep their own history.
     override suspend fun updateStatus(email: String, status: LeadStatus): Lead? = suspendTransaction {
-        val updated = LeadsTable.update({ LeadsTable.email eq email }) { it[LeadsTable.status] = status }
-        if (updated == 0) null else latestByEmail(email)
+        val latestId = latestByEmail(email)?.id ?: return@suspendTransaction null
+        LeadsTable.update({ LeadsTable.id eq latestId }) { it[LeadsTable.status] = status }
+        latestByEmail(email)
+    }
+
+    override suspend fun deleteById(id: Long): Boolean = suspendTransaction {
+        LeadsTable.deleteWhere { LeadsTable.id eq id } > 0
+    }
+
+    override suspend fun appendEvent(email: String, type: LeadEventType, detail: String?) {
+        suspendTransaction {
+            LeadEventsTable.insert {
+                it[LeadEventsTable.email] = email
+                it[LeadEventsTable.type] = type
+                it[LeadEventsTable.detail] = detail
+                it[at] = System.currentTimeMillis()
+            }
+        }
+    }
+
+    override suspend fun findEvents(email: String): List<LeadEvent> = suspendTransaction {
+        LeadEventsTable.selectAll()
+            .where { LeadEventsTable.email eq email }
+            .orderBy(LeadEventsTable.at, SortOrder.DESC)
+            .map {
+                LeadEvent(
+                    id = it[LeadEventsTable.id].value,
+                    type = it[LeadEventsTable.type],
+                    detail = it[LeadEventsTable.detail],
+                    at = it[LeadEventsTable.at],
+                )
+            }
     }
 
     override suspend fun findArtifacts(email: String): List<LeadArtifact> = suspendTransaction {

@@ -36,6 +36,7 @@ internal data class AdminLeadArtifactDTO(
 internal data class AdminLeadDetailDTO(
     val lead: AdminLeadDTO,
     val artifacts: List<AdminLeadArtifactDTO>,
+    val events: List<AdminLeadEventDTO>,
 )
 
 // A Client = a WON lead (the account) joined with its delivery project's summary. projectState is null
@@ -48,10 +49,16 @@ internal data class AdminClientDTO(
 )
 
 @Serializable
-internal data class UpdateStatusRequestDTO(val status: String)
+internal data class UpdateStatusRequestDTO(val status: String, val force: Boolean = false)
+
+@Serializable
+internal data class RecordEmailRequestDTO(val kind: String)
 
 @Serializable
 internal data class SaveArtifactRequestDTO(val content: String)
+
+@Serializable
+internal data class AdminLeadEventDTO(val type: String, val detail: String?, val at: String)
 
 internal fun Lead.toAdminLeadDTO() = AdminLeadDTO(
     id = id,
@@ -70,4 +77,8 @@ internal fun Lead.toAdminLeadDTO() = AdminLeadDTO(
 
 internal fun LeadArtifact.toDTO() = AdminLeadArtifactDTO(stage = stage.name, content = content, updatedAt = updatedAt.toIso())
 
-internal fun LeadDetail.toDTO() = AdminLeadDetailDTO(lead = lead.toAdminLeadDTO(), artifacts = artifacts.map { it.toDTO() })
+internal fun LeadDetail.toDTO() = AdminLeadDetailDTO(
+    lead = lead.toAdminLeadDTO(),
+    artifacts = artifacts.map { it.toDTO() },
+    events = events.map { AdminLeadEventDTO(it.type.name, it.detail, it.at.toIso()) },
+)
