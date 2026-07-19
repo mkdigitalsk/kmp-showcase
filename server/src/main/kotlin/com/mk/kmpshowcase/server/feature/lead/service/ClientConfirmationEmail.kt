@@ -34,7 +34,7 @@ internal object ClientConfirmationEmail {
     fun text(lead: Lead, locale: String?): String {
         val s = strings(locale)
         return buildString {
-            appendLine("${s.greeting}${lead.name?.let { " $it" } ?: ""},")
+            appendLine("${s.greeting},")
             appendLine()
             appendLine(s.intro)
             appendLine()
@@ -49,6 +49,10 @@ internal object ClientConfirmationEmail {
                 appendLine(s.docsLine)
             }
             appendLine()
+            appendLine(s.signoff)
+            appendLine(SIGNATURE_NAME)
+            appendLine(s.signatureLine)
+            appendLine()
             appendLine("$COMPANY · ${s.tagline}")
             appendLine(ADDRESS)
             appendLine(s.footerReason)
@@ -59,7 +63,7 @@ internal object ClientConfirmationEmail {
 
     fun html(lead: Lead, locale: String?): String {
         val s = strings(locale)
-        val greeting = "${s.greeting}${lead.name?.let { " $it" } ?: ""},"
+        val greeting = "${s.greeting},"
         val rows = detailRows(lead, s)
         return DOCTYPE + createHTML().html {
             lang = s.lang
@@ -95,10 +99,17 @@ internal object ClientConfirmationEmail {
                     requestBox(s, rows)
                     p { style = REPLY; +s.replyLine }
                     docsLine?.let { p { style = DOCS; +it } }
+                    signature(s)
                 }
             }
             tr { td { style = FOOTER; footer(s) } }
         }
+    }
+
+    private fun TD.signature(s: Strings) {
+        p { style = SIGNOFF; +s.signoff }
+        p { style = SIG_NAME; +SIGNATURE_NAME }
+        p { style = SIG_LINE; +s.signatureLine }
     }
 
     // Logo = pre-rendered PNG of the canonical SVG lockup (email clients strip inline SVG), hosted on
@@ -178,6 +189,8 @@ internal object ClientConfirmationEmail {
             tagline = bundle.getString("tagline"),
             footerReason = bundle.getString("footerReason"),
             privacy = bundle.getString("privacy"),
+            signoff = bundle.getString("signoff"),
+            signatureLine = bundle.getString("signatureLine"),
         )
     }
 
@@ -203,6 +216,8 @@ internal object ClientConfirmationEmail {
         val tagline: String,
         val footerReason: String,
         val privacy: String,
+        val signoff: String,
+        val signatureLine: String,
     )
 
     // Resolve only the requested locale → base (English); never the JVM default locale.
@@ -210,6 +225,7 @@ internal object ClientConfirmationEmail {
 
     private const val DOCTYPE = "<!DOCTYPE html>\n"
     private const val COMPANY = "MK Digital s.r.o."
+    private const val SIGNATURE_NAME = "Miroslav Kušnír"
     private const val ROOT_CSS = ":root{color-scheme:light dark;supported-color-schemes:light dark;}"
     private const val BODY = "margin:0;padding:0;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif;"
     private const val PREHEADER = "display:none;font-size:1px;max-height:0;overflow:hidden;color:#f4f6f8;"
@@ -228,6 +244,9 @@ internal object ClientConfirmationEmail {
     private const val STRONG = "color:#0E2A47;"
     private const val REPLY = "margin:0;font-size:15px;line-height:1.6;color:#33414f;"
     private const val DOCS = "margin:18px 0 0;font-size:15px;line-height:1.6;color:#33414f;"
+    private const val SIGNOFF = "margin:24px 0 2px;font-size:15px;line-height:1.6;color:#33414f;"
+    private const val SIG_NAME = "margin:0;font-size:15px;font-weight:700;color:#0E2A47;"
+    private const val SIG_LINE = "margin:2px 0 0;font-size:13px;color:#5b6470;"
     private const val FOOTER = "padding:22px 32px;border-top:1px solid #eaedf0;"
     private const val FOOTER_COMPANY = "margin:0 0 6px;font-size:13px;font-weight:700;color:#0E2A47;"
     private const val FOOTER_ADDR = "margin:0 0 12px;font-size:12px;line-height:1.6;color:#8a97a3;"

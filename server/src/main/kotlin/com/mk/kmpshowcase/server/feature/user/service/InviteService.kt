@@ -35,7 +35,7 @@ internal class InviteService(
 
         val link = "$portalBaseUrl/invite?token=$token"   // public route — /account/* sits behind the auth gate
         mailScope.launch {
-            runCatching { mailer.send(email, InviteEmail.subject(locale), InviteEmail.text(name, link, locale)) }
+            runCatching { mailer.send(email, InviteEmail.subject(locale), InviteEmail.text(link, locale)) }
                 .onFailure { logger.warn("Invite email to ${email.maskEmail()} failed: ${it.message}") }
         }
         return token

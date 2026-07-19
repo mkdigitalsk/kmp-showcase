@@ -9,10 +9,10 @@ internal object InviteEmail {
 
     fun subject(locale: String?): String = bundle(locale).getString("subject")
 
-    fun text(name: String?, link: String, locale: String?): String {
+    fun text(link: String, locale: String?): String {
         val b = bundle(locale)
         return buildString {
-            appendLine("${b.getString("greeting")}${name?.let { " $it" } ?: ""},")
+            appendLine("${b.getString("greeting")},")
             appendLine()
             appendLine(b.getString("intro"))
             appendLine()
@@ -21,7 +21,8 @@ internal object InviteEmail {
             appendLine(b.getString("expiry"))
             appendLine()
             appendLine(b.getString("signoff"))
-            appendLine("MK Digital")
+            appendLine(SIGNATURE_NAME)
+            appendLine(b.getString("signatureLine"))
         }
     }
 
@@ -33,4 +34,6 @@ internal object InviteEmail {
 
     private val NO_FALLBACK: ResourceBundle.Control =
         ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES)
+
+    private const val SIGNATURE_NAME = "Miroslav Kušnír"
 }
