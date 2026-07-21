@@ -163,10 +163,10 @@ class LeadRoutesTest {
 
         val ok = client.patch("${ApiVersion.BASE}/admin/leads/$email/status") {
             header(HttpHeaders.Authorization, "Bearer $adminToken")
-            contentType(ContentType.Application.Json); setBody("""{"status":"REVIEWING"}""")
+            contentType(ContentType.Application.Json); setBody("""{"status":"GATHERING"}""")
         }
         assertEquals(HttpStatusCode.OK, ok.status)
-        assertTrue(ok.bodyAsText().contains("REVIEWING"))
+        assertTrue(ok.bodyAsText().contains("GATHERING"))
     }
 
     @Test
@@ -205,7 +205,7 @@ class LeadRoutesTest {
         client.submit(leadBody(newLead))
         client.submit(leadBody(wonLead))
         // Walk the legal path — WON is reachable only through the funnel (see transition tests).
-        for (status in listOf("REVIEWING", "ANALYZED", "PROPOSAL_SENT", "WON")) {
+        for (status in listOf("GATHERING", "DISCOVERY", "PROPOSAL", "WON")) {
             assertEquals(HttpStatusCode.OK, client.setStatus(wonLead, adminToken, status).status)
         }
 
@@ -236,13 +236,13 @@ class LeadRoutesTest {
     }
 
     @Test
-    fun `WON is terminal and LOST can reopen`() = leadTest {
+    fun `WON is terminal and DECLINED can reopen`() = leadTest {
         val adminToken = token("ladmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
         val email = "term-${UUID.randomUUID()}@test.com"
         client.submit(leadBody(email))
 
-        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "LOST").status)
-        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "REVIEWING").status, "LOST reopens")
+        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "DECLINED").status)
+        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "GATHERING").status, "DECLINED reopens")
         assertEquals(HttpStatusCode.Conflict, client.setStatus(email, adminToken, "WON").status)
     }
 
