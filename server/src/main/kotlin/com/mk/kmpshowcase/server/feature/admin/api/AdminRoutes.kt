@@ -89,6 +89,14 @@ internal fun Route.adminRoutes(leadService: LeadService, projectService: Project
                 else call.respond(HttpStatusCode.NotFound)
             }
 
+            // Record the NDA as sent (the send itself is manual) — 409 if already recorded: the never-send-twice guard.
+            post("/leads/{email}/nda") {
+                if (!call.isAdmin()) return@post call.respond(HttpStatusCode.Forbidden)
+                val email = call.emailParam() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                if (leadService.recordNdaSent(email)) call.respond(HttpStatusCode.Created)
+                else call.respond(HttpStatusCode.NotFound)
+            }
+
             put("/leads/{email}/artifacts/{stage}") {
                 if (!call.isAdmin()) return@put call.respond(HttpStatusCode.Forbidden)
                 val email = call.emailParam() ?: return@put call.respond(HttpStatusCode.BadRequest)

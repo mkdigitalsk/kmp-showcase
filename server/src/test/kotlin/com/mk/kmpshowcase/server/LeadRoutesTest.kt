@@ -267,6 +267,24 @@ class LeadRoutesTest {
     }
 
     @Test
+    fun `NDA records once and never twice`() = leadTest {
+        val adminToken = token("ladmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
+        val email = "nda-${UUID.randomUUID()}@test.com"
+        client.submit(leadBody(email))
+
+        suspend fun record() = client.post("${ApiVersion.BASE}/admin/leads/$email/nda") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+        }
+        assertEquals(HttpStatusCode.Created, record().status)
+        assertEquals(HttpStatusCode.Conflict, record().status, "NDA must never record twice")
+
+        val unknown = client.post("${ApiVersion.BASE}/admin/leads/ghost-${UUID.randomUUID()}@test.com/nda") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
+        }
+        assertEquals(HttpStatusCode.NotFound, unknown.status)
+    }
+
+    @Test
     fun `admin deletes a single lead row by id`() = leadTest {
         val adminToken = token("ladmin-${UUID.randomUUID()}@test.com", Role.ADMIN)
         val email = "del-${UUID.randomUUID()}@test.com"

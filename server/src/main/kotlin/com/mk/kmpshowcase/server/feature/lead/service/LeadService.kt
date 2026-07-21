@@ -63,6 +63,19 @@ internal class LeadService(
     suspend fun recordInviteSent(email: String) =
         repository.appendEvent(email, LeadEventType.INVITE_SENT, null)
 
+    // NDA send is manual (like operator emails); recorded once so the flow can resume-detect it and
+    // never offer it twice for one lead.
+    suspend fun recordNdaSent(email: String): Boolean {
+        repository.findByEmail(email) ?: return false
+        check(!ndaAlreadySent(email)) { "NDA already recorded for this lead" }
+        repository.appendEvent(email, LeadEventType.NDA_SENT, null)
+        logger.info("NDA recorded for ${email.maskEmail()}")
+        return true
+    }
+
+    suspend fun ndaAlreadySent(email: String): Boolean =
+        repository.findEvents(email).any { it.type == LeadEventType.NDA_SENT }
+
     suspend fun submit(draft: LeadDraft): Lead {
         require(EMAIL_REGEX.matches(draft.email)) { "A valid email is required" }
         require(draft.appType.isNotBlank()) { "App type is required" }
