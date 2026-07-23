@@ -15,7 +15,6 @@ import io.ktor.server.plugins.ratelimit.rateLimit
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 
 internal fun Application.configureRouting(dependencies: AppDependencies) {
@@ -32,10 +31,6 @@ internal fun Application.configureRouting(dependencies: AppDependencies) {
         staticResources("/assets", "assets")
 
         apiRoutes(dependencies)
-        // Legacy /api/v1 alias — deprecated. Kept so already-shipped clients (old railway host,
-        // installed mobile builds) keep working during the custom-domain + /v1 migration.
-        // TODO: remove once every client ships on /v1.
-        route("/api") { apiRoutes(dependencies) }
     }
 }
 

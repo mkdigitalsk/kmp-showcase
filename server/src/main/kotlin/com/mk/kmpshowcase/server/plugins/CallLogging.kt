@@ -36,7 +36,7 @@ internal fun Application.configureCallLogging() {
         filter { call ->
             // Log only API calls, skip health checks etc.
             val path = call.request.path()
-            path.startsWith(ApiVersion.BASE) || path.startsWith("/api")
+            path.startsWith(ApiVersion.BASE)
         }
     }
 }
