@@ -163,10 +163,10 @@ class LeadRoutesTest {
 
         val ok = client.patch("${ApiVersion.BASE}/admin/leads/$email/status") {
             header(HttpHeaders.Authorization, "Bearer $adminToken")
-            contentType(ContentType.Application.Json); setBody("""{"status":"GATHERING"}""")
+            contentType(ContentType.Application.Json); setBody("""{"status":"INTAKE"}""")
         }
         assertEquals(HttpStatusCode.OK, ok.status)
-        assertTrue(ok.bodyAsText().contains("GATHERING"))
+        assertTrue(ok.bodyAsText().contains("INTAKE"))
     }
 
     @Test
@@ -205,7 +205,7 @@ class LeadRoutesTest {
         client.submit(leadBody(newLead))
         client.submit(leadBody(wonLead))
         // Walk the legal path — WON is reachable only through the funnel (see transition tests).
-        for (status in listOf("GATHERING", "DISCOVERY", "PROPOSAL", "WON")) {
+        for (status in listOf("INTAKE", "DISCOVERY", "PROPOSAL", "WON")) {
             assertEquals(HttpStatusCode.OK, client.setStatus(wonLead, adminToken, status).status)
         }
 
@@ -242,7 +242,7 @@ class LeadRoutesTest {
         client.submit(leadBody(email))
 
         assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "DECLINED").status)
-        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "GATHERING").status, "DECLINED reopens")
+        assertEquals(HttpStatusCode.OK, client.setStatus(email, adminToken, "INTAKE").status, "DECLINED reopens")
         assertEquals(HttpStatusCode.Conflict, client.setStatus(email, adminToken, "WON").status)
     }
 
@@ -254,14 +254,14 @@ class LeadRoutesTest {
 
         suspend fun record() = client.post("${ApiVersion.BASE}/admin/leads/$email/emails") {
             header(HttpHeaders.Authorization, "Bearer $adminToken")
-            contentType(ContentType.Application.Json); setBody("""{"kind":"5a-in-personal-hands"}""")
+            contentType(ContentType.Application.Json); setBody("""{"kind":"5a-acknowledgement"}""")
         }
         assertEquals(HttpStatusCode.Created, record().status)
         assertEquals(HttpStatusCode.Conflict, record().status, "the same kind must never record twice")
 
         val unknown = client.post("${ApiVersion.BASE}/admin/leads/ghost-${UUID.randomUUID()}@test.com/emails") {
             header(HttpHeaders.Authorization, "Bearer $adminToken")
-            contentType(ContentType.Application.Json); setBody("""{"kind":"5a-in-personal-hands"}""")
+            contentType(ContentType.Application.Json); setBody("""{"kind":"5a-acknowledgement"}""")
         }
         assertEquals(HttpStatusCode.NotFound, unknown.status)
     }
