@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="biometric_prompt_title">Biometrická autentifikácia</string>
+    <string name="biometric_prompt_subtitle">Autentifikujte sa pomocou biometrie</string>
+    <string name="biometric_prompt_cancel">Zrušiť</string>
+    <string name="biometric_activity_not_available">Aktivita nie je dostupná</string>
+</resources>

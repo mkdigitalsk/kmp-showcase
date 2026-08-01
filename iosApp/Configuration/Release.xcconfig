@@ -1,0 +1,8 @@
+// Release configuration
+#include "Config.xcconfig"
+
+BUILD_TYPE = release
+API_BASE_URL = api.showcase.mkdigital.sk
+BUNDLE_ID = com.mk.kmpshowcase
+APP_NAME = KMP Showcase
+APP_DISPLAY_NAME = KMP Showcase

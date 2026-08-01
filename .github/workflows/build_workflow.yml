@@ -1,0 +1,235 @@
+#name: Android CI/CD
+#
+#on:
+#  push:
+#    branches: [main]
+#  pull_request:
+#    branches: [main]
+#  workflow_dispatch:
+#    inputs:
+#      build_type:
+#        description: 'Build type'
+#        required: true
+#        default: 'debug'
+#        type: choice
+#        options:
+#          - debug
+#          - release
+#      publish_firebase:
+#        description: 'Publish to Firebase App Distribution'
+#        required: false
+#        default: false
+#        type: boolean
+#      publish_play_store:
+#        description: 'Publish to Play Store (internal track)'
+#        required: false
+#        default: false
+#        type: boolean
+#
+#concurrency:
+#  group: ${{ github.workflow }}-${{ github.ref }}
+#  cancel-in-progress: true
+#
+#env:
+#  JAVA_VERSION: '21'
+#  JAVA_DISTRIBUTION: 'zulu'
+#
+#jobs:
+#  # ============================================
+#  # CODE QUALITY
+#  # ============================================
+#  detekt:
+#    name: Detekt Analysis
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: ${{ env.JAVA_VERSION }}
+#          distribution: ${{ env.JAVA_DISTRIBUTION }}
+#
+#      - name: Setup Gradle
+#        uses: gradle/actions/setup-gradle@v4
+#
+#      - name: Run Detekt
+#        run: ./gradlew detekt
+#
+#      - name: Upload Detekt Report
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: detekt-report
+#          path: build/reports/detekt/
+#
+#  # ============================================
+#  # TESTING
+#  # ============================================
+#  unit_tests:
+#    name: Unit Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: ${{ env.JAVA_VERSION }}
+#          distribution: ${{ env.JAVA_DISTRIBUTION }}
+#
+#      - name: Setup Gradle
+#        uses: gradle/actions/setup-gradle@v4
+#
+#      - name: Run Unit Tests
+#        run: ./gradlew :shared:testDebugUnitTest
+#
+#      - name: Upload Test Results
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: unit-test-results
+#          path: shared/build/reports/tests/
+#
+#  screenshot_tests:
+#    name: Screenshot Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: ${{ env.JAVA_VERSION }}
+#          distribution: ${{ env.JAVA_DISTRIBUTION }}
+#
+#      - name: Setup Gradle
+#        uses: gradle/actions/setup-gradle@v4
+#
+#      - name: Run Screenshot Tests
+#        run: ./gradlew androidApp:verifyRoborazziDebug
+#
+#      - name: Upload Screenshot Failures
+#        if: failure()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: screenshot-failures
+#          path: androidApp/build/outputs/roborazzi/
+#
+#  # ============================================
+#  # BUILD
+#  # ============================================
+#  build:
+#    name: Build ${{ github.event.inputs.build_type || 'debug' }}
+#    runs-on: ubuntu-latest
+#    needs: [detekt, unit_tests, screenshot_tests]
+#    env:
+#      BUILD_TYPE: ${{ github.event.inputs.build_type || 'debug' }}
+#    outputs:
+#      version_name: ${{ steps.version.outputs.name }}
+#      version_code: ${{ steps.version.outputs.code }}
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v4
+#        with:
+#          java-version: ${{ env.JAVA_VERSION }}
+#          distribution: ${{ env.JAVA_DISTRIBUTION }}
+#
+#      - name: Setup Gradle
+#        uses: gradle/actions/setup-gradle@v4
+#
+#      - name: Generate Version
+#        id: version
+#        run: |
+#          VERSION_NAME="1.0.${{ github.run_number }}"
+#          VERSION_CODE="${{ github.run_number }}"
+#          echo "name=$VERSION_NAME" >> $GITHUB_OUTPUT
+#          echo "code=$VERSION_CODE" >> $GITHUB_OUTPUT
+#          echo "Version: $VERSION_NAME ($VERSION_CODE)"
+#
+#      - name: Build Debug APK
+#        if: env.BUILD_TYPE == 'debug'
+#        run: ./gradlew androidApp:assembleDebug
+#
+#      - name: Build Release AAB
+#        if: env.BUILD_TYPE == 'release'
+#        run: ./gradlew androidApp:bundleRelease
+#
+#      # Release signing - requires secrets setup
+#      - name: Sign Release AAB
+#        if: env.BUILD_TYPE == 'release'
+#        uses: r0adkll/sign-android-release@v1
+#        with:
+#          releaseDirectory: androidApp/build/outputs/bundle/release/
+#          signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
+#          alias: ${{ secrets.KEY_ALIAS }}
+#          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+#          keyPassword: ${{ secrets.KEY_PASSWORD }}
+#        env:
+#          BUILD_TOOLS_VERSION: "34.0.0"
+#
+#      - name: Upload APK
+#        if: env.BUILD_TYPE == 'debug'
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: app-debug
+#          path: androidApp/build/outputs/apk/debug/*.apk
+#
+#      - name: Upload AAB
+#        if: env.BUILD_TYPE == 'release'
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: app-release
+#          path: androidApp/build/outputs/bundle/release/*.aab
+#
+#  # ============================================
+#  # DISTRIBUTION
+#  # ============================================
+#  firebase_distribution:
+#    name: Firebase App Distribution
+#    runs-on: ubuntu-latest
+#    needs: build
+#    if: github.event.inputs.publish_firebase == 'true'
+#    steps:
+#      - name: Download APK
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: app-debug
+#
+#      - name: Upload to Firebase
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{ secrets.FIREBASE_APP_ID }}
+#          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+#          groups: testers
+#          file: androidApp-debug.apk
+#          releaseNotes: |
+#            Build: ${{ github.run_number }}
+#            Branch: ${{ github.ref_name }}
+#            Commit: ${{ github.sha }}
+#
+#  play_store:
+#    name: Play Store (Internal)
+#    runs-on: ubuntu-latest
+#    needs: build
+#    if: github.event.inputs.publish_play_store == 'true' && github.event.inputs.build_type == 'release'
+#    steps:
+#      - name: Download AAB
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: app-release
+#
+#      - name: Upload to Play Store
+#        uses: r0adkll/upload-google-play@v1
+#        with:
+#          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}
+#          packageName: com.mk.kmpshowcase
+#          releaseFiles: androidApp-release.aab
+#          track: internal
+#          status: draft

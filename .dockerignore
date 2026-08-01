@@ -1,0 +1,22 @@
+# Server-only Docker build context (gradle :server:installDist -PserverOnly=true).
+# Keep: contracts/, server/, gradle/, gradlew, settings.gradle.kts, build.gradle.kts, gradle.properties.
+
+# Mobile app modules — excluded from server-only builds (settings.gradle.kts serverOnly gate)
+androidApp/
+iosApp/
+shared/
+
+# Build outputs & caches (regenerated in-image)
+**/build/
+.gradle/
+.kotlin/
+
+# VCS / CI / IDE / tooling
+.git/
+.github/
+.idea/
+*.iml
+
+# Docs / Claude / assets not needed to build the server
+.claude/
+*.md

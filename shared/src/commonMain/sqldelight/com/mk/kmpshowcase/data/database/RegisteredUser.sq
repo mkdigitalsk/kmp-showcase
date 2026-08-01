@@ -1,0 +1,28 @@
+CREATE TABLE RegisteredUser (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    createdAt INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM RegisteredUser ORDER BY createdAt DESC;
+
+selectByEmail:
+SELECT * FROM RegisteredUser WHERE email = ?;
+
+selectById:
+SELECT * FROM RegisteredUser WHERE id = ?;
+
+insert:
+INSERT INTO RegisteredUser (name, email, password, createdAt) VALUES (?, ?, ?, ?);
+
+deleteById:
+DELETE FROM RegisteredUser WHERE id = ?;
+
+deleteAll:
+DELETE FROM RegisteredUser;
+
+count:
+SELECT COUNT(*) FROM RegisteredUser;

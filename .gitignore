@@ -1,0 +1,24 @@
+*.iml
+.gradle
+.idea
+.vscode
+.kotlin
+.DS_Store
+node_modules
+build
+captures
+.externalNativeBuild
+.cxx
+local.properties
+local/
+.env
+!.env.example
+xcuserdata
+.claude/
+.agents/
+skills-lock.json
+# Lead intake — client-confidential (analyze-lead skill outputs)
+leads/
+
+# Local session handoff (not shared)
+/session.md

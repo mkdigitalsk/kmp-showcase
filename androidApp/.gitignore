@@ -1,0 +1,16 @@
+# Build artifacts
+*.aab
+*.apk
+output-metadata.json
+
+# Keystore files
+*.jks
+*.keystore
+keystore.properties
+
+# Profiling
+*.hprof
+
+# Baseline profiles
+release/baselineProfiles/
+*.dm

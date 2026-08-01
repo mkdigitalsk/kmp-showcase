@@ -1,0 +1,11 @@
+<resources>
+    <style name="App.Theme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/neutral_0</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+
+        <!--        status bar-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

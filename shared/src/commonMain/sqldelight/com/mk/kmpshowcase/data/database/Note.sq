@@ -1,0 +1,48 @@
+CREATE TABLE Note (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    createdAt INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM Note ORDER BY createdAt DESC;
+
+selectAllByDateAsc:
+SELECT * FROM Note ORDER BY createdAt ASC;
+
+selectAllByTitleAsc:
+SELECT * FROM Note ORDER BY title ASC;
+
+selectAllByTitleDesc:
+SELECT * FROM Note ORDER BY title DESC;
+
+search:
+SELECT * FROM Note WHERE title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%' ORDER BY createdAt DESC;
+
+searchByDateAsc:
+SELECT * FROM Note WHERE title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%' ORDER BY createdAt ASC;
+
+searchByTitleAsc:
+SELECT * FROM Note WHERE title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%' ORDER BY title ASC;
+
+searchByTitleDesc:
+SELECT * FROM Note WHERE title LIKE '%' || ? || '%' OR content LIKE '%' || ? || '%' ORDER BY title DESC;
+
+selectById:
+SELECT * FROM Note WHERE id = ?;
+
+insert:
+INSERT INTO Note (title, content, createdAt) VALUES (?, ?, ?);
+
+update:
+UPDATE Note SET title = ?, content = ? WHERE id = ?;
+
+deleteById:
+DELETE FROM Note WHERE id = ?;
+
+deleteAll:
+DELETE FROM Note;
+
+count:
+SELECT COUNT(*) FROM Note;

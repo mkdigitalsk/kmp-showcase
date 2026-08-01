@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CognitiveComplexMethod:DatabaseScreen.kt$@Composable private fun SearchBar( query: String, onQueryChanged: (String) -&gt; Unit, sortOption: NoteSortOption, onSortOptionChanged: (NoteSortOption) -&gt; Unit, showFilterMenu: Boolean, onToggleFilterMenu: () -&gt; Unit, onDismissFilterMenu: () -&gt; Unit, )</ID>
+    <ID>CognitiveComplexMethod:NotificationPermissionRequester.ios.kt$@Composable actual fun rememberNotificationPermissionRequester( onResult: (PushPermissionStatus) -&gt; Unit ): NotificationPermissionRequester</ID>
+    <ID>CognitiveComplexMethod:RegisterScreen.kt$@Composable fun RegisterScreen( state: RegisterUiState, onNameChange: (String) -&gt; Unit = {}, onEmailChange: (String) -&gt; Unit = {}, onPasswordChange: (String) -&gt; Unit = {}, onConfirmPasswordChange: (String) -&gt; Unit = {}, onRegister: () -&gt; Unit = {}, onToLogin: () -&gt; Unit = {}, )</ID>
+    <ID>CognitiveComplexMethod:ScreenLifecycleEffect.kt$@Composable fun ScreenLifecycleEffect( key: Any? = Unit, onCreate: () -&gt; Unit = {}, onResume: () -&gt; Unit = {}, onPause: () -&gt; Unit = {}, onDispose: () -&gt; Unit = {} )</ID>
+    <ID>ComplexCondition:RegisterViewModel.kt$RegisterViewModel$nameError != null || emailError != null || passwordError != null || confirmPasswordError != null</ID>
+    <ID>LongParameterList:DatabaseScreen.kt$( query: String, onQueryChanged: (String) -&gt; Unit, sortOption: NoteSortOption, onSortOptionChanged: (NoteSortOption) -&gt; Unit, showFilterMenu: Boolean, onToggleFilterMenu: () -&gt; Unit, onDismissFilterMenu: () -&gt; Unit, )</ID>
+    <ID>TooGenericExceptionCaught:AndroidPushNotificationService.kt$AndroidPushNotificationService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:LocalNotificationServiceImpl.android.kt$LocalNotificationServiceImpl$e: Exception</ID>
+    <ID>TooManyFunctions:NavRouter.kt$NavRouter&lt;T : NavKey&gt;</ID>
+    <ID>TooManyFunctions:Preferences.kt$Preferences</ID>
+  </CurrentIssues>
+</SmellBaseline>
