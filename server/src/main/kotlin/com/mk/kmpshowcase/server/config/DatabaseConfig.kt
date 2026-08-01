@@ -39,9 +39,7 @@ internal object DatabaseConfig {
                 logger.info("Using PostgreSQL database (production)")
                 driverClassName = "org.postgresql.Driver"
                 val url = appConfig.property("database.url").getString()
-                // Hikari puts the whole URL in its failure message, and a Neon URL carries the
-                // password inside it — one misconfigured deploy would print the credentials into
-                // the logs. Reject the wrong shape here, naming only the shape.
+                // A Neon URL carries the password, and Hikari prints the whole URL when it fails.
                 require(url.startsWith("jdbc:postgresql://")) {
                     "database.url must be a JDBC URL (jdbc:postgresql://host/db?sslmode=require), " +
                         "with the user and password in database.user and database.password"
