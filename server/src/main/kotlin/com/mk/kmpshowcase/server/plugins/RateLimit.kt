@@ -14,9 +14,8 @@ internal val AuthRateLimit = RateLimitName("auth")
 internal fun Application.configureRateLimit() {
     // Behind Railway's proxy every request's remoteHost is the proxy IP; read the real client IP
     // from X-Forwarded-For so the limiter buckets per client, not per proxy.
-    // useLastProxy: X-Forwarded-For is append-only, so a caller who sends one keeps the leftmost
-    // entry even after Railway appends the real address. The default (useFirstProxy) would read
-    // that forged entry and hand every caller a fresh bucket, auth included.
+    // useLastProxy: X-Forwarded-For is append-only, so the default (useFirstProxy) reads an entry the
+    // caller can forge — even behind our own proxy.
     install(XForwardedHeaders) { useLastProxy() }
     install(RateLimit) {
         // Baseline for every API endpoint — generous; stops scraping / runaway clients / light DoS.
