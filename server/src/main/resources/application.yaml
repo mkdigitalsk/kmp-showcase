@@ -7,7 +7,7 @@ ktor:
     host: "0.0.0.0"
 
 jwt:
-  secret: "$JWT_SECRET:development-only-secret"
+  secret: "$JWT_SECRET:development-only-secret-never-used-in-production"
   issuer: "$JWT_ISSUER:mkdigital-showcase"
   audience: "$JWT_AUDIENCE:mkdigital-showcase-users"
 

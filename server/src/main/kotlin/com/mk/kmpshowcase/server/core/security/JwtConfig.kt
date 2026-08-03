@@ -12,6 +12,14 @@ internal class JwtConfig(
 ) {
     private val algorithm = Algorithm.HMAC256(secret)
 
+    init {
+        // An HS256 token is offline-crackable at a rate set by the key's entropy, so a short or
+        // guessable secret forges any identity. RFC 8725 §3.5: at least the hash output size.
+        require(secret.toByteArray().size >= MIN_SECRET_BYTES) {
+            "jwt.secret must be at least $MIN_SECRET_BYTES bytes of CSPRNG output, never a passphrase"
+        }
+    }
+
     val verifier: JWTVerifier = JWT.require(algorithm)
         .withIssuer(issuer)
         .withAudience(audience)
@@ -28,5 +36,6 @@ internal class JwtConfig(
 
     private companion object {
         const val VALIDITY_IN_MS: Long = 3600_000L * 24
+        const val MIN_SECRET_BYTES = 32
     }
 }

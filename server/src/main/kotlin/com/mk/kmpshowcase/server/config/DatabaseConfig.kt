@@ -56,7 +56,6 @@ internal object DatabaseConfig {
             minimumIdle = MIN_IDLE
             idleTimeout = IDLE_TIMEOUT_MS
             isAutoCommit = false
-            transactionIsolation = "TRANSACTION_REPEATABLE_READ"
             validate()
         }
         return HikariDataSource(config)

@@ -39,7 +39,7 @@ class UserRoutesTest {
     companion object {
         private var initialized = false
         private val jwtConfig = JwtConfig(
-            secret = "test-secret",
+            secret = "test-secret-at-least-32-bytes-long-for-hs256",
             issuer = "kmp-showcase",
             audience = "kmp-showcase-users",
         )
