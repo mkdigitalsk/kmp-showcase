@@ -21,8 +21,12 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("StatusPages")
 
-// RFC 9457 Problem Details. Ktor has no first-party support — hand-rolled and served as
-// `application/problem+json` so clients can branch on a typed error body. See backend-conventions §4.
+/**
+ * Problem Details. Ktor has no first-party support — hand-rolled and served as `application/problem+json`
+ * so clients can branch on a typed error body. See backend conventions → Errors.
+ *
+ * [RFC 9457 — Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457)
+ */
 @Serializable
 internal data class ProblemDetail(
     val type: String = "about:blank",

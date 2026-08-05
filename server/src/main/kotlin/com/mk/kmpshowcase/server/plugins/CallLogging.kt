@@ -14,7 +14,8 @@ import java.util.UUID
 import org.slf4j.event.Level
 
 internal fun Application.configureCallLogging() {
-    // Correlation id per request (conventions §9). CallId must install BEFORE CallLogging so the MDC
+    // Correlation id per request (backend conventions → Config & observability). CallId must install
+// BEFORE CallLogging so the MDC
     // value exists for every log line the request produces; the id is echoed as X-Request-Id so a
     // client-visible error can be matched to its full server trace.
     install(CallId) {
@@ -29,7 +30,7 @@ internal fun Application.configureCallLogging() {
         format { call ->
             val status = call.response.status()
             val method = call.request.httpMethod.value
-            // Paths carry user emails (/v1/users/{email}) — mask them (PII discipline, §9).
+            // Paths carry user emails (/v1/users/{email}) — mask them (PII discipline).
             val path = call.request.path().maskEmails()
             "$method $path -> $status"
         }

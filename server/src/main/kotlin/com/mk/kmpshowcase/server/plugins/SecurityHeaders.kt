@@ -5,13 +5,22 @@ import io.ktor.server.application.install
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.plugins.hsts.HSTS
 
-// OWASP Secure Headers baseline for a JSON API (backend-conventions §6; OWASP Secure Headers Project + Cheat Sheet).
-// Deliberate deviations, all grounded:
-//  - COOP/COEP/CORP omitted — OWASP: "very related to browsers, may not make sense for REST APIs"; cross-origin
-//    access here is already governed by CORS.
-//  - `no-referrer` is stricter than OWASP's `strict-origin-when-cross-origin` — an API needn't emit referrers.
-//  - No HSTS `preload` — a hard-to-reverse domain-wide commitment; left to a deliberate infra decision.
-// XForwardedHeaders (configureRateLimit) lets HSTS see the real HTTPS scheme behind Railway's TLS proxy.
+/**
+ * The OWASP secure-headers baseline for a JSON API (backend conventions → Abuse controls).
+ *
+ * Deliberate deviations, all grounded:
+ *  - COOP/COEP/CORP omitted — OWASP: "very related to browsers, may not make sense for REST APIs";
+ *    cross-origin access here is already governed by CORS.
+ *  - `no-referrer` is stricter than OWASP's `strict-origin-when-cross-origin` — an API needn't emit
+ *    referrers.
+ *  - No HSTS `preload` — a hard-to-reverse domain-wide commitment; left to a deliberate infra decision.
+ *
+ * XForwardedHeaders (configureRateLimit) lets HSTS see the real HTTPS scheme behind Railway's TLS proxy.
+ *
+ * Based on:
+ * - [OWASP Secure Headers Project](https://owasp.org/www-project-secure-headers/)
+ * - [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html)
+ */
 internal fun Application.configureSecurityHeaders() {
     install(HSTS) {
         maxAgeInSeconds = HSTS_MAX_AGE_SECONDS
@@ -28,4 +37,9 @@ internal fun Application.configureSecurityHeaders() {
     }
 }
 
-private const val HSTS_MAX_AGE_SECONDS = 63_072_000L // 2 years (OWASP recommended)
+/**
+ * Two years — the value OWASP writes into its own example header.
+ *
+ * [OWASP HSTS Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html)
+ */
+private const val HSTS_MAX_AGE_SECONDS = 63_072_000L

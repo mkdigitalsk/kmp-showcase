@@ -1,6 +1,7 @@
 package com.mk.kmpshowcase.server.core
 
-// PII discipline (conventions §9): emails identify clients across this schema — log them masked.
+// PII discipline (backend conventions → Config & observability): emails identify clients across this
+// schema — log them masked.
 internal fun String.maskEmail(): String {
     val at = indexOf('@')
     if (at < 1) return "***"

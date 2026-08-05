@@ -13,7 +13,6 @@ internal class JwtConfig(
     private val algorithm = Algorithm.HMAC256(secret)
 
     init {
-        // HS256 is offline-crackable at a rate set by the key's entropy — RFC 8725 §3.5.
         require(secret.toByteArray().size >= MIN_SECRET_BYTES) {
             "jwt.secret must be at least $MIN_SECRET_BYTES bytes of CSPRNG output, never a passphrase"
         }
@@ -35,6 +34,12 @@ internal class JwtConfig(
 
     private companion object {
         const val VALIDITY_IN_MS: Long = 3600_000L * 24
+        /**
+         * HS256 is offline-crackable at a rate set by the key's entropy, so the key is held to the hash
+         * output size and has to be CSPRNG output rather than anything a person chose.
+         *
+         * [RFC 8725 §3.5 — Key Entropy](https://www.rfc-editor.org/rfc/rfc8725#section-3.5)
+         */
         const val MIN_SECRET_BYTES = 32
     }
 }

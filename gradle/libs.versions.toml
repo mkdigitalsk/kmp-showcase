@@ -53,7 +53,8 @@ angusMail = "2.0.3"
 bcrypt = "0.10.2"
 
 # TESTING
-# Alpha on purpose: 1.23.8 embeds the Kotlin 2.0 compiler and misreads 2.3 metadata (detekt#8865).
+# Alpha on purpose: 1.23.8 embeds the Kotlin 2.0 compiler and misreads 2.3 metadata.
+# https://github.com/detekt/detekt/issues/8865
 # compose-rules must match detekt's major — on the other line it registers a service path detekt never scans.
 detekt = "2.0.0-alpha.5"
 detektCompose = "0.6.3"
