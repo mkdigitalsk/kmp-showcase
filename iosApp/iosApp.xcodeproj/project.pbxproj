@@ -14,7 +14,6 @@
 		350D98102F2250FB004D996B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 350D980E2F2250FB004D996B /* Localizable.xcstrings */; };
 		357697E02F225D2300A55252 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 357697DF2F225D2300A55252 /* FirebaseAnalytics */; };
 		357697E22F225D2300A55252 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 357697E12F225D2300A55252 /* FirebaseCrashlytics */; };
-		357698022F2263AC00A55252 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 357698012F2263AC00A55252 /* GoogleService-Info.plist */; };
 		359A18A32DB54FA70046F000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359A18A22DB54FA70046F000 /* AppDelegate.swift */; };
 		35F2906C2F23D3580093E0E9 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 35F2906B2F23D3580093E0E9 /* FirebaseMessaging */; };
 		35F2906E2F23F6210093E0E9 /* PushNotificationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F2906D2F23F6210093E0E9 /* PushNotificationBridge.swift */; };
@@ -41,7 +40,6 @@
 		350D980E2F2250FB004D996B /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		357697E32F22624000A55252 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		357698002F22627200A55252 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		357698012F2263AC00A55252 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		357698032F22680500A55252 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		359A18A22DB54FA70046F000 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		35F2906D2F23F6210093E0E9 /* PushNotificationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBridge.swift; sourceTree = "<group>"; };
@@ -110,7 +108,6 @@
 			isa = PBXGroup;
 			children = (
 				35F2906D2F23F6210093E0E9 /* PushNotificationBridge.swift */,
-				357698012F2263AC00A55252 /* GoogleService-Info.plist */,
 				350D980D2F2250FB004D996B /* InfoPlist.xcstrings */,
 				350D980E2F2250FB004D996B /* Localizable.xcstrings */,
 				359A18A22DB54FA70046F000 /* AppDelegate.swift */,
@@ -134,6 +131,7 @@
 				7555FF78242A565900829871 /* Frameworks */,
 				7555FF79242A565900829871 /* Resources */,
 				7555FFB4242A642300829871 /* Embed Frameworks */,
+				AABBCCDD11223355 /* Firebase - Select GoogleService-Info.plist */,
 				AABBCCDD11223344 /* Firebase Crashlytics - Upload dSYM */,
 			);
 			buildRules = (
@@ -190,7 +188,6 @@
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
-				357698022F2263AC00A55252 /* GoogleService-Info.plist in Resources */,
 				350D980F2F2250FB004D996B /* InfoPlist.xcstrings in Resources */,
 				350D98102F2250FB004D996B /* Localizable.xcstrings in Resources */,
 			);
@@ -217,6 +214,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/..\"\nif [ -d \"shared\" ]; then\n  ./gradlew :shared:embedAndSignAppleFrameworkForXcode\nelse\n  echo \"No KMP module shared found; skipping framework build.\"\nfi\n";
+		};
+		AABBCCDD11223355 /* Firebase - Select GoogleService-Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(FIREBASE_PLIST)",
+			);
+			name = "Firebase - Select GoogleService-Info.plist";
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\n# Firebase documents no build-time selection for a single target. Its single-target answer is runtime\n# FirebaseOptions, rejected here because it \"can impact Analytics collection\" and Analytics is linked.\n[ -n \"${FIREBASE_PLIST:-}\" ] || { echo \"error: FIREBASE_PLIST unset - see Configuration/*.xcconfig\" >&2; exit 1; }\n[ -f \"$FIREBASE_PLIST\" ] || { echo \"error: missing $FIREBASE_PLIST\" >&2; exit 1; }\n\nplist_id=$(/usr/libexec/PlistBuddy -c \"Print :BUNDLE_ID\" \"$FIREBASE_PLIST\")\n[ \"$plist_id\" = \"$PRODUCT_BUNDLE_IDENTIFIER\" ] || { echo \"error: $FIREBASE_PLIST targets $plist_id, build is $PRODUCT_BUNDLE_IDENTIFIER\" >&2; exit 1; }\n\ncp \"$FIREBASE_PLIST\" \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/GoogleService-Info.plist\"\n";
 		};
 		AABBCCDD11223344 /* Firebase Crashlytics - Upload dSYM */ = {
 			isa = PBXShellScriptBuildPhase;

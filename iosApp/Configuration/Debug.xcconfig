@@ -3,6 +3,7 @@
 
 BUILD_TYPE = debug
 API_BASE_URL = api.showcase.mkdigital.sk
-BUNDLE_ID = sk.mkdigital.kmpshowcase
+FIREBASE_PLIST = $(SRCROOT)/Configuration/Firebase/Debug/GoogleService-Info.plist
+BUNDLE_ID = sk.mkdigital.kmpshowcase.debug
 APP_NAME = KMP Showcase Debug
 APP_DISPLAY_NAME = KMP Showcase Debug

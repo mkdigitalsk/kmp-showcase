@@ -3,6 +3,7 @@
 
 BUILD_TYPE = release
 API_BASE_URL = api.showcase.mkdigital.sk
+FIREBASE_PLIST = $(SRCROOT)/Configuration/Firebase/Release/GoogleService-Info.plist
 BUNDLE_ID = sk.mkdigital.kmpshowcase
 APP_NAME = KMP Showcase
 APP_DISPLAY_NAME = KMP Showcase

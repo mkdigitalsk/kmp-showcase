@@ -75,6 +75,7 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix = ".debug"
             isDefault = true
             isDebuggable = true
             buildConfigField("String", "BASE_URL", "\"api.showcase.mkdigital.sk\"")

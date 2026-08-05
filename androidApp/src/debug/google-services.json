@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1089557383502:android:1664a30083af9fc55ef61f",
+        "mobilesdk_app_id": "1:1089557383502:android:8c48023670a37c6e5ef61f",
         "android_client_info": {
-          "package_name": "sk.mkdigital.kmpshowcase"
+          "package_name": "sk.mkdigital.kmpshowcase.debug"
         }
       },
       "oauth_client": [],
