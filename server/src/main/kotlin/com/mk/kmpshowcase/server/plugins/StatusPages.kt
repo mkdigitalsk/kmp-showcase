@@ -10,6 +10,8 @@ import io.ktor.server.application.install
 import com.mk.kmpshowcase.server.core.PayloadTooLargeException
 import com.mk.kmpshowcase.server.core.maskEmails
 import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.CannotTransformContentToTypeException
+import io.ktor.server.plugins.UnsupportedMediaTypeException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.uri
 import io.ktor.server.response.respondText
@@ -53,6 +55,15 @@ internal fun Application.configureStatusPages() {
         exception<BadRequestException> { call, cause ->
             logger.debug("Malformed request body: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.BadRequest, "Invalid or malformed request body")
+        }
+        // No converter accepts the Content-Type; one that reads the body and fails throws ContentConvertException.
+        exception<UnsupportedMediaTypeException> { call, cause ->
+            logger.debug("Unsupported media type: ${cause.message?.maskEmails()}")
+            call.respondProblem(HttpStatusCode.UnsupportedMediaType, "Content-Type must be application/json")
+        }
+        exception<CannotTransformContentToTypeException> { call, cause ->
+            logger.debug("No converter for the request content type: ${cause.message?.maskEmails()}")
+            call.respondProblem(HttpStatusCode.UnsupportedMediaType, "Content-Type must be application/json")
         }
         exception<ContentConvertException> { call, cause ->
             logger.debug("Body deserialization failed: ${cause.message?.maskEmails()}")

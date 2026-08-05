@@ -17,8 +17,10 @@ xcuserdata
 .claude/
 .agents/
 skills-lock.json
-# Lead intake — client-confidential (analyze-lead skill outputs)
+# Leads live in studio-api. Kept as a guard: this repo is public, and a lead folder appearing here
+# by accident would be client-confidential data in the open.
 leads/
 
 # Local session handoff (not shared)
 /session.md
+
