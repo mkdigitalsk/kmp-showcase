@@ -23,8 +23,8 @@ internal fun Application.module() {
     logger.info("Server starting...")
     val config = environment.config
 
-    val useH2 = config.property("database.useH2").getString().toBoolean()
-    check(useH2 || System.getenv("JWT_SECRET") != null) {
+    val isH2 = config.property("database.useH2").getString().toBoolean()
+    check(isH2 || System.getenv("JWT_SECRET") != null) {
         "JWT_SECRET must be set when running against a production database"
     }
 

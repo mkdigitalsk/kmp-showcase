@@ -25,8 +25,6 @@ import com.mk.kmpshowcase.shared.generated.resources.permission_required
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
-
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 actual fun PermissionView(
@@ -34,7 +32,6 @@ actual fun PermissionView(
     onDeniedDialogDismiss: () -> Unit,
     content: @Composable () -> Unit
 ) {
-
     when (permission) {
         PermissionType.GALLERY -> content()
         PermissionType.CAMERA,

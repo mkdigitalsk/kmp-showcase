@@ -33,6 +33,8 @@ internal data class ProblemDetail(
 private val problemJson = Json { explicitNulls = false }
 private val problemContentType = ContentType("application", "problem+json")
 
+// Ktor's ApplicationCall happens to implement CoroutineScope; the receiver is the call, not a scope to launch in.
+@Suppress("SuspendFunWithCoroutineScopeReceiver")
 private suspend fun ApplicationCall.respondProblem(
     status: HttpStatusCode,
     detail: String,
@@ -75,7 +77,7 @@ internal fun Application.configureStatusPages() {
         // The RateLimit plugin emits a bodiless 429 + Retry-After; give it a problem+json body like the rest.
         status(HttpStatusCode.TooManyRequests) { call, status ->
             val retryAfter = call.response.headers[HttpHeaders.RetryAfter]
-            val suffix = retryAfter?.let { " Retry after $it seconds." } ?: ""
+            val suffix = retryAfter?.let { " Retry after $it seconds." }.orEmpty()
             call.respondProblem(status, "Too many requests.$suffix")
         }
         // Never leak internals (stack trace, cause.message, SQL) — log the cause, return a safe summary.

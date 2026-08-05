@@ -13,7 +13,6 @@ import com.mk.kmpshowcase.presentation.foundation.ThemeMode
 import org.junit.After
 import org.junit.Rule
 import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
 import org.koin.core.context.stopKoin
 import org.robolectric.ParameterizedRobolectricTestRunner
 import org.robolectric.annotation.Config

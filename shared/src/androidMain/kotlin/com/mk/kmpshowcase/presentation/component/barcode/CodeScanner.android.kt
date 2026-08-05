@@ -22,7 +22,7 @@ import com.google.mlkit.vision.common.InputImage
 @Suppress("CognitiveComplexMethod")
 @Composable
 actual fun CodeScanner(
-    onScanned: (String) -> Unit,
+    onScan: (String) -> Unit,
     onError: (String) -> Unit,
     modifier: Modifier
 ) {
@@ -57,7 +57,7 @@ actual fun CodeScanner(
                                     .addOnSuccessListener { barcodes ->
                                         for (barcode in barcodes) {
                                             barcode.rawValue?.let {
-                                                onScanned(it)
+                                                onScan(it)
                                             }
                                         }
                                     }

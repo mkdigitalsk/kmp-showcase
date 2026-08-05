@@ -7,7 +7,7 @@ internal class UserService(
 ) {
     suspend fun register(email: String, password: String, name: String): User {
         require(email.contains("@")) { "Invalid email format" }
-        require(PASSWORD_REGEX.matches(password)) { "Password must be at least 8 characters and contain uppercase, lowercase, digit and special character (@\$!%*?&)" }
+        require(PASSWORD_REGEX.matches(password)) { PASSWORD_REQUIREMENT }
         require(name.isNotBlank()) { "Name cannot be blank" }
 
         check(repository.findByEmail(email) == null) { "User already exists" }
@@ -30,5 +30,9 @@ internal class UserService(
         val PASSWORD_REGEX = Regex(
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"
         )
+
+        const val PASSWORD_REQUIREMENT =
+            "Password must be at least 8 characters and contain uppercase, lowercase, digit " +
+                "and special character (@\$!%*?&)"
     }
 }

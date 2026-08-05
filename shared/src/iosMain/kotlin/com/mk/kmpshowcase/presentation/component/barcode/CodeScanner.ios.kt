@@ -39,7 +39,7 @@ import platform.darwin.dispatch_get_main_queue
 
 @Composable
 actual fun CodeScanner(
-    onScanned: (String) -> Unit,
+    onScan: (String) -> Unit,
     onError: (String) -> Unit,
     modifier: Modifier
 ) {
@@ -81,7 +81,7 @@ actual fun CodeScanner(
             val metadataOutput = AVCaptureMetadataOutput()
             val delegate = AVCaptureMetadataOutputObjectsDelegateProtocolImpl(
                 session = session,
-                onScanned = onScanned
+                onScan = onScan
             )
             if (session.canAddOutput(metadataOutput)) {
                 session.addOutput(metadataOutput)
@@ -122,7 +122,7 @@ actual fun CodeScanner(
 
 private class AVCaptureMetadataOutputObjectsDelegateProtocolImpl(
     val session: AVCaptureSession,
-    val onScanned: (String) -> Unit
+    val onScan: (String) -> Unit
 ) : NSObject(), AVCaptureMetadataOutputObjectsDelegateProtocol {
     override fun captureOutput(
         output: AVCaptureOutput,
@@ -134,7 +134,7 @@ private class AVCaptureMetadataOutputObjectsDelegateProtocolImpl(
         val scannedCode = metadataObj?.stringValue
 
         if (scannedCode != null) {
-            onScanned(scannedCode)
+            onScan(scannedCode)
             session.stopRunning()
         }
     }

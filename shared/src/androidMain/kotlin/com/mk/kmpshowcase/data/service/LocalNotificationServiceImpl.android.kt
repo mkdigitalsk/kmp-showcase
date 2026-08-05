@@ -46,7 +46,8 @@ actual class LocalNotificationServiceImpl(
 
             val notificationId = notification.id.hashCode()
             manager.notify(notificationId, builder.build())
-        } catch (e: Exception) {
+        } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+            // Posting a notification is best-effort; a failure must not take the caller down.
             Log.e(TAG, "Failed to show notification", e)
         }
     }

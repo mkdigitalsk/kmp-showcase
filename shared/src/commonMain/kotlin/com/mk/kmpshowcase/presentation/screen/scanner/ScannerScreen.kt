@@ -183,7 +183,7 @@ fun ScannerScreen(
                                 onDeniedDialogDismiss = {},
                             ) {
                                 CodeScanner(
-                                    onScanned = onCodeScanned,
+                                    onScan = onCodeScanned,
                                     onError = { },
                                     modifier = Modifier.fillMaxSize()
                                 )

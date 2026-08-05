@@ -52,8 +52,10 @@ angusMail = "2.0.3"
 bcrypt = "0.10.2"
 
 # TESTING
-detekt = "1.23.8"
-detektCompose = "0.5.3"
+# Alpha on purpose: 1.23.8 embeds the Kotlin 2.0 compiler and misreads 2.3 metadata (detekt#8865).
+# compose-rules must match detekt's major — on the other line it registers a service path detekt never scans.
+detekt = "2.0.0-alpha.5"
+detektCompose = "0.6.3"
 junit4 = "4.13.2"
 junitJupiter = "6.1.1"
 mokkery = "3.3.0"
@@ -219,7 +221,7 @@ firebase-distribution = { id = "com.google.firebase.appdistribution", version.re
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 
 # TESTING
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

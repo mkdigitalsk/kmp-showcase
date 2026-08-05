@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 expect fun CodeScanner(
-    onScanned: (String) -> Unit,
+    onScan: (String) -> Unit,
     onError: (String) -> Unit = {},
     modifier: Modifier = Modifier
 )

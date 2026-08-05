@@ -6,7 +6,6 @@ import com.mk.kmpshowcase.server.feature.user.service.ThemeMode
 import com.mk.kmpshowcase.server.feature.user.service.User
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -85,11 +84,11 @@ internal class UserRepositoryImpl : UserRepository {
             .singleOrNull()
             ?: return@suspendTransaction null
 
-        val matches = BCrypt.verifyer()
+        val isPasswordValid = BCrypt.verifyer()
             .verify(password.toCharArray(), row[UsersTable.passwordHash])
             .verified
 
-        if (matches) row.toUser() else null
+        if (isPasswordValid) row.toUser() else null
     }
 
     private fun ResultRow.toUser() = User(

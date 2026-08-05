@@ -17,8 +17,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 actual fun BiometricView(
-    modifier: Modifier,
     onClick: () -> Unit,
+    modifier: Modifier,
 ) {
     Column(
         modifier = modifier,

@@ -26,10 +26,10 @@ internal object DatabaseConfig {
     }
 
     private fun hikari(appConfig: ApplicationConfig): HikariDataSource {
-        val useH2 = appConfig.property("database.useH2").getString().toBoolean()
+        val isH2 = appConfig.property("database.useH2").getString().toBoolean()
 
         val config = HikariConfig().apply {
-            if (useH2) {
+            if (isH2) {
                 logger.info("Using H2 in-memory database (development)")
                 driverClassName = "org.h2.Driver"
                 jdbcUrl = "jdbc:h2:mem:kmpshowcase;DB_CLOSE_DELAY=-1"

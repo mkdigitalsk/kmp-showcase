@@ -1,7 +1,6 @@
 package com.mk.kmpshowcase.server
 
 import com.mk.kmpshowcase.contracts.ApiVersion
-import com.mk.kmpshowcase.contracts.user.UserResponseDTO
 import com.mk.kmpshowcase.server.config.DatabaseConfig
 import com.mk.kmpshowcase.server.core.security.JwtConfig
 import com.mk.kmpshowcase.server.di.AppDependencies
@@ -15,7 +14,6 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -31,7 +29,6 @@ import kotlinx.coroutines.runBlocking
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class UserRoutesTest {

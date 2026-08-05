@@ -7,6 +7,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +57,10 @@ class AndroidPushNotificationService(
         try {
             val token = firebaseMessaging.token.await()
             updateToken(token)
-        } catch (e: Exception) {
+        } catch (e: CancellationException) {
+            throw e
+        } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+            // A token refresh is best-effort: any failure is reported and the old token stays usable.
             analyticsClient.recordException(e)
         }
     }
