@@ -3,5 +3,5 @@
 # The iOS job is stubbed out there, so nothing here runs iosSimulatorArm64Test either.
 set -e
 
-./gradlew :shared:testAndroidHostTest detekt --parallel
+./gradlew :shared:testAndroidHostTest :server:test detekt --parallel
 TZ=UTC ./gradlew :androidApp:verifyRoborazziDebug

@@ -53,7 +53,7 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Run Tests & Detekt
-        run: ./gradlew :shared:testAndroidHostTest detekt --parallel
+        run: ./gradlew :shared:testAndroidHostTest :server:test detekt --parallel
 
       - name: Verify Screenshot Tests
         # UTC or the rendered timestamps carry the runner's offset and nothing matches.
