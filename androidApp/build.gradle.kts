@@ -79,6 +79,12 @@ android {
             isDefault = true
             isDebuggable = true
             buildConfigField("String", "BASE_URL", "\"api.showcase.mkdigital.sk\"")
+
+            firebaseAppDistribution {
+                appId = "1:1089557383502:android:8c48023670a37c6e5ef61f"
+                artifactType = "APK"
+                groups = localProperties["fb.test.group"]?.toString() ?: "testers"
+            }
         }
 
         release {
