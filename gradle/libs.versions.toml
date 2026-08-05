@@ -20,13 +20,14 @@ sqldelight = "2.3.2"
 datastore = "1.2.1"
 
 # APP - Android
-agp = "9.2.0"
+# Read as libs.versions.*.get(), which IntelliJ's unused-entry check does not follow.
 #noinspection UnusedVersionCatalogEntry
 androidMinSdk = "26"
 #noinspection UnusedVersionCatalogEntry
 androidCompileSdk = "36"
 #noinspection UnusedVersionCatalogEntry
 androidTargetSdk = "36"
+agp = "9.2.0"
 compose = "1.11.4"
 activityCompose = "1.13.0"
 androidMaterial = "1.14.0"
@@ -169,7 +170,6 @@ ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref 
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
-exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
 hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }

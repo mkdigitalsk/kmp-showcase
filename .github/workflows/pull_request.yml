@@ -56,6 +56,9 @@ jobs:
         run: ./gradlew :shared:testAndroidHostTest detekt --parallel
 
       - name: Verify Screenshot Tests
+        # UTC or the rendered timestamps carry the runner's offset and nothing matches.
+        env:
+          TZ: UTC
         run: ./gradlew :androidApp:verifyRoborazziDebug
 
       - name: Upload test results
@@ -70,7 +73,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: detekt-report
-          path: build/reports/detekt/
+          # Per subproject since detekt moved off the root project, which owns no Kotlin compilation.
+          path: '**/build/reports/detekt/'
 
   # macOS runners are ~10x more expensive than Ubuntu, so we only run iOS tests
   # when shared code actually changes (not for README, CI config, or Android-only changes)
