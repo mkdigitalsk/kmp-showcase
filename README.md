@@ -2,7 +2,7 @@
 
 A production-ready Kotlin Multiplatform demo app showcasing modern mobile development with Compose Multiplatform, clean architecture, and native platform integrations.
 
-[![CI](https://github.com/mkdigitalsk/kmp-showcase/actions/workflows/pull_request.yml/badge.svg)](https://github.com/mkdigitalsk/kmp-showcase/actions/workflows/pull_request.yml)
+[![CI](https://github.com/mkdigitalsk/kmp-showcase/actions/workflows/ci.yml/badge.svg)](https://github.com/mkdigitalsk/kmp-showcase/actions/workflows/ci.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF.svg?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Compose](https://img.shields.io/badge/Compose-Multiplatform-4285F4.svg?logo=jetpackcompose&logoColor=white)](https://www.jetbrains.com/lp/compose-multiplatform/)
 ![Android](https://img.shields.io/badge/Android-36-3DDC84.svg?logo=android&logoColor=white)
