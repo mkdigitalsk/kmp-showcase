@@ -1,0 +1,13 @@
+package sk.mkdigital.kmpshowcase.presentation.component.permission
+
+import androidx.compose.runtime.Composable
+import sk.mkdigital.kmpshowcase.domain.repository.PushPermissionStatus
+
+class NotificationPermissionRequester(
+    val request: () -> Unit
+)
+
+@Composable
+expect fun rememberNotificationPermissionRequester(
+    onResult: (PushPermissionStatus) -> Unit
+): NotificationPermissionRequester

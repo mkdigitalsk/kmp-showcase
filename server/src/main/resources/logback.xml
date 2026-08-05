@@ -7,7 +7,7 @@
 
     <!-- Application logs -->
     <logger name="Application" level="INFO"/>
-    <logger name="com.mk.kmpshowcase.server" level="DEBUG"/>
+    <logger name="sk.mkdigital.kmpshowcase.server" level="DEBUG"/>
 
     <!-- Ktor logs -->
     <logger name="io.ktor" level="INFO"/>

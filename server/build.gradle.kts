@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClass = "com.mk.kmpshowcase.server.ApplicationKt"
+    mainClass = "sk.mkdigital.kmpshowcase.server.ApplicationKt"
 }
 
 tasks.named<JavaExec>("run") {

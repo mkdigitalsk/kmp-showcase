@@ -58,7 +58,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.mk.kmpshowcase</string>
+			<string>sk.mkdigital.kmpshowcase</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>kmpshowcase</string>

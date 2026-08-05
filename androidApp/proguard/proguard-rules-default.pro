@@ -1,7 +1,7 @@
 # ----------------------------
 # DTOs from KMP shared
 # ----------------------------
--keep class com.mk.kmpshowcase.data.dto.** { *; }
+-keep class sk.mkdigital.kmpshowcase.data.dto.** { *; }
 
 # ----------------------------
 # Android
@@ -33,7 +33,7 @@
 # ----------------------------
 # Logs
 # ----------------------------
--keep class com.mk.kmpshowcase.util.Logger { *; }
+-keep class sk.mkdigital.kmpshowcase.util.Logger { *; }
 -keepattributes SourceFile,LineNumberTable
 
 -assumenosideeffects class android.util.Log {

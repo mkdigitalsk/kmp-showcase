@@ -31,10 +31,10 @@ val hasSigningProperties = keystoreProperties.isNotEmpty()
 
 android {
     compileSdk = libs.versions.androidCompileSdk.get().toInt()
-    namespace = "com.mk.kmpshowcase"
+    namespace = "sk.mkdigital.kmpshowcase"
 
     defaultConfig {
-        applicationId = "com.mk.kmpshowcase"
+        applicationId = "sk.mkdigital.kmpshowcase"
         minSdk = libs.versions.androidMinSdk.get().toInt()
         targetSdk = libs.versions.androidTargetSdk.get().toInt()
         versionCode = (project.findProperty("versionCode") as String?)?.toIntOrNull() ?: 1
@@ -100,7 +100,7 @@ android {
             }
 
             firebaseAppDistribution {
-                appId = "1:463409941213:android:77c77a251382f0350a2934"
+                appId = "1:1089557383502:android:1664a30083af9fc55ef61f"
                 artifactType = "APK"
                 groups = localProperties["fb.test.group"]?.toString() ?: "testers"
             }

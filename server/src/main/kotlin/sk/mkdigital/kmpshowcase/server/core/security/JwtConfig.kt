@@ -1,0 +1,45 @@
+package sk.mkdigital.kmpshowcase.server.core.security
+
+import com.auth0.jwt.JWT
+import com.auth0.jwt.JWTVerifier
+import com.auth0.jwt.algorithms.Algorithm
+import java.util.Date
+
+internal class JwtConfig(
+    secret: String,
+    private val issuer: String,
+    private val audience: String,
+) {
+    private val algorithm = Algorithm.HMAC256(secret)
+
+    init {
+        require(secret.toByteArray().size >= MIN_SECRET_BYTES) {
+            "jwt.secret must be at least $MIN_SECRET_BYTES bytes of CSPRNG output, never a passphrase"
+        }
+    }
+
+    val verifier: JWTVerifier = JWT.require(algorithm)
+        .withIssuer(issuer)
+        .withAudience(audience)
+        .build()
+
+    fun generateToken(userId: Long, email: String): String = JWT.create()
+        .withSubject("Authentication")
+        .withIssuer(issuer)
+        .withAudience(audience)
+        .withClaim("userId", userId)
+        .withClaim("email", email)
+        .withExpiresAt(Date(System.currentTimeMillis() + VALIDITY_IN_MS))
+        .sign(algorithm)
+
+    private companion object {
+        const val VALIDITY_IN_MS: Long = 3600_000L * 24
+        /**
+         * HS256 is offline-crackable at a rate set by the key's entropy, so the key is held to the hash
+         * output size and has to be CSPRNG output rather than anything a person chose.
+         *
+         * [RFC 8725 §3.5 — Key Entropy](https://www.rfc-editor.org/rfc/rfc8725#section-3.5)
+         */
+        const val MIN_SECRET_BYTES = 32
+    }
+}

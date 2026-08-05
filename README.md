@@ -75,10 +75,10 @@ A production-ready Kotlin Multiplatform demo app showcasing modern mobile develo
 
 <table>
 <tr>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.login.LoginScreenScreenshotTest_LoginUiState_0_light.png" width="180" alt="Login"/></td>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.home.HomeScreenScreenshotTest_HomeUiState_0_light.png" width="180" alt="Home"/></td>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.database.DatabaseScreenScreenshotTest_DatabaseUiState_1_light.png" width="180" alt="Database"/></td>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.calendar.CalendarScreenScreenshotTest_CalendarUiState_1_light.png" width="180" alt="Calendar"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.login.LoginScreenScreenshotTest_LoginUiState_0_light.png" width="180" alt="Login"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.home.HomeScreenScreenshotTest_HomeUiState_0_light.png" width="180" alt="Home"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.database.DatabaseScreenScreenshotTest_DatabaseUiState_1_light.png" width="180" alt="Database"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.calendar.CalendarScreenScreenshotTest_CalendarUiState_1_light.png" width="180" alt="Calendar"/></td>
 </tr>
 <tr>
 <td style="text-align:center">Login</td>
@@ -87,10 +87,10 @@ A production-ready Kotlin Multiplatform demo app showcasing modern mobile develo
 <td style="text-align:center">Calendar</td>
 </tr>
 <tr>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.networking.NetworkingScreenScreenshotTest_NetworkingUiState_1_light.png" width="180" alt="Networking"/></td>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.storage.StorageScreenScreenshotTest_StorageUiState_0_light.png" width="180" alt="Storage"/></td>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.notifications.NotificationsScreenScreenshotTest_NotificationsUiState_0_light.png" width="180" alt="Notifications"/></td>
-<td><img src="androidApp/src/test/snapshots/images/com.mk.kmpshowcase.presentation.screen.settings.SettingsScreenScreenshotTest_SettingsState_0_light.png" width="180" alt="Settings"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.networking.NetworkingScreenScreenshotTest_NetworkingUiState_1_light.png" width="180" alt="Networking"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.storage.StorageScreenScreenshotTest_StorageUiState_0_light.png" width="180" alt="Storage"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.notifications.NotificationsScreenScreenshotTest_NotificationsUiState_0_light.png" width="180" alt="Notifications"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.settings.SettingsScreenScreenshotTest_SettingsState_0_light.png" width="180" alt="Settings"/></td>
 </tr>
 <tr>
 <td style="text-align:center">Networking</td>

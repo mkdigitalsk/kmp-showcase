@@ -1,0 +1,62 @@
+package sk.mkdigital.kmpshowcase.server.feature.user.api
+
+import sk.mkdigital.kmpshowcase.contracts.ApiVersion
+import sk.mkdigital.kmpshowcase.contracts.auth.AuthResponseDTO
+import sk.mkdigital.kmpshowcase.contracts.auth.LoginRequestDTO
+import sk.mkdigital.kmpshowcase.contracts.auth.RegisterRequestDTO
+import sk.mkdigital.kmpshowcase.server.core.auth.userId
+import sk.mkdigital.kmpshowcase.server.core.maskEmail
+import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
+import sk.mkdigital.kmpshowcase.server.feature.user.service.UserService
+import sk.mkdigital.kmpshowcase.server.plugins.AuthRateLimit
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.auth.authenticate
+import io.ktor.server.plugins.ratelimit.rateLimit
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import org.slf4j.LoggerFactory
+
+private val logger = LoggerFactory.getLogger("AuthRoutes")
+
+internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
+    route("${ApiVersion.BASE}/auth") {
+        // Throttle the credential-accepting endpoints per client IP (brute-force / spray defense).
+        rateLimit(AuthRateLimit) {
+            post("/register") {
+                val request = call.receive<RegisterRequestDTO>()
+                val user = userService.register(request.email, request.password, request.name)
+                val token = jwtConfig.generateToken(user.id, user.email)
+                logger.info("User registered: ${user.id} (${user.email.maskEmail()})")
+                call.respond(HttpStatusCode.Created, AuthResponseDTO(token, user.toAuthUserDTO()))
+            }
+
+            post("/login") {
+                val request = call.receive<LoginRequestDTO>()
+                val user = userService.authenticate(request.email, request.password)
+                    ?: run {
+                        logger.warn("Login failed: invalid credentials for ${request.email.maskEmail()}")
+                        call.respond(HttpStatusCode.Unauthorized, mapOf("message" to "Invalid credentials"))
+                        return@post
+                    }
+                val token = jwtConfig.generateToken(user.id, user.email)
+                logger.info("User logged in: ${user.id} (${user.email.maskEmail()})")
+                call.respond(AuthResponseDTO(token, user.toAuthUserDTO()))
+            }
+        }
+
+        authenticate("auth-jwt") {
+            get("/me") {
+                val userId = call.userId()
+                    ?: return@get call.respond(HttpStatusCode.Unauthorized)
+                val user = userService.getById(userId)
+                    ?: return@get call.respond(HttpStatusCode.NotFound)
+                logger.info("Token login: ${user.id} (${user.email.maskEmail()})")
+                call.respond(AuthResponseDTO(jwtConfig.generateToken(user.id, user.email), user.toAuthUserDTO()))
+            }
+        }
+    }
+}

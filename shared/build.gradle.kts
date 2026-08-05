@@ -15,13 +15,13 @@ plugins {
 
 // Opens @Mockable-annotated classes (e.g. the UseCase base) so Mokkery can mock them.
 allOpen {
-    annotation("com.mk.kmpshowcase.util.Mockable")
+    annotation("sk.mkdigital.kmpshowcase.util.Mockable")
 }
 
 kotlin {
     android {
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
-        namespace = "com.mk.kmpshowcase.shared"
+        namespace = "sk.mkdigital.kmpshowcase.shared"
         minSdk = libs.versions.androidMinSdk.get().toInt()
 
         compilerOptions {
@@ -42,7 +42,7 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
-            freeCompilerArgs += listOf("-Xbinary=bundleId=com.mk.kmpshowcase.shared")
+            freeCompilerArgs += listOf("-Xbinary=bundleId=sk.mkdigital.kmpshowcase.shared")
             isStatic = true
         }
     }
@@ -163,13 +163,13 @@ kotlin {
 }
 
 compose.resources {
-    packageOfResClass = "com.mk.kmpshowcase.shared.generated.resources"
+    packageOfResClass = "sk.mkdigital.kmpshowcase.shared.generated.resources"
 }
 
 sqldelight {
     databases {
         create("AppDatabase") {
-            packageName.set("com.mk.kmpshowcase.data.database")
+            packageName.set("sk.mkdigital.kmpshowcase.data.database")
         }
     }
 }
