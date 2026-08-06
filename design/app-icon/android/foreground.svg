@@ -1,0 +1,6 @@
+<svg viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KMP Showcase">
+  <!-- Adaptive-icon FOREGROUND, 108 canvas. The safe zone is a CIRCLE of diameter 66, so the limit is the
+       glyph's diagonal, not its width: every point stays within r=33 of (54,54). This K reaches r=32.6. -->
+  <path fill="#FFFFFF"
+        d="M32,30 L32,78 L44,78 L44,60 L60,78 L76,78 L54,54 L74,30 L58,30 L44,48 L44,30 Z"/>
+</svg>

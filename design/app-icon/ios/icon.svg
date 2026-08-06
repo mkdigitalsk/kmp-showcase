@@ -1,0 +1,9 @@
+<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KMP Showcase">
+  <!-- iOS app icon: full-bleed, opaque, square corners — the system applies the mask, so no rounding
+       and no transparency here. Same glyph as the Android foreground, scaled 108 -> 1024. -->
+  <rect width="1024" height="1024" fill="#0E2A47"/>
+  <g transform="scale(9.481481)">
+    <path fill="#FFFFFF"
+          d="M26.5,24 L26.5,84 L41.5,84 L41.5,61.5 L61.5,84 L81.5,84 L54,54 L79,24 L59,24 L41.5,46.5 L41.5,24 Z"/>
+  </g>
+</svg>
