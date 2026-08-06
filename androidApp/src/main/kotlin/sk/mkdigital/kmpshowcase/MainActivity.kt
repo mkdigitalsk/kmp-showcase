@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import sk.mkdigital.kmpshowcase.data.push.AndroidPushNotificationService
 import sk.mkdigital.kmpshowcase.data.service.LocalNotificationServiceImpl
 import sk.mkdigital.kmpshowcase.domain.repository.PushNotificationService
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity(), AppLocaleProvider by AppLocaleProvider
     private val pushService: PushNotificationService by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 

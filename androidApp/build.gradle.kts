@@ -127,6 +127,7 @@ kotlin {
 dependencies {
     implementation(project(":shared"))
     implementation(libs.activity.compose)
+    implementation(libs.core.splashscreen)
     implementation(libs.compose.ui.tooling.preview)
 
     implementation(libs.android.material)
