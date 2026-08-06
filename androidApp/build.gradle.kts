@@ -138,9 +138,9 @@ dependencies {
     // Firebase (BOM manages versions)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-    implementation(libs.firebase.app.check)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
+    debugImplementation(libs.firebase.app.check.debug)
 
     // Testing - JUnit 5 + Vintage for JUnit4 + Roborazzi
     testImplementation(libs.junit4)
