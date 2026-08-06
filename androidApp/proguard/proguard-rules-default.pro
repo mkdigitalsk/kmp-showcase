@@ -35,6 +35,7 @@
 # ----------------------------
 -keep class sk.mkdigital.kmpshowcase.util.Logger { *; }
 -keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
 -assumenosideeffects class android.util.Log {
   public static int v(...);
@@ -55,10 +56,6 @@
 -dontwarn kotlin.**
 -keep class kotlin.** { *; }
 -keepclassmembers class kotlin.Metadata { *; }
-
--keep class * {
-    @kotlin.Metadata *;
-}
 
 # ----------------------------
 # SLF4J
