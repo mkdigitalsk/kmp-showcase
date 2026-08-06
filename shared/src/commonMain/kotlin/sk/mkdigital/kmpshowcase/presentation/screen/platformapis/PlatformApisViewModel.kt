@@ -146,7 +146,7 @@ class PlatformApisViewModel(
 
     private companion object {
         private const val DEMO_PHONE_NUMBER = "+1234567890"
-        private const val DEMO_URL = "https://github.com/KusnirM"
+        private const val DEMO_URL = "https://mkdigital.sk"
         private const val DEMO_EMAIL = "example@example.com"
     }
 }

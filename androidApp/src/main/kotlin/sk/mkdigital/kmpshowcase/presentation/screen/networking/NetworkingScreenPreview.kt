@@ -26,9 +26,9 @@ internal class NetworkingScreenPreviewParams : PreviewParameterProvider<Networki
         NetworkingUiState(
             users = listOf(
                 User(
-                    email = "mir.kusnir@gmail.com",
+                    email = "jane.doe@example.com",
                     id = 1L,
-                    name = "Miroslav Coder"
+                    name = "Jane Doe"
                 ).toUiModel()
             )
         )

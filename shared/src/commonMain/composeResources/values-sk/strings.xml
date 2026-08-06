@@ -204,7 +204,7 @@
     <string name="platform_apis_flashlight_not_available">Baterka nie je na tomto zariadení dostupná</string>
     <string name="platform_apis_demo_email_subject">Ahoj z KMP Showcase</string>
     <string name="platform_apis_demo_email_body">Toto je demo email odoslaný z aplikácie KMP Showcase.</string>
-    <string name="platform_apis_demo_share_text">Pozri si KMP Showcase - ukážkovú Kotlin Multiplatform aplikáciu!</string>
+    <string name="platform_apis_demo_share_text">Staviame multiplatformové aplikácie od začiatku do konca — iOS, Android, web aj backend.\n\nhttps://mkdigital.sk</string>
     <string name="platform_apis_demo_copy_text">Text skopírovaný z KMP Showcase</string>
 
     <!-- Scanner Screen -->
