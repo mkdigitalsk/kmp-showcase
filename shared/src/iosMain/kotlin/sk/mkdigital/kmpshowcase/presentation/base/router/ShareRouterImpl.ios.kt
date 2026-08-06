@@ -7,7 +7,11 @@ import platform.UIKit.popoverPresentationController
 
 actual class ShareRouterImpl : ShareRouter {
 
-    actual override fun share(text: String) {
+    // The subject needs a UIActivityItemSource, which the iOS share pass will add.
+    actual override fun share(
+        text: String,
+        title: String
+    ) {
         val activityItems = listOf(text)
         val activityViewController = UIActivityViewController(
             activityItems = activityItems,

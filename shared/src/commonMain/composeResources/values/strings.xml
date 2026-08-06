@@ -205,7 +205,10 @@
     <string name="platform_apis_flashlight_not_available">Flashlight not available on this device</string>
     <string name="platform_apis_demo_email_subject">Hello from KMP Showcase</string>
     <string name="platform_apis_demo_email_body">This is a demo email sent from the KMP Showcase app.</string>
-    <string name="platform_apis_demo_share_text">We build cross-platform apps end to end — iOS, Android, web and backend.\n\nhttps://mkdigital.sk</string>
+    <string name="platform_apis_demo_share_title">MK Digital — your product, shipped end-to-end</string>
+    <string name="platform_apis_demo_share_text">iOS, Android, web and backend — built once, properly, by one accountable partner.
+
+https://mkdigital.sk</string>
     <string name="platform_apis_demo_copy_text">Text copied from KMP Showcase</string>
 
     <!-- Scanner Screen -->

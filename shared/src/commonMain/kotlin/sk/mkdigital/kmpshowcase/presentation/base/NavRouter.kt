@@ -28,7 +28,7 @@ interface NavRouter<T : NavKey> {
     fun onBack()
     fun openLink(url: String)
     fun dial(number: String)
-    fun share(text: String)
+    fun share(text: String, title: String)
     fun copyToClipboard(text: String)
     fun sendEmail(to: String, subject: String, body: String)
     fun openSettings()
@@ -65,7 +65,7 @@ class NavRouterImpl<T : NavKey>(
 
     override fun dial(number: String) = externalRouter.dial(number)
 
-    override fun share(text: String) = externalRouter.share(text)
+    override fun share(text: String, title: String) = externalRouter.share(text, title)
 
     override fun copyToClipboard(text: String) = externalRouter.copyToClipboard(text)
 

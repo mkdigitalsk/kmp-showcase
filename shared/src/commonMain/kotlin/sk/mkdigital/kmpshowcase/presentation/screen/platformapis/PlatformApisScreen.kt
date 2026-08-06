@@ -69,6 +69,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_demo_co
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_demo_email_body
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_demo_email_subject
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_demo_share_text
+import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_demo_share_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_dial_action
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_dial_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_email_action
@@ -133,13 +134,14 @@ fun PlatformApisScreen(
 
         item {
             val shareText = stringResource(Res.string.platform_apis_demo_share_text)
+            val shareTitle = stringResource(Res.string.platform_apis_demo_share_title)
             PlatformApiCard(
                 icon = Icons.Outlined.Share,
                 title = stringResource(Res.string.platform_apis_share_title)
             ) {
                 ApiCardButton(
                     text = stringResource(Res.string.platform_apis_share_action),
-                    onClick = { viewModel.share(shareText) }
+                    onClick = { viewModel.share(shareText, shareTitle) }
                 )
             }
         }
@@ -354,7 +356,7 @@ private fun PlatformApisNavEvents(
 ) {
     CollectNavEvents(navEventFlow = navEvent) { event ->
         when (event) {
-            is PlatformApisNavEvent.Share -> router.share(event.text)
+            is PlatformApisNavEvent.Share -> router.share(event.text, event.title)
             is PlatformApisNavEvent.Dial -> router.dial(event.number)
             is PlatformApisNavEvent.OpenLink -> router.openLink(event.url)
             is PlatformApisNavEvent.SendEmail -> router.sendEmail(event.to, event.subject, event.body)

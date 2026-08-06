@@ -56,8 +56,8 @@ class PlatformApisViewModel(
         )
     }
 
-    fun share(text: String) {
-        navigate(PlatformApisNavEvent.Share(text))
+    fun share(text: String, title: String) {
+        navigate(PlatformApisNavEvent.Share(text, title))
     }
 
     fun dial() {
@@ -169,7 +169,7 @@ data class PlatformApisUiState(
 )
 
 sealed interface PlatformApisNavEvent : NavEvent {
-    data class Share(val text: String) : PlatformApisNavEvent
+    data class Share(val text: String, val title: String) : PlatformApisNavEvent
     data class Dial(val number: String) : PlatformApisNavEvent
     data class OpenLink(val url: String) : PlatformApisNavEvent
     data class SendEmail(val to: String, val subject: String, val body: String) : PlatformApisNavEvent
