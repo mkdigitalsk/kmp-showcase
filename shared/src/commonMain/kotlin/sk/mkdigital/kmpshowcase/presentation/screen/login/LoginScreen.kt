@@ -186,7 +186,8 @@ fun LoginScreen(
                 focusManager.clearFocus()
                 onLogin()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            loading = state.isLoading
         )
 
         Spacer4()
