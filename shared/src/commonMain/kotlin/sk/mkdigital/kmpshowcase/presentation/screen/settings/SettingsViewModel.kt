@@ -92,6 +92,10 @@ class SettingsViewModel(
         newState { it.copy(showThemeDialog = false) }
     }
 
+    fun openWeb() {
+        navigate(SettingNavEvents.OpenWeb(STUDIO_URL))
+    }
+
     fun onLanguageNavEvent(event: SettingNavEvents) {
         navigate(event)
     }
@@ -106,6 +110,10 @@ class SettingsViewModel(
     @Suppress("TooGenericExceptionThrown")
     fun triggerTestCrash() {
         execute(action = { throw RuntimeException("Test Crash for Firebase Crashlytics") })
+    }
+
+    private companion object {
+        const val STUDIO_URL = "https://mkdigital.sk"
     }
 }
 
@@ -138,4 +146,6 @@ sealed interface SettingNavEvents : NavEvent {
     data object Logout : SettingNavEvents
 
     data class ThemeChanged(val mode: ThemeMode) : SettingNavEvents
+
+    data class OpenWeb(val url: String) : SettingNavEvents
 }

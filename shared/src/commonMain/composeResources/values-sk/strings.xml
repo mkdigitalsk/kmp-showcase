@@ -279,6 +279,9 @@ https://mkdigital.sk</string>
     <string name="settings_theme_system">Systémová</string>
     <string name="settings_language">Jazyk</string>
     <string name="settings_version">Verzia %1$s (%2$s)</string>
+    <string name="settings_about">O aplikácii</string>
+    <string name="settings_about_tagline">Váš produkt, dodaný od začiatku do konca.</string>
+    <string name="settings_about_web">mkdigital.sk</string>
     <string name="settings_test_crash_title">Testovací pád</string>
     <string name="settings_test_crash_subtitle">Vyvolať pád aplikácie pre test Crashlytics</string>
     <string name="settings_logout">Odhlásiť sa</string>

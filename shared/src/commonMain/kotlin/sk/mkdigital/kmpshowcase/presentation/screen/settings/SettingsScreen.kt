@@ -3,6 +3,7 @@ package sk.mkdigital.kmpshowcase.presentation.screen.settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.AvatarView
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonError
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconPrimary
+import sk.mkdigital.kmpshowcase.presentation.component.image.AppImage
 import sk.mkdigital.kmpshowcase.presentation.component.imagepicker.ImagePickerView
 import sk.mkdigital.kmpshowcase.presentation.component.imagepicker.ImagePickerViewModel
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
@@ -38,8 +40,18 @@ import sk.mkdigital.kmpshowcase.presentation.component.text.bodySmall.TextBodySm
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargePrimary
 import sk.mkdigital.kmpshowcase.presentation.foundation.ThemeMode
 import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
+import sk.mkdigital.kmpshowcase.presentation.foundation.space2
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.material3.MaterialTheme
+import sk.mkdigital.kmpshowcase.presentation.component.text.bodySmall.TextBodySmall
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
+import sk.mkdigital.kmpshowcase.shared.generated.resources.mk_digital_lockup
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about_tagline
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about_web
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_appearance
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_logout
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_profile
@@ -87,6 +99,7 @@ fun SettingsScreen(
             viewModel.hideThemeDialog()
         },
         onThemeDialogDismiss = viewModel::hideThemeDialog,
+        onWebClick = viewModel::openWeb,
     )
 
     ImagePickerView(viewModel = imagePickerViewModel)
@@ -103,6 +116,7 @@ fun SettingsScreen(
     onLogout: () -> Unit = {},
     onThemeSelected: (ThemeModeState) -> Unit = {},
     onThemeDialogDismiss: () -> Unit = {},
+    onWebClick: () -> Unit = {},
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -132,7 +146,10 @@ fun SettingsScreen(
         }
 
         item {
-            TextTitleLargePrimary(stringResource(Res.string.settings_appearance))
+            TextTitleLargePrimary(
+                text = stringResource(Res.string.settings_appearance),
+                modifier = Modifier.padding(top = space4)
+            )
         }
 
         item {
@@ -177,6 +194,22 @@ fun SettingsScreen(
                         value = stringResource(Res.string.settings_test_crash_subtitle)
                     )
                 }
+            }
+        }
+
+        item {
+            TextTitleLargePrimary(
+                text = stringResource(Res.string.settings_about),
+                modifier = Modifier.padding(top = space4)
+            )
+        }
+
+        item {
+            AppElevatedCard(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onWebClick
+            ) {
+                AboutItem()
             }
         }
 
@@ -286,6 +319,33 @@ private fun ThemeOption(
 }
 
 @Composable
+private fun AboutItem() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Full-bleed: the card clips its own content, so the media inherits the card's top corners
+        // instead of guessing an inner radius.
+        AppImage(
+            resource = Res.drawable.mk_digital_lockup,
+            modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillWidth
+        )
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(space4),
+            verticalArrangement = Arrangement.spacedBy(space2)
+        ) {
+            TextBodyLargeNeutral100(
+                text = stringResource(Res.string.settings_about_tagline),
+                fontWeight = FontWeight.Bold
+            )
+            TextBodySmall(
+                text = stringResource(Res.string.settings_about_web),
+                color = MaterialTheme.colorScheme.primary,
+                textDecoration = TextDecoration.Underline
+            )
+        }
+    }
+}
+
+@Composable
 private fun VersionFooter(
     versionName: String,
     versionCode: String,
@@ -315,6 +375,7 @@ private fun SettingsNavEvents(
             )
 
             is SettingNavEvents.ThemeChanged -> onThemeChanged(event.mode)
+            is SettingNavEvents.OpenWeb -> router.openLink(event.url)
         }
     }
 }

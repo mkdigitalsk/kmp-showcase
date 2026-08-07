@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 
@@ -22,6 +23,7 @@ fun TextBodySmall(
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
     fontStyle: FontStyle? = null,
+    textDecoration: TextDecoration? = null,
 ) {
     Text(
         text = text,
@@ -34,5 +36,6 @@ fun TextBodySmall(
         overflow = overflow,
         maxLines = maxLines,
         fontStyle = fontStyle,
+        textDecoration = textDecoration,
     )
 }
