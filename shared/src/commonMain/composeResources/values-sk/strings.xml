@@ -155,7 +155,6 @@
 
     <!-- Networking Screen -->
     <string name="networking_title">Používatelia</string>
-    <string name="networking_subtitle">Načítané z JSONPlaceholder API</string>
     <string name="networking_empty">Žiadni používatelia neboli nájdení</string>
 
     <!-- Storage Screen -->

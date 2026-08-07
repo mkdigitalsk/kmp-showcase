@@ -34,7 +34,6 @@ import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_empty
-import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_subtitle
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_title
 import org.jetbrains.compose.resources.stringResource
 
@@ -95,7 +94,6 @@ private fun UserListContent(
         ) {
             Column {
                 TextHeadlineMediumPrimary(stringResource(Res.string.networking_title))
-                TextBodyMediumNeutral80(stringResource(Res.string.networking_subtitle))
             }
             IconButton(onClick = onRefresh, enabled = !isRefreshing) {
                 if (isRefreshing) {

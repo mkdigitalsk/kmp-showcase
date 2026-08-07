@@ -156,7 +156,6 @@
 
     <!-- Networking Screen -->
     <string name="networking_title">Users</string>
-    <string name="networking_subtitle">Fetched from JSONPlaceholder API</string>
     <string name="networking_empty">No users found</string>
 
     <!-- Storage Screen -->
