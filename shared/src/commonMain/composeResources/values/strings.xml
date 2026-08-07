@@ -283,10 +283,10 @@
     <string name="settings_about_web">mkdigital.sk</string>
     <string name="settings_test_crash_title">Test Crash</string>
     <string name="settings_test_crash_subtitle">Trigger a crash to test Crashlytics</string>
-    <string name="settings_logout">Logout</string>
+    <string name="settings_logout">Sign Out</string>
 
     <!-- Login Screen -->
-    <string name="screen_login">Login</string>
+    <string name="screen_login">Sign In</string>
     <string name="login_title">Welcome Back</string>
     <string name="login_email_label">Email</string>
     <string name="login_email_placeholder">Enter your email</string>
@@ -297,7 +297,7 @@
     <string name="login_password_empty">Password is required</string>
     <string name="login_password_short">Password must be at least 8 characters</string>
     <string name="login_password_weak">Password must contain uppercase, lowercase, number and special character</string>
-    <string name="login_button">Login</string>
+    <string name="login_button">Sign In</string>
     <string name="login_no_account">Don't have an account?</string>
     <string name="login_register">Register</string>
     <string name="login_or_divider">or</string>
@@ -329,7 +329,7 @@
     <string name="register_confirm_password_mismatch">Passwords do not match</string>
     <string name="register_button">Register</string>
     <string name="register_has_account">Already have an account?</string>
-    <string name="register_login">Login</string>
+    <string name="register_login">Sign In</string>
 
     <!-- Languages (not translated - always in native language) -->
     <string name="language_sk" translatable="false">Slovenčina</string>
