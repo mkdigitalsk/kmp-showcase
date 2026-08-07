@@ -1,5 +1,9 @@
 package sk.mkdigital.kmpshowcase.presentation.foundation
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -21,10 +25,16 @@ val defaultIconSize = space6
 
 
 val cardElevation: Dp = 6.dp
-val cardCornerRadius6: Dp = 6.dp
-
-val floatingNavBarSpace: Dp = 100.dp
 
 /** Sized to the label it replaces, so the button keeps its height while loading. */
 val buttonProgressSize: Dp = 20.dp
 val buttonProgressStroke: Dp = 2.dp
+val cardCornerRadius6: Dp = 6.dp
+
+val floatingNavBarHeight: Dp = 64.dp
+
+/** The bar rides the gesture inset, so a fixed dp hides the last row on the devices that have one. */
+val floatingNavBarSpace: Dp
+    @Composable get() = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() +
+        space4 + floatingNavBarHeight + space8
+
