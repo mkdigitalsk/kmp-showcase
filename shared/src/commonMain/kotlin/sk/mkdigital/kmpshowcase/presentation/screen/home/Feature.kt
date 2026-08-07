@@ -28,12 +28,14 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.feature_storage_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.feature_ui_components_subtitle
 import sk.mkdigital.kmpshowcase.shared.generated.resources.feature_ui_components_title
 import org.jetbrains.compose.resources.StringResource
+import sk.mkdigital.kmpshowcase.presentation.foundation.PlatformTech
 
 data class Feature(
     val id: FeatureId,
     val titleRes: StringResource,
     val subtitleRes: StringResource,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val subtitleArgs: List<String> = emptyList()
 )
 
 enum class FeatureId {
@@ -58,13 +60,15 @@ val showcaseFeatures = listOf(
         id = FeatureId.NETWORKING,
         titleRes = Res.string.feature_networking_title,
         subtitleRes = Res.string.feature_networking_subtitle,
-        icon = Icons.Outlined.Cloud
+        icon = Icons.Outlined.Cloud,
+        subtitleArgs = listOf(PlatformTech.httpEngine)
     ),
     Feature(
         id = FeatureId.STORAGE,
         titleRes = Res.string.feature_storage_title,
         subtitleRes = Res.string.feature_storage_subtitle,
-        icon = Icons.Outlined.Storage
+        icon = Icons.Outlined.Storage,
+        subtitleArgs = listOf(PlatformTech.keyValueStore)
     ),
     Feature(
         id = FeatureId.DATABASE,

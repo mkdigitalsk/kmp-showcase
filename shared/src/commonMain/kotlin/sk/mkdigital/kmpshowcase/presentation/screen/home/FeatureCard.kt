@@ -28,7 +28,7 @@ fun FeatureCard(
     modifier: Modifier = Modifier
 ) {
     val title = stringResource(feature.titleRes)
-    val subtitle = stringResource(feature.subtitleRes)
+    val subtitle = stringResource(feature.subtitleRes, *feature.subtitleArgs.toTypedArray())
 
     AppElevatedCard(
         modifier = modifier
