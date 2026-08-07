@@ -32,9 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
-import sk.mkdigital.kmpshowcase.LocalSnackbarHostState
 import sk.mkdigital.kmpshowcase.presentation.base.CollectNavEvents
 import sk.mkdigital.kmpshowcase.presentation.base.NavEvent
 import sk.mkdigital.kmpshowcase.presentation.base.NavRouter
@@ -90,7 +88,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_share_t
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_subtitle
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_title
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("CyclomaticComplexMethod", "CognitiveComplexMethod")
 @Composable
@@ -99,21 +96,10 @@ fun PlatformApisScreen(
     viewModel: PlatformApisViewModel = lifecycleAwareViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val snackbarHostState = LocalSnackbarHostState.current
-    val copiedMessage = stringResource(Res.string.platform_apis_copied_message)
-
     val handleLocationAction = rememberLocationActionHandler(
         onGetLocation = viewModel::getLocation,
         onStartUpdates = viewModel::startLocationUpdates
     )
-
-    LaunchedEffect(state.copiedToClipboard) {
-        if (state.copiedToClipboard) {
-            snackbarHostState.showSnackbar(copiedMessage)
-            delay(100.milliseconds)
-            viewModel.resetCopyState()
-        }
-    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -186,10 +172,15 @@ fun PlatformApisScreen(
 
         item {
             val copyText = stringResource(Res.string.platform_apis_demo_copy_text)
+            val copiedText = stringResource(Res.string.platform_apis_copied_message)
             PlatformApiCard(
                 icon = Icons.Outlined.ContentCopy,
                 title = stringResource(Res.string.platform_apis_copy_title)
             ) {
+                if (state.copiedToClipboard) {
+                    TextBodyMediumNeutral80(copiedText)
+                    Spacer2()
+                }
                 ApiCardButton(
                     text = stringResource(Res.string.platform_apis_copy_action),
                     onClick = { viewModel.copyToClipboard(copyText) }
@@ -212,8 +203,10 @@ fun PlatformApisScreen(
                         stringResource(Res.string.platform_apis_location_result, location.latitude, location.longitude)
                     else -> null
                 }
-                locationText?.let { TextBodyMediumNeutral80(it) }
-                Spacer2()
+                locationText?.let {
+                    TextBodyMediumNeutral80(it)
+                    Spacer2()
+                }
                 ApiCardButton(
                     text = stringResource(Res.string.platform_apis_location_action),
                     onClick = { handleLocationAction(PendingLocationAction.GET_LOCATION) }
@@ -237,8 +230,10 @@ fun PlatformApisScreen(
                     )
                     else -> null
                 }
-                trackedText?.let { TextBodyMediumNeutral80(it) }
-                Spacer2()
+                trackedText?.let {
+                    TextBodyMediumNeutral80(it)
+                    Spacer2()
+                }
                 ApiCardButton(
                     text = stringResource(
                         if (state.isTrackingLocation) Res.string.platform_apis_location_updates_stop
@@ -276,8 +271,10 @@ fun PlatformApisScreen(
                     }
                     else -> null
                 }
-                biometricText?.let { TextBodyMediumNeutral80(it) }
-                Spacer2()
+                biometricText?.let {
+                    TextBodyMediumNeutral80(it)
+                    Spacer2()
+                }
                 ApiCardButton(
                     text = stringResource(Res.string.platform_apis_biometrics_action),
                     onClick = viewModel::authenticateWithBiometrics,
