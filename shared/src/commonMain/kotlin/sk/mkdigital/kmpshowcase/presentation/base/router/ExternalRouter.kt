@@ -9,7 +9,7 @@ expect class ExternalRouter :
     SettingsRouter {
     override fun openLink(url: String)
     override fun dial(number: String)
-    override fun share(text: String, title: String)
+    override fun share(text: String, title: String, url: String)
     override fun copyToClipboard(text: String)
     override fun sendEmail(to: String, subject: String, body: String)
     override fun openSettings()

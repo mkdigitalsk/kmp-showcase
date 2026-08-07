@@ -353,7 +353,7 @@ private fun PlatformApisNavEvents(
 ) {
     CollectNavEvents(navEventFlow = navEvent) { event ->
         when (event) {
-            is PlatformApisNavEvent.Share -> router.share(event.text, event.title)
+            is PlatformApisNavEvent.Share -> router.share(event.text, event.title, event.url)
             is PlatformApisNavEvent.Dial -> router.dial(event.number)
             is PlatformApisNavEvent.OpenLink -> router.openLink(event.url)
             is PlatformApisNavEvent.SendEmail -> router.sendEmail(event.to, event.subject, event.body)

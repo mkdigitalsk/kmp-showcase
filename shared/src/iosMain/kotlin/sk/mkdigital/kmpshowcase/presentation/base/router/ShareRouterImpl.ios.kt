@@ -1,41 +1,19 @@
 package sk.mkdigital.kmpshowcase.presentation.base.router
 
-import platform.Foundation.NSLog
-import platform.UIKit.UIActivityViewController
-import platform.UIKit.UIApplication
-import platform.UIKit.popoverPresentationController
+/**
+ * The share sheet's link card is driven by LPLinkMetadata, which Kotlin/Native cannot override on
+ * UIActivityItemSource. The iOS app installs a presenter at startup and this delegates to it.
+ */
+object IosShareSheet {
+    var present: ((text: String, title: String, url: String) -> Unit)? = null
+}
 
 actual class ShareRouterImpl : ShareRouter {
-
-    // The subject needs a UIActivityItemSource, which the iOS share pass will add.
     actual override fun share(
         text: String,
-        title: String
+        title: String,
+        url: String
     ) {
-        val activityItems = listOf(text)
-        val activityViewController = UIActivityViewController(
-            activityItems = activityItems,
-            applicationActivities = null
-        )
-
-        val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
-        rootViewController?.let { vc ->
-            @Suppress("TooGenericExceptionCaught")
-            try {
-                val popover = vc.popoverPresentationController
-                popover?.let {
-                    it.sourceView = vc.view
-                    it.sourceRect = vc.view.bounds
-                }
-            } catch (e: Exception) {
-                NSLog("ShareRouter: Failed to setup popover presentation: ${e.message}")
-            }
-
-            vc.presentViewController(
-                activityViewController,
-                animated = true,
-                completion = null
-            )
-        }
+        IosShareSheet.present?.invoke(text, title, url)
     }
 }

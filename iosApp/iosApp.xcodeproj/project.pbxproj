@@ -15,6 +15,7 @@
 		357697E02F225D2300A55252 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 357697DF2F225D2300A55252 /* FirebaseAnalytics */; };
 		357697E22F225D2300A55252 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 357697E12F225D2300A55252 /* FirebaseCrashlytics */; };
 		359A18A32DB54FA70046F000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359A18A22DB54FA70046F000 /* AppDelegate.swift */; };
+		35A1B2C42E0100020046F001 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A1B2C32E0100010046F001 /* ShareSheet.swift */; };
 		35F2906C2F23D3580093E0E9 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 35F2906B2F23D3580093E0E9 /* FirebaseMessaging */; };
 		35F2906E2F23F6210093E0E9 /* PushNotificationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F2906D2F23F6210093E0E9 /* PushNotificationBridge.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +43,7 @@
 		357698002F22627200A55252 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		357698032F22680500A55252 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		359A18A22DB54FA70046F000 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		35A1B2C32E0100010046F001 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		35F2906D2F23F6210093E0E9 /* PushNotificationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBridge.swift; sourceTree = "<group>"; };
 		7555FF7B242A565900829871 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				350D980D2F2250FB004D996B /* InfoPlist.xcstrings */,
 				350D980E2F2250FB004D996B /* Localizable.xcstrings */,
 				359A18A22DB54FA70046F000 /* AppDelegate.swift */,
+				35A1B2C32E0100010046F001 /* ShareSheet.swift */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
@@ -264,6 +267,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				359A18A32DB54FA70046F000 /* AppDelegate.swift in Sources */,
+				35A1B2C42E0100020046F001 /* ShareSheet.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				35F2906E2F23F6210093E0E9 /* PushNotificationBridge.swift in Sources */,
 			);
