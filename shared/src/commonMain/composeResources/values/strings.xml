@@ -240,7 +240,7 @@
     <string name="notifications_send_reminder">Reminder</string>
     <string name="notifications_send_promo">Promo</string>
     <string name="notifications_reminder_title">Reminder</string>
-    <string name="notifications_reminder_message">Don\'t forget to check your calendar!</string>
+    <string name="notifications_reminder_message">Don't forget to check your calendar!</string>
     <string name="notifications_promo_title">Special Offer</string>
     <string name="notifications_promo_message">Check out our latest deals!</string>
     <string name="notifications_last_sent">Last sent: %1$s</string>
