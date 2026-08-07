@@ -17,7 +17,6 @@ class LoginViewModel(
     private val authenticateWithBiometricUseCase: AuthenticateWithBiometricUseCase,
 ) : BaseViewModel<LoginUiState>(LoginUiState()) {
 
-    fun skip() = navigate(LoginNavEvent.ToHome)
 
     fun toRegister() = navigate(LoginNavEvent.ToRegister)
 

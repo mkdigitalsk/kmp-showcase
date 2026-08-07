@@ -67,7 +67,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.login_password_placeh
 import sk.mkdigital.kmpshowcase.shared.generated.resources.login_password_short
 import sk.mkdigital.kmpshowcase.shared.generated.resources.login_password_weak
 import sk.mkdigital.kmpshowcase.shared.generated.resources.login_register
-import sk.mkdigital.kmpshowcase.shared.generated.resources.login_skip
 import sk.mkdigital.kmpshowcase.shared.generated.resources.login_test_account_fill
 import sk.mkdigital.kmpshowcase.shared.generated.resources.login_test_account_hint
 import sk.mkdigital.kmpshowcase.shared.generated.resources.login_title
@@ -82,7 +81,6 @@ fun LoginScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     LoginScreen(
         state = state,
-        onSkip = viewModel::skip,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onLogin = viewModel::login,
@@ -95,7 +93,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     state: LoginUiState,
-    onSkip: () -> Unit = {},
     onEmailChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
     onLogin: () -> Unit = {},
@@ -113,17 +110,6 @@ fun LoginScreen(
             .padding(space4),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            TextButton(onClick = onSkip) {
-                TextLabelLargePrimary(stringResource(Res.string.login_skip))
-            }
-        }
-
-        Spacer4()
-
         TextTitleLargePrimary(stringResource(Res.string.login_title))
 
         Spacer8()

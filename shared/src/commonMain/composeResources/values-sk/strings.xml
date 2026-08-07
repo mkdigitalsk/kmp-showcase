@@ -296,7 +296,6 @@ https://mkdigital.sk</string>
     <string name="login_password_short">Heslo musí mať aspoň 8 znakov</string>
     <string name="login_password_weak">Heslo musí obsahovať veľké písmeno, malé písmeno, číslo a špeciálny znak</string>
     <string name="login_button">Prihlásiť sa</string>
-    <string name="login_skip">Preskočiť</string>
     <string name="login_no_account">Nemáte účet?</string>
     <string name="login_register">Registrovať</string>
     <string name="login_or_divider">alebo</string>

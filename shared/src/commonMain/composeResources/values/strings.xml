@@ -297,7 +297,6 @@ https://mkdigital.sk</string>
     <string name="login_password_short">Password must be at least 8 characters</string>
     <string name="login_password_weak">Password must contain uppercase, lowercase, number and special character</string>
     <string name="login_button">Login</string>
-    <string name="login_skip">Skip</string>
     <string name="login_no_account">Don't have an account?</string>
     <string name="login_register">Register</string>
     <string name="login_or_divider">or</string>
