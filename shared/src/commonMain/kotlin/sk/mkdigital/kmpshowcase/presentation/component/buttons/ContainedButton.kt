@@ -2,6 +2,10 @@ package sk.mkdigital.kmpshowcase.presentation.component.buttons
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import sk.mkdigital.kmpshowcase.presentation.foundation.buttonProgressSize
+import sk.mkdigital.kmpshowcase.presentation.foundation.buttonProgressStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +23,8 @@ fun ContainedButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    loading: Boolean = false
 ) {
     Button(
         onClick = onClick,
@@ -29,10 +34,18 @@ fun ContainedButton(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
         ),
-        enabled = enabled,
+        enabled = enabled && !loading,
         shape = RoundedCornerShape(cardCornerRadius6)
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
+        if (loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(buttonProgressSize),
+                strokeWidth = buttonProgressStroke,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        } else {
+            Text(text = text, style = MaterialTheme.typography.labelLarge)
+        }
     }
 }
 

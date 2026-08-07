@@ -25,3 +25,6 @@ val cardCornerRadius6: Dp = 6.dp
 
 val floatingNavBarSpace: Dp = 100.dp
 
+/** Sized to the label it replaces, so the button keeps its height while loading. */
+val buttonProgressSize: Dp = 20.dp
+val buttonProgressStroke: Dp = 2.dp
