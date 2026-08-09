@@ -76,13 +76,13 @@ A production-ready Kotlin Multiplatform demo app showcasing modern mobile develo
 
 <table>
 <tr>
-<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.login.LoginScreenScreenshotTest_LoginUiState_0_light.png" width="180" alt="Login"/></td>
+<td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.signIn.SignInScreenScreenshotTest_SignInUiState_0_light.png" width="180" alt="Sign In"/></td>
 <td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.home.HomeScreenScreenshotTest_HomeUiState_0_light.png" width="180" alt="Home"/></td>
 <td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.database.DatabaseScreenScreenshotTest_DatabaseUiState_1_light.png" width="180" alt="Database"/></td>
 <td><img src="androidApp/src/test/snapshots/images/sk.mkdigital.kmpshowcase.presentation.screen.calendar.CalendarScreenScreenshotTest_CalendarUiState_1_light.png" width="180" alt="Calendar"/></td>
 </tr>
 <tr>
-<td style="text-align:center">Login</td>
+<td style="text-align:center">Sign In</td>
 <td style="text-align:center">Home</td>
 <td style="text-align:center">Database</td>
 <td style="text-align:center">Calendar</td>

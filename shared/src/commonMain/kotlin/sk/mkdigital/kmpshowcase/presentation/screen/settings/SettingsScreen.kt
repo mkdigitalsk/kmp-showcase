@@ -53,7 +53,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about_tagline
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about_web
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_appearance
-import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_logout
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_sign_out
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_profile
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_profile_photo
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_profile_photo_hint
@@ -222,7 +222,7 @@ fun SettingsScreen(
 
         item {
             AppTextButtonError(
-                text = stringResource(Res.string.settings_logout),
+                text = stringResource(Res.string.settings_sign_out),
                 onClick = onSignOut,
                 modifier = Modifier.fillMaxWidth()
             )

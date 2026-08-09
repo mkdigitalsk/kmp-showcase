@@ -282,7 +282,7 @@
     <string name="settings_about_web">mkdigital.sk</string>
     <string name="settings_test_crash_title">Testovací pád</string>
     <string name="settings_test_crash_subtitle">Vyvolať pád aplikácie pre test Crashlytics</string>
-    <string name="settings_logout">Odhlásiť sa</string>
+    <string name="settings_sign_out">Odhlásiť sa</string>
 
     <!-- SignIn Screen -->
     <string name="screen_sign_in">Prihlásenie</string>

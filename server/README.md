@@ -38,8 +38,8 @@ docker compose up --build
 ### Auth
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/auth/register` | Register new user |
-| POST | `/v1/auth/login` | Login user |
+| POST | `/v1/auth/sign-up` | Create an account |
+| POST | `/v1/auth/sign-in` | Sign in |
 
 ### Users (Protected)
 | Method | Endpoint | Description |
@@ -72,16 +72,16 @@ Config lives in [`src/main/resources/application.yaml`](src/main/resources/appli
 
 ## Example Requests
 
-### Register
+### Sign up
 ```bash
-curl -X POST http://localhost:8080/v1/auth/register \
+curl -X POST http://localhost:8080/v1/auth/sign-up \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123","name":"Test User"}'
 ```
 
-### Login
+### Sign in
 ```bash
-curl -X POST http://localhost:8080/v1/auth/login \
+curl -X POST http://localhost:8080/v1/auth/sign-in \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"password123"}'
 ```
