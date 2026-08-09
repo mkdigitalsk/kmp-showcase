@@ -3,6 +3,8 @@ package sk.mkdigital.kmpshowcase.presentation.screen.networking
 import androidx.compose.runtime.Immutable
 import sk.mkdigital.kmpshowcase.domain.useCase.GetUsersUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.base.invoke
+import sk.mkdigital.kmpshowcase.presentation.base.AppError
+import sk.mkdigital.kmpshowcase.presentation.base.toAppError
 import sk.mkdigital.kmpshowcase.presentation.base.BaseViewModel
 
 class NetworkingViewModel(
@@ -20,7 +22,7 @@ class NetworkingViewModel(
             onSuccess = { users ->
                 newState { it.copy(isLoading = false, users = users.map { user -> user.toUiModel() }) }
             },
-            onError = { error -> newState { it.copy(isLoading = false, error = error.message) } }
+            onError = { error -> newState { it.copy(isLoading = false, error = error.toAppError()) } }
         )
     }
 
@@ -33,5 +35,5 @@ class NetworkingViewModel(
 data class NetworkingUiState(
     val isLoading: Boolean = false,
     val users: List<UserUiModel> = emptyList(),
-    val error: String? = null
+    val error: AppError? = null
 )

@@ -330,4 +330,14 @@
     <!-- Languages (not translated - always in native language) -->
     <string name="language_sk" translatable="false">Slovenčina</string>
     <string name="language_en" translatable="false">English</string>
+
+    <!-- Errors -->
+    <string name="error_no_connection">No internet connection. Check your connection and try again.</string>
+    <string name="error_timeout">That took too long. Try again.</string>
+    <string name="error_unauthorized">Please sign in again.</string>
+    <string name="error_not_found">That could not be found.</string>
+    <string name="error_server">The server had a problem. Try again shortly.</string>
+    <string name="error_data">The response could not be read.</string>
+    <string name="error_location">Location is unavailable. Check location services.</string>
+    <string name="error_generic">Something went wrong. Try again.</string>
 </resources>

@@ -2,7 +2,9 @@ package sk.mkdigital.kmpshowcase.presentation.screen.signUp
 
 import sk.mkdigital.kmpshowcase.domain.exceptions.base.BaseException
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignUpUseCase
+import sk.mkdigital.kmpshowcase.presentation.base.AppError
 import sk.mkdigital.kmpshowcase.presentation.base.BaseViewModel
+import sk.mkdigital.kmpshowcase.presentation.base.toAppError
 import sk.mkdigital.kmpshowcase.presentation.base.NavEvent
 import sk.mkdigital.kmpshowcase.presentation.util.ValidationPatterns
 
@@ -52,15 +54,14 @@ class SignUpViewModel(
                 navigate(SignUpNavEvent.ToHome)
             },
             onError = { error: BaseException ->
+                // A taken email belongs on the email field; anything else is not about one field,
+                // so it goes to the form-level error rather than being dropped.
+                val emailTaken = error is EmailAlreadyExistsException
                 newState {
                     it.copy(
                         isLoading = false,
-                        // TODO: map ApiException(409) -> EmailAlreadyExistsException -> ALREADY_EXISTS
-                        emailError = if (error is EmailAlreadyExistsException) {
-                            SignUpEmailError.ALREADY_EXISTS
-                        } else {
-                            null
-                        }
+                        emailError = if (emailTaken) SignUpEmailError.ALREADY_EXISTS else null,
+                        error = if (emailTaken) null else error.toAppError(),
                     )
                 }
             }
@@ -122,6 +123,7 @@ data class SignUpUiState(
     val passwordError: SignUpPasswordError? = null,
     val confirmPasswordError: SignUpConfirmPasswordError? = null,
     val isLoading: Boolean = false,
+    val error: AppError? = null,
 )
 
 sealed interface SignUpNavEvent : NavEvent {
@@ -131,7 +133,7 @@ sealed interface SignUpNavEvent : NavEvent {
 
 private class EmailAlreadyExistsException(
     override val errorCode: String = "5001",
-    override val userMessage: String = "This email already has an account",
+    override val logMessage: String = "Sign-up rejected: email already registered",
     override val shouldReport: Boolean = false,
 ) : BaseException(message = "Email already exists")
 

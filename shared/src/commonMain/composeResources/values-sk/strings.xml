@@ -329,4 +329,14 @@
     <!-- Languages (not translated - always in native language) -->
     <string name="language_sk" translatable="false">Slovenčina</string>
     <string name="language_en" translatable="false">English</string>
+
+    <!-- Errors -->
+    <string name="error_no_connection">Bez pripojenia na internet. Skontrolujte pripojenie a skúste to znova.</string>
+    <string name="error_timeout">Trvalo to príliš dlho. Skúste to znova.</string>
+    <string name="error_unauthorized">Prihláste sa znova.</string>
+    <string name="error_not_found">Položka sa nenašla.</string>
+    <string name="error_server">Na serveri nastal problém. Skúste to o chvíľu.</string>
+    <string name="error_data">Odpoveď sa nepodarilo spracovať.</string>
+    <string name="error_location">Poloha nie je dostupná. Skontrolujte služby polohy.</string>
+    <string name="error_generic">Niečo sa pokazilo. Skúste to znova.</string>
 </resources>

@@ -6,7 +6,7 @@ abstract class BaseException(
 ) : Exception(message, cause) {
 
     abstract val errorCode: String
-    abstract val userMessage: String
+    abstract val logMessage: String
     open val shouldReport: Boolean = true
 }
 
@@ -19,7 +19,7 @@ object NetworkErrorCode {
 class NetworkException(
     message: String = "Network error occurred",
     cause: Throwable? = null,
-    override val userMessage: String = "Please check your internet connection",
+    override val logMessage: String = "Please check your internet connection",
     override val errorCode: String = NetworkErrorCode.UNKNOWN
 ) : BaseException(message, cause)
 
@@ -27,7 +27,7 @@ class ApiException(
     val httpCode: Int,
     message: String,
     cause: Throwable? = null,
-    override val userMessage: String = "Something went wrong. Please try again."
+    override val logMessage: String = "Something went wrong. Please try again."
 ) : BaseException(message, cause) {
     override val errorCode: String = "2-$httpCode"
 }
@@ -41,13 +41,13 @@ object DataErrorCode {
 class DataException(
     message: String = "Data parsing error",
     cause: Throwable? = null,
-    override val userMessage: String = "Unable to process data",
+    override val logMessage: String = "Unable to process data",
     override val errorCode: String = DataErrorCode.UNKNOWN
 ) : BaseException(message, cause)
 
 class UnknownException(
     cause: Throwable? = null,
-    override val userMessage: String = "An unexpected error occurred",
+    override val logMessage: String = "An unexpected error occurred",
     override val errorCode: String = "9000"
 ) : BaseException(cause?.message ?: "Unknown error", cause)
 
@@ -60,6 +60,6 @@ object LocationErrorCode {
 class LocationException(
     message: String = "Location error occurred",
     cause: Throwable? = null,
-    override val userMessage: String = "Unable to get location",
+    override val logMessage: String = "Unable to get location",
     override val errorCode: String = LocationErrorCode.UNKNOWN
 ) : BaseException(message, cause)

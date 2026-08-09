@@ -6,6 +6,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import sk.mkdigital.kmpshowcase.domain.model.User
+import sk.mkdigital.kmpshowcase.presentation.base.AppError
 import sk.mkdigital.kmpshowcase.presentation.foundation.AppTheme
 
 @Preview
@@ -22,7 +23,7 @@ private fun NetworkingScreenPreview(
 internal class NetworkingScreenPreviewParams : PreviewParameterProvider<NetworkingUiState> {
     override val values = sequenceOf(
         NetworkingUiState(isLoading = true),
-        NetworkingUiState(error = "401"),
+        NetworkingUiState(error = AppError.UNAUTHORIZED),
         NetworkingUiState(
             users = listOf(
                 User(

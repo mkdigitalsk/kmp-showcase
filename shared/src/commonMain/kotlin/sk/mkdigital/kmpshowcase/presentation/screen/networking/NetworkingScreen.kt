@@ -25,6 +25,7 @@ import sk.mkdigital.kmpshowcase.presentation.base.lifecycleAwareViewModel
 import sk.mkdigital.kmpshowcase.presentation.component.CircularProgress
 import sk.mkdigital.kmpshowcase.presentation.component.ErrorView
 import sk.mkdigital.kmpshowcase.presentation.component.LoadingView
+import sk.mkdigital.kmpshowcase.presentation.component.text
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
@@ -55,7 +56,7 @@ fun NetworkingScreen(
         when {
             state.isLoading && state.users.isEmpty() -> LoadingView()
             state.error != null && state.users.isEmpty() -> ErrorView(
-                message = state.error,
+                message = state.error.text(),
                 onRetry = onRefresh
             )
             state.users.isEmpty() -> EmptyContent()

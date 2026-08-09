@@ -34,6 +34,8 @@ import sk.mkdigital.kmpshowcase.presentation.base.lifecycleAwareViewModel
 import sk.mkdigital.kmpshowcase.presentation.component.AppPasswordTextField
 import sk.mkdigital.kmpshowcase.presentation.component.AppTextField
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
+import sk.mkdigital.kmpshowcase.presentation.component.text.labelLarge.TextLabelLargeError
+import sk.mkdigital.kmpshowcase.presentation.component.text
 import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer8
@@ -178,6 +180,11 @@ fun SignUpScreen(
                 }
             )
         )
+
+        state.error?.let { error ->
+            TextLabelLargeError(text = error.text(), modifier = Modifier.fillMaxWidth())
+            Spacer4()
+        }
 
         Spacer(modifier = Modifier.height(space6))
 

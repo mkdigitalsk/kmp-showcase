@@ -20,7 +20,7 @@ suspend inline fun <T> handleApiCall(
     throw NetworkException(
         message = "Request timeout: ${e.message}",
         cause = e,
-        userMessage = "Request timed out. Please try again.",
+        logMessage = "Request timed out. Please try again.",
         errorCode = NetworkErrorCode.TIMEOUT
     )
 } catch (e: IOException) {
@@ -34,7 +34,7 @@ suspend inline fun <T> handleApiCall(
         httpCode = e.response.status.value,
         message = "Client error: ${e.response.status.description}",
         cause = e,
-        userMessage = when (e.response.status.value) {
+        logMessage = when (e.response.status.value) {
             401 -> "Please sign in again."
             403 -> "You don't have permission to access this."
             404 -> "The requested resource was not found."
@@ -46,7 +46,7 @@ suspend inline fun <T> handleApiCall(
         httpCode = e.response.status.value,
         message = "Server error: ${e.response.status.description}",
         cause = e,
-        userMessage = "Server error. Please try again later."
+        logMessage = "Server error. Please try again later."
     )
 } catch (e: JsonConvertException) {
     throw DataException(
