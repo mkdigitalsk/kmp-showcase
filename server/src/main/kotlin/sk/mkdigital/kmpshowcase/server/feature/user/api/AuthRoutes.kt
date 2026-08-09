@@ -9,6 +9,7 @@ import sk.mkdigital.kmpshowcase.server.core.maskEmail
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
 import sk.mkdigital.kmpshowcase.server.feature.user.service.UserService
 import sk.mkdigital.kmpshowcase.server.plugins.AuthRateLimit
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.plugins.ratelimit.rateLimit
@@ -31,6 +32,7 @@ internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
                 val user = userService.register(request.email, request.password, request.name)
                 val token = jwtConfig.generateToken(user.id, user.email)
                 logger.info("User registered: ${user.id} (${user.email.maskEmail()})")
+                call.response.headers.append(HttpHeaders.Location, "${ApiVersion.BASE}/users/me")
                 call.respond(HttpStatusCode.Created, AuthResponseDTO(token, user.toAuthUserDTO()))
             }
 
@@ -49,12 +51,14 @@ internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
         }
 
         authenticate("auth-jwt") {
-            get("/me") {
+            // POST, not GET: this issues a new bearer, and a private cache may store a GET response
+            // carrying one (RFC 9110 §9.2.1, RFC 9111 §3.5). Read the user from GET /v1/users/me.
+            post("/token") {
                 val userId = call.userId()
-                    ?: return@get call.respond(HttpStatusCode.Unauthorized)
+                    ?: return@post call.respond(HttpStatusCode.Unauthorized)
                 val user = userService.getById(userId)
-                    ?: return@get call.respond(HttpStatusCode.NotFound)
-                logger.info("Token login: ${user.id} (${user.email.maskEmail()})")
+                    ?: return@post call.respond(HttpStatusCode.NotFound)
+                logger.info("Token renewed: ${user.id} (${user.email.maskEmail()})")
                 call.respond(AuthResponseDTO(jwtConfig.generateToken(user.id, user.email), user.toAuthUserDTO()))
             }
         }

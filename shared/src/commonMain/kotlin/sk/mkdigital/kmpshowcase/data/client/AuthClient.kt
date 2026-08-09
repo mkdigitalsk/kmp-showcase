@@ -34,7 +34,7 @@ class AuthClientImpl(
     }
 
     override suspend fun me(token: String): AuthResponseDTO = handleApiCall {
-        client.get("auth/me") {
+        client.post("auth/token") {
             bearerAuth(token)
         }.body()
     }
