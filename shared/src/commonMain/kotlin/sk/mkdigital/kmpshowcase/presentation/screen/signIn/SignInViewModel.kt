@@ -6,7 +6,9 @@ import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignInWithTokenUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.base.invoke
 import sk.mkdigital.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometricUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.biometric.IsBiometricEnabledUseCase
+    import sk.mkdigital.kmpshowcase.presentation.base.AppError
 import sk.mkdigital.kmpshowcase.presentation.base.BaseViewModel
+import sk.mkdigital.kmpshowcase.presentation.base.toAppError
 import sk.mkdigital.kmpshowcase.presentation.base.NavEvent
 import sk.mkdigital.kmpshowcase.presentation.util.ValidationPatterns
 
@@ -69,7 +71,7 @@ class SignInViewModel(
                     navigate(SignInNavEvent.ToHome)
                 },
                 onError = { error ->
-                    newState { it.copy(isLoading = false, serverError = error.message) }
+                    newState { it.copy(isLoading = false, serverError = error.toAppError()) }
                 }
             )
         }
@@ -115,7 +117,7 @@ data class SignInUiState(
     val emailError: EmailError? = null,
     val passwordError: PasswordError? = null,
     val isLoading: Boolean = false,
-    val serverError: String? = null,
+    val serverError: AppError? = null,
     val biometricsAvailable: Boolean = false,
     val biometricsLoading: Boolean = false,
 )

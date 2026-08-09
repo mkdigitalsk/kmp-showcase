@@ -41,6 +41,8 @@ import sk.mkdigital.kmpshowcase.presentation.component.AppPasswordTextField
 import sk.mkdigital.kmpshowcase.presentation.component.AppTextField
 import sk.mkdigital.kmpshowcase.presentation.component.biometric.BiometricView
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
+import sk.mkdigital.kmpshowcase.presentation.component.text
+import sk.mkdigital.kmpshowcase.presentation.component.text.labelLarge.TextLabelLargeError
 import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
@@ -163,6 +165,11 @@ fun SignInScreen(
                 }
             )
         )
+
+        state.serverError?.let { error ->
+            TextLabelLargeError(text = error.text(), modifier = Modifier.fillMaxWidth())
+            Spacer4()
+        }
 
         Spacer6()
 
