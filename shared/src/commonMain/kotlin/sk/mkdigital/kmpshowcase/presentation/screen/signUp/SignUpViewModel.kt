@@ -45,11 +45,11 @@ class SignUpViewModel(
                 return@requireState
             }
 
-            performRegistration(state.name, state.email, state.password)
+            performSignUp(state.name, state.email, state.password)
         }
     }
 
-    private fun performRegistration(name: String, email: String, password: String) {
+    private fun performSignUp(name: String, email: String, password: String) {
         execute(
             action = { signUpUseCase(SignUpUseCase.Params(name, email, password)) },
             onLoading = { newState { it.copy(isLoading = true) } },

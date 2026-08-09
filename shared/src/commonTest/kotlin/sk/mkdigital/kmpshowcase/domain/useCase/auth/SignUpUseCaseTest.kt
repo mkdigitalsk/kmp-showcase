@@ -50,11 +50,11 @@ class SignUpUseCaseTest : BaseTest<SignUpUseCase>() {
     }
 
     @Test
-    fun `invoke throws exception when registration fails`() = runTest {
+    fun `invoke throws exception when sign up fails`() = runTest {
         val name = "John Doe"
         val email = "john@example.com"
         val password = "Test123!"
-        val exception = RuntimeException("Registration failed")
+        val exception = RuntimeException("Sign up failed")
 
         everySuspend { authRepository.signUp(name, email, password) } throws exception
 
