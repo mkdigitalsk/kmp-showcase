@@ -13,6 +13,8 @@ import sk.mkdigital.kmpshowcase.server.plugins.configureStatusPages
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.request.delete
+import io.ktor.client.request.header
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -67,6 +69,35 @@ class UserRoutesTest {
             configureRouting(AppDependencies(jwtConfig))
         }
         block()
+    }
+
+    @Test
+    fun `deleting my account removes it and the token stops working`() = usersTest {
+        val (_, token) = createUser()
+
+        val deleted = client.delete("${ApiVersion.BASE}/users/me") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        assertEquals(HttpStatusCode.NoContent, deleted.status)
+
+        val afterwards = client.get("${ApiVersion.BASE}/users/me") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        assertEquals(HttpStatusCode.NotFound, afterwards.status, "the row is gone, so the token resolves to nobody")
+    }
+
+    @Test
+    fun `deleting an account without auth returns unauthorized`() = usersTest {
+        val response = client.delete("${ApiVersion.BASE}/users/me")
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    @Test
+    fun `deleting an account with a malformed token returns unauthorized`() = usersTest {
+        val response = client.delete("${ApiVersion.BASE}/users/me") {
+            header(HttpHeaders.Authorization, "Bearer not-a-jwt")
+        }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
     }
 
     @Test

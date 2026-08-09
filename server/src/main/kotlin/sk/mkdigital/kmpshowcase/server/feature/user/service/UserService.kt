@@ -26,6 +26,8 @@ internal class UserService(
 
     suspend fun updateLocale(id: Long, locale: String): User? = repository.updateLocale(id, locale)
 
+    suspend fun delete(id: Long): Boolean = repository.delete(id)
+
     private companion object {
         val PASSWORD_REGEX = Regex(
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$"

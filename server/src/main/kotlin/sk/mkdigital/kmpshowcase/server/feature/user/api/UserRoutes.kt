@@ -10,6 +10,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
@@ -24,6 +25,13 @@ internal fun Route.userRoutes(userService: UserService) {
                 val userId = call.userId() ?: return@get call.respond(HttpStatusCode.Unauthorized)
                 val user = userService.getById(userId) ?: return@get call.respond(HttpStatusCode.NotFound)
                 call.respond(user.toUserResponseDTO())
+            }
+            // GDPR Art 17 — erasure is the account holder's to trigger, not only ours.
+            // https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_17
+            delete("/me") {
+                val userId = call.userId() ?: return@delete call.respond(HttpStatusCode.Unauthorized)
+                if (!userService.delete(userId)) return@delete call.respond(HttpStatusCode.NotFound)
+                call.respond(HttpStatusCode.NoContent)
             }
             put("/me/theme-mode") {
                 val userId = call.userId() ?: return@put call.respond(HttpStatusCode.Unauthorized)

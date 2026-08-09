@@ -6,6 +6,7 @@ import sk.mkdigital.kmpshowcase.server.feature.user.service.ThemeMode
 import sk.mkdigital.kmpshowcase.server.feature.user.service.User
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -89,6 +90,10 @@ internal class UserRepositoryImpl : UserRepository {
             .verified
 
         if (isPasswordValid) row.toUser() else null
+    }
+
+    override suspend fun delete(id: Long): Boolean = suspendTransaction {
+        UsersTable.deleteWhere { UsersTable.id eq id } > 0
     }
 
     private fun ResultRow.toUser() = User(
