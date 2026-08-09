@@ -35,7 +35,7 @@ suspend inline fun <T> handleApiCall(
         message = "Client error: ${e.response.status.description}",
         cause = e,
         userMessage = when (e.response.status.value) {
-            401 -> "Please log in again."
+            401 -> "Please sign in again."
             403 -> "You don't have permission to access this."
             404 -> "The requested resource was not found."
             else -> "Request failed. Please try again."
