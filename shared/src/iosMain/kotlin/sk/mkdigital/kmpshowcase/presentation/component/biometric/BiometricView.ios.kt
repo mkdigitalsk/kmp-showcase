@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodySmall.TextBodySmallNeutral80
 import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
-import sk.mkdigital.kmpshowcase.shared.generated.resources.login_biometric_hint_faceid
+import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_in_biometric_hint_faceid
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -30,10 +30,10 @@ actual fun BiometricView(
         ) {
             AppIconPrimary(
                 imageVector = Icons.Filled.Face,
-                contentDescription = stringResource(Res.string.login_biometric_hint_faceid),
+                contentDescription = stringResource(Res.string.sign_in_biometric_hint_faceid),
                 size = 48.dp,
             )
         }
-        TextBodySmallNeutral80(stringResource(Res.string.login_biometric_hint_faceid))
+        TextBodySmallNeutral80(stringResource(Res.string.sign_in_biometric_hint_faceid))
     }
 }

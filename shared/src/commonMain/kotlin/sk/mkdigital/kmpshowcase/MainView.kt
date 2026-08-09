@@ -33,8 +33,8 @@ import sk.mkdigital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
 import sk.mkdigital.kmpshowcase.presentation.base.NavRouter
 import sk.mkdigital.kmpshowcase.presentation.base.Route
 import sk.mkdigital.kmpshowcase.presentation.base.Route.HomeSection
-import sk.mkdigital.kmpshowcase.presentation.base.Route.Login
-import sk.mkdigital.kmpshowcase.presentation.base.Route.Register
+import sk.mkdigital.kmpshowcase.presentation.base.Route.SignIn
+import sk.mkdigital.kmpshowcase.presentation.base.Route.SignUp
 import sk.mkdigital.kmpshowcase.presentation.base.Route.Settings
 import sk.mkdigital.kmpshowcase.presentation.base.rememberNavEntryDecorators
 import sk.mkdigital.kmpshowcase.presentation.base.rememberNavRouter
@@ -50,11 +50,11 @@ import sk.mkdigital.kmpshowcase.presentation.screen.calendar.CalendarScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.database.DatabaseScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.feature.UiComponentsScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.home.HomeScreen
-import sk.mkdigital.kmpshowcase.presentation.screen.login.LoginScreen
+import sk.mkdigital.kmpshowcase.presentation.screen.signIn.SignInScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.networking.NetworkingScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.notifications.NotificationsScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.platformapis.PlatformApisScreen
-import sk.mkdigital.kmpshowcase.presentation.screen.register.RegisterScreen
+import sk.mkdigital.kmpshowcase.presentation.screen.signUp.SignUpScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.scanner.ScannerScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.settings.SettingsScreen
 import sk.mkdigital.kmpshowcase.presentation.screen.storage.StorageScreen
@@ -115,8 +115,8 @@ fun MainView(
                         onBack = router::onBack,
                         entryDecorators = rememberNavEntryDecorators(),
                         entryProvider = entryProvider {
-                            entry<Login> { LoginScreen(router) }
-                            entry<Register> { RegisterScreen(router) }
+                            entry<SignIn> { SignInScreen(router) }
+                            entry<SignUp> { SignUpScreen(router) }
                             entry<HomeSection.Home> { HomeScreen(router) }
                             entry<HomeSection.UiComponents> { UiComponentsScreen() }
                             entry<HomeSection.Networking> { NetworkingScreen() }
@@ -199,8 +199,8 @@ private fun DeepLinkEffect(
 
                     is Settings -> router.navigateTo(route, popUpTo = HomeSection.Home::class)
 
-                    Login,
-                    Register -> router.navigateTo(route, popUpTo = HomeSection.Home::class, inclusive = true)
+                    SignIn,
+                    SignUp -> router.navigateTo(route, popUpTo = HomeSection.Home::class, inclusive = true)
                 }
             }
         }

@@ -93,7 +93,7 @@ fun SettingsScreen(
         onThemeClick = viewModel::showThemeDialog,
         onLanguageNavEvent = viewModel::onLanguageNavEvent,
         onTriggerTestCrash = viewModel::triggerTestCrash,
-        onLogout = viewModel::logout,
+        onSignOut = viewModel::signOut,
         onThemeSelected = { themeModeState ->
             viewModel.setThemeMode(themeModeState)
             viewModel.hideThemeDialog()
@@ -113,7 +113,7 @@ fun SettingsScreen(
     onThemeClick: () -> Unit = {},
     onLanguageNavEvent: (SettingNavEvents) -> Unit = {},
     onTriggerTestCrash: () -> Unit = {},
-    onLogout: () -> Unit = {},
+    onSignOut: () -> Unit = {},
     onThemeSelected: (ThemeModeState) -> Unit = {},
     onThemeDialogDismiss: () -> Unit = {},
     onWebClick: () -> Unit = {},
@@ -223,7 +223,7 @@ fun SettingsScreen(
         item {
             AppTextButtonError(
                 text = stringResource(Res.string.settings_logout),
-                onClick = onLogout,
+                onClick = onSignOut,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -368,8 +368,8 @@ private fun SettingsNavEvents(
         when (event) {
             is SettingNavEvents.SetLocaleTag -> onSetLocale?.invoke(event.tag)
             is SettingNavEvents.ToSettings -> router.openSettings()
-            is SettingNavEvents.Logout -> router.navigateTo(
-                Route.Login,
+            is SettingNavEvents.SignOut -> router.navigateTo(
+                Route.SignIn,
                 popUpTo = Route.HomeSection.Home::class,
                 inclusive = true
             )

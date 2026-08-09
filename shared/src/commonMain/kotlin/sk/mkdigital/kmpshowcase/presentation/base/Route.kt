@@ -13,8 +13,8 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_calendar
 import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_database
 import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_notifications
 import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_ui_components
-import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_login
-import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_register
+import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_sign_in
+import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_sign_up
 import sk.mkdigital.kmpshowcase.shared.generated.resources.screen_example
 import org.jetbrains.compose.resources.StringResource
 
@@ -26,16 +26,16 @@ sealed interface Route : NavKey {
     val showBottomNav: Boolean get() = true
 
     @Serializable
-    data object Login : Route {
-        override val titleRes = Res.string.screen_login
+    data object SignIn : Route {
+        override val titleRes = Res.string.screen_sign_in
         override val showBackArrow = false
         override val showTopBar = false
         override val showBottomNav = false
     }
 
     @Serializable
-    data object Register : Route {
-        override val titleRes = Res.string.screen_register
+    data object SignUp : Route {
+        override val titleRes = Res.string.screen_sign_up
         override val showBackArrow = true
         override val showTopBar = false
         override val showBottomNav = false

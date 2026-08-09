@@ -5,7 +5,7 @@ import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UserRepository
 internal class UserService(
     private val repository: UserRepository,
 ) {
-    suspend fun register(email: String, password: String, name: String): User {
+    suspend fun signUp(email: String, password: String, name: String): User {
         require(email.contains("@")) { "Invalid email format" }
         require(PASSWORD_REGEX.matches(password)) { PASSWORD_REQUIREMENT }
         require(name.isNotBlank()) { "Name cannot be blank" }

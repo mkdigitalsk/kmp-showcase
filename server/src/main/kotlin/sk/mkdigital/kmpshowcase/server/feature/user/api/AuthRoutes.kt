@@ -2,8 +2,8 @@ package sk.mkdigital.kmpshowcase.server.feature.user.api
 
 import sk.mkdigital.kmpshowcase.contracts.ApiVersion
 import sk.mkdigital.kmpshowcase.contracts.auth.AuthResponseDTO
-import sk.mkdigital.kmpshowcase.contracts.auth.LoginRequestDTO
-import sk.mkdigital.kmpshowcase.contracts.auth.RegisterRequestDTO
+import sk.mkdigital.kmpshowcase.contracts.auth.SignInRequestDTO
+import sk.mkdigital.kmpshowcase.contracts.auth.SignUpRequestDTO
 import sk.mkdigital.kmpshowcase.server.core.auth.userId
 import sk.mkdigital.kmpshowcase.server.core.maskEmail
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
@@ -27,20 +27,20 @@ internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
     route("${ApiVersion.BASE}/auth") {
         // Throttle the credential-accepting endpoints per client IP (brute-force / spray defense).
         rateLimit(AuthRateLimit) {
-            post("/register") {
-                val request = call.receive<RegisterRequestDTO>()
-                val user = userService.register(request.email, request.password, request.name)
+            post("/sign-up") {
+                val request = call.receive<SignUpRequestDTO>()
+                val user = userService.signUp(request.email, request.password, request.name)
                 val token = jwtConfig.generateToken(user.id, user.email)
-                logger.info("User registered: ${user.id} (${user.email.maskEmail()})")
+                logger.info("User signed up: ${user.id} (${user.email.maskEmail()})")
                 call.response.headers.append(HttpHeaders.Location, "${ApiVersion.BASE}/users/me")
                 call.respond(HttpStatusCode.Created, AuthResponseDTO(token, user.toAuthUserDTO()))
             }
 
-            post("/login") {
-                val request = call.receive<LoginRequestDTO>()
+            post("/sign-in") {
+                val request = call.receive<SignInRequestDTO>()
                 val user = userService.authenticate(request.email, request.password)
                     ?: run {
-                        logger.warn("Login failed: invalid credentials for ${request.email.maskEmail()}")
+                        logger.warn("SignIn failed: invalid credentials for ${request.email.maskEmail()}")
                         call.respond(HttpStatusCode.Unauthorized, mapOf("message" to "Invalid credentials"))
                         return@post
                     }

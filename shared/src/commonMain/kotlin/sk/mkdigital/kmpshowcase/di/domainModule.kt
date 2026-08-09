@@ -3,10 +3,10 @@ package sk.mkdigital.kmpshowcase.di
 import sk.mkdigital.kmpshowcase.domain.useCase.GetUsersUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.TrackButtonClickUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.analytics.TrackScreenUseCase
-import sk.mkdigital.kmpshowcase.domain.useCase.auth.LoginUseCase
-import sk.mkdigital.kmpshowcase.domain.useCase.auth.LoginWithTokenUseCase
-import sk.mkdigital.kmpshowcase.domain.useCase.auth.LogoutUseCase
-import sk.mkdigital.kmpshowcase.domain.useCase.auth.RegisterUserUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignInUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignInWithTokenUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignOutUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignUpUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometricUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.biometric.IsBiometricEnabledUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.calendar.GetTodayDateUseCase
@@ -58,10 +58,10 @@ val domainModule = module {
     factoryOf(::GetTodayDateUseCase)
     factoryOf(::IsBiometricEnabledUseCase)
     factoryOf(::AuthenticateWithBiometricUseCase)
-    factoryOf(::LoginUseCase)
-    factoryOf(::LoginWithTokenUseCase)
-    factoryOf(::LogoutUseCase)
-    factoryOf(::RegisterUserUseCase)
+    factoryOf(::SignInUseCase)
+    factoryOf(::SignInWithTokenUseCase)
+    factoryOf(::SignOutUseCase)
+    factoryOf(::SignUpUseCase)
 
     factoryOf(::GetLastKnownLocationUseCase)
     factoryOf(::ObserveLocationUpdatesUseCase)

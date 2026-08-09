@@ -284,51 +284,51 @@
     <string name="settings_test_crash_subtitle">Vyvolať pád aplikácie pre test Crashlytics</string>
     <string name="settings_logout">Odhlásiť sa</string>
 
-    <!-- Login Screen -->
-    <string name="screen_login">Prihlásenie</string>
-    <string name="login_title">Vitajte späť</string>
-    <string name="login_email_label">Email</string>
-    <string name="login_email_placeholder">Zadajte váš email</string>
-    <string name="login_email_empty">Email je povinný</string>
-    <string name="login_email_invalid">Neplatný formát emailu</string>
-    <string name="login_password_label">Heslo</string>
-    <string name="login_password_placeholder">Zadajte vaše heslo</string>
-    <string name="login_password_empty">Heslo je povinné</string>
-    <string name="login_password_short">Heslo musí mať aspoň 8 znakov</string>
-    <string name="login_password_weak">Heslo musí obsahovať veľké písmeno, malé písmeno, číslo a špeciálny znak</string>
-    <string name="login_button">Prihlásiť sa</string>
-    <string name="login_no_account">Nemáte účet?</string>
-    <string name="login_register">Registrovať</string>
-    <string name="login_or_divider">alebo</string>
-    <string name="login_biometric_hint_fingerprint">Použite odtlačok prsta</string>
-    <string name="login_biometric_hint_faceid">Použite Face ID</string>
-    <string name="login_test_account_hint">Testovací účet</string>
-    <string name="login_test_account_fill">Vyplniť</string>
+    <!-- SignIn Screen -->
+    <string name="screen_sign_in">Prihlásenie</string>
+    <string name="sign_in_title">Vitajte späť</string>
+    <string name="sign_in_email_label">Email</string>
+    <string name="sign_in_email_placeholder">Zadajte váš email</string>
+    <string name="sign_in_email_empty">Email je povinný</string>
+    <string name="sign_in_email_invalid">Neplatný formát emailu</string>
+    <string name="sign_in_password_label">Heslo</string>
+    <string name="sign_in_password_placeholder">Zadajte vaše heslo</string>
+    <string name="sign_in_password_empty">Heslo je povinné</string>
+    <string name="sign_in_password_short">Heslo musí mať aspoň 8 znakov</string>
+    <string name="sign_in_password_weak">Heslo musí obsahovať veľké písmeno, malé písmeno, číslo a špeciálny znak</string>
+    <string name="sign_in_button">Prihlásiť sa</string>
+    <string name="sign_in_no_account">Nemáte účet?</string>
+    <string name="sign_in_sign_up">Registrovať</string>
+    <string name="sign_in_or_divider">alebo</string>
+    <string name="sign_in_biometric_hint_fingerprint">Použite odtlačok prsta</string>
+    <string name="sign_in_biometric_hint_faceid">Použite Face ID</string>
+    <string name="sign_in_test_account_hint">Testovací účet</string>
+    <string name="sign_in_test_account_fill">Vyplniť</string>
 
-    <!-- Register Screen -->
-    <string name="screen_register">Registrácia</string>
-    <string name="register_title">Vytvoriť účet</string>
-    <string name="register_name_label">Meno</string>
-    <string name="register_name_placeholder">Zadajte vaše meno</string>
-    <string name="register_name_empty">Meno je povinné</string>
-    <string name="register_name_short">Meno musí mať aspoň 2 znaky</string>
-    <string name="register_email_label">Email</string>
-    <string name="register_email_placeholder">Zadajte váš email</string>
-    <string name="register_email_empty">Email je povinný</string>
-    <string name="register_email_invalid">Neplatný formát emailu</string>
-    <string name="register_email_already_exists">Email je už zaregistrovaný</string>
-    <string name="register_password_label">Heslo</string>
-    <string name="register_password_placeholder">Zadajte vaše heslo</string>
-    <string name="register_password_empty">Heslo je povinné</string>
-    <string name="register_password_short">Heslo musí mať aspoň 8 znakov</string>
-    <string name="register_password_weak">Heslo musí obsahovať veľké písmeno, malé písmeno, číslo a špeciálny znak</string>
-    <string name="register_confirm_password_label">Potvrdiť heslo</string>
-    <string name="register_confirm_password_placeholder">Potvrďte vaše heslo</string>
-    <string name="register_confirm_password_empty">Prosím potvrďte vaše heslo</string>
-    <string name="register_confirm_password_mismatch">Heslá sa nezhodujú</string>
-    <string name="register_button">Registrovať</string>
-    <string name="register_has_account">Už máte účet?</string>
-    <string name="register_login">Prihlásiť sa</string>
+    <!-- SignUp Screen -->
+    <string name="screen_sign_up">Registrácia</string>
+    <string name="sign_up_title">Vytvoriť účet</string>
+    <string name="sign_up_name_label">Meno</string>
+    <string name="sign_up_name_placeholder">Zadajte vaše meno</string>
+    <string name="sign_up_name_empty">Meno je povinné</string>
+    <string name="sign_up_name_short">Meno musí mať aspoň 2 znaky</string>
+    <string name="sign_up_email_label">Email</string>
+    <string name="sign_up_email_placeholder">Zadajte váš email</string>
+    <string name="sign_up_email_empty">Email je povinný</string>
+    <string name="sign_up_email_invalid">Neplatný formát emailu</string>
+    <string name="sign_up_email_already_exists">Email je už zaregistrovaný</string>
+    <string name="sign_up_password_label">Heslo</string>
+    <string name="sign_up_password_placeholder">Zadajte vaše heslo</string>
+    <string name="sign_up_password_empty">Heslo je povinné</string>
+    <string name="sign_up_password_short">Heslo musí mať aspoň 8 znakov</string>
+    <string name="sign_up_password_weak">Heslo musí obsahovať veľké písmeno, malé písmeno, číslo a špeciálny znak</string>
+    <string name="sign_up_confirm_password_label">Potvrdiť heslo</string>
+    <string name="sign_up_confirm_password_placeholder">Potvrďte vaše heslo</string>
+    <string name="sign_up_confirm_password_empty">Prosím potvrďte vaše heslo</string>
+    <string name="sign_up_confirm_password_mismatch">Heslá sa nezhodujú</string>
+    <string name="sign_up_button">Registrovať</string>
+    <string name="sign_up_has_account">Už máte účet?</string>
+    <string name="sign_up_sign_in">Prihlásiť sa</string>
 
     <!-- Languages (not translated - always in native language) -->
     <string name="language_sk" translatable="false">Slovenčina</string>

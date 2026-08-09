@@ -11,28 +11,28 @@ class AuthRepositoryImpl(
     private val preferences: PersistentPreferences,
 ) : AuthRepository {
 
-    override suspend fun login(email: String, password: String): AuthSession {
-        val response = client.login(email, password)
+    override suspend fun signIn(email: String, password: String): AuthSession {
+        val response = client.signIn(email, password)
         val session = response.toAuthSession()
         preferences.setToken(session.token)
         return session
     }
 
-    override suspend fun register(name: String, email: String, password: String): AuthSession {
-        val response = client.register(email, password, name)
+    override suspend fun signUp(name: String, email: String, password: String): AuthSession {
+        val response = client.signUp(email, password, name)
         val session = response.toAuthSession()
         preferences.setToken(session.token)
         return session
     }
 
-    override suspend fun loginWithToken(): AuthSession? {
+    override suspend fun signInWithToken(): AuthSession? {
         val token = preferences.getToken() ?: return null
         return runCatching { client.me(token).toAuthSession() }
             .onSuccess { preferences.setToken(it.token) }
             .getOrNull()
     }
 
-    override suspend fun logout() {
+    override suspend fun signOut() {
         preferences.clearToken()
     }
 

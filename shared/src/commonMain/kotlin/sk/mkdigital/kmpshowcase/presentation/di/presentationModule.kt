@@ -5,11 +5,11 @@ import sk.mkdigital.kmpshowcase.presentation.component.imagepicker.ImagePickerVi
 import sk.mkdigital.kmpshowcase.presentation.screen.calendar.CalendarViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.database.DatabaseViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.home.HomeViewModel
-import sk.mkdigital.kmpshowcase.presentation.screen.login.LoginViewModel
+import sk.mkdigital.kmpshowcase.presentation.screen.signIn.SignInViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.networking.NetworkingViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.notifications.NotificationsViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.platformapis.PlatformApisViewModel
-import sk.mkdigital.kmpshowcase.presentation.screen.register.RegisterViewModel
+import sk.mkdigital.kmpshowcase.presentation.screen.signUp.SignUpViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.scanner.ScannerViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.settings.SettingsViewModel
 import sk.mkdigital.kmpshowcase.presentation.screen.storage.StorageViewModel
@@ -30,6 +30,6 @@ val presentationModule = module {
     viewModelOf(::DatabaseViewModel)
     viewModelOf(::CalendarViewModel)
     viewModelOf(::NotificationsViewModel)
-    viewModelOf(::LoginViewModel)
-    viewModelOf(::RegisterViewModel)
+    viewModelOf(::SignInViewModel)
+    viewModelOf(::SignUpViewModel)
 }

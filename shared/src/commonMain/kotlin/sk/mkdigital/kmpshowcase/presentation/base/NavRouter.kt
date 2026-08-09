@@ -13,8 +13,8 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import sk.mkdigital.kmpshowcase.presentation.base.Route.HomeSection
-import sk.mkdigital.kmpshowcase.presentation.base.Route.Login
-import sk.mkdigital.kmpshowcase.presentation.base.Route.Register
+import sk.mkdigital.kmpshowcase.presentation.base.Route.SignIn
+import sk.mkdigital.kmpshowcase.presentation.base.Route.SignUp
 import sk.mkdigital.kmpshowcase.presentation.base.Route.Settings
 import sk.mkdigital.kmpshowcase.presentation.base.router.ExternalRouter
 import org.koin.core.component.KoinComponent
@@ -80,7 +80,7 @@ class NavRouterImpl<T : NavKey>(
 @Composable
 fun rememberNavRouter(
 ): NavRouter<Route> {
-    val backStack = rememberNavBackStack(saveStateConfiguration, Login)
+    val backStack = rememberNavBackStack(saveStateConfiguration, SignIn)
     return remember(backStack) {
         NavRouterImpl(backStack as NavBackStack<Route>)
     }
@@ -95,8 +95,8 @@ fun <T : NavKey> rememberNavEntryDecorators(): List<NavEntryDecorator<T>> = list
 private val saveStateConfiguration = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
-            subclass(Login.serializer())
-            subclass(Register.serializer())
+            subclass(SignIn.serializer())
+            subclass(SignUp.serializer())
             subclass(HomeSection.Home.serializer())
             subclass(HomeSection.UiComponents.serializer())
             subclass(HomeSection.Networking.serializer())

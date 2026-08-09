@@ -2,7 +2,7 @@ package sk.mkdigital.kmpshowcase.presentation.screen.settings
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import sk.mkdigital.kmpshowcase.AppConfig
-import sk.mkdigital.kmpshowcase.domain.useCase.auth.LogoutUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignOutUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.base.invoke
 import sk.mkdigital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.settings.SetThemeModeUseCase
@@ -42,7 +42,7 @@ enum class ThemeModeState(val textId: StringResource, val mode: ThemeMode) {
 class SettingsViewModel(
     private val getThemeModeUseCase: GetThemeModeUseCase,
     private val setThemeModeUseCase: SetThemeModeUseCase,
-    private val logoutUseCase: LogoutUseCase,
+    private val signOutUseCase: SignOutUseCase,
     appConfig: AppConfig,
 ) : BaseViewModel<SettingsState>(
     SettingsState(
@@ -100,10 +100,10 @@ class SettingsViewModel(
         navigate(event)
     }
 
-    fun logout() {
+    fun signOut() {
         execute(
-            action = { logoutUseCase() },
-            onSuccess = { navigate(SettingNavEvents.Logout) }
+            action = { signOutUseCase() },
+            onSuccess = { navigate(SettingNavEvents.SignOut) }
         )
     }
 
@@ -143,7 +143,7 @@ sealed interface SettingNavEvents : NavEvent {
 
     data object ToSettings : SettingNavEvents
 
-    data object Logout : SettingNavEvents
+    data object SignOut : SettingNavEvents
 
     data class ThemeChanged(val mode: ThemeMode) : SettingNavEvents
 

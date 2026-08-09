@@ -107,8 +107,8 @@ class UserRoutesTest {
     }
 
     @Test
-    fun `login with missing fields returns 400 as RFC 9457 problem detail`() = usersTest {
-        val response = client.post("${ApiVersion.BASE}/auth/login") {
+    fun `sign in with missing fields returns 400 as RFC 9457 problem detail`() = usersTest {
+        val response = client.post("${ApiVersion.BASE}/auth/sign-in") {
             contentType(ContentType.Application.Json)
             setBody("{}")
         }
@@ -124,18 +124,18 @@ class UserRoutesTest {
     }
 
     @Test
-    fun `the public register endpoint always creates a CLIENT, never an ADMIN`() = usersTest {
+    fun `the public sign-up endpoint always creates a CLIENT, never an ADMIN`() = usersTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
         val email = "reg-${UUID.randomUUID()}@test.com"
-        val registered = jsonClient.post("${ApiVersion.BASE}/auth/register") {
+        val signedUp = jsonClient.post("${ApiVersion.BASE}/auth/sign-up") {
             contentType(ContentType.Application.Json)
             setBody("""{"email":"$email","password":"Password1@","name":"New User"}""")
         }
-        assertEquals(HttpStatusCode.Created, registered.status)
+        assertEquals(HttpStatusCode.Created, signedUp.status)
 
         // A body that asks for a role is refused outright: the request DTO has no such field, so it never
         // deserializes. Mass assignment is impossible here rather than merely ignored.
-        val escalated = jsonClient.post("${ApiVersion.BASE}/auth/register") {
+        val escalated = jsonClient.post("${ApiVersion.BASE}/auth/sign-up") {
             contentType(ContentType.Application.Json)
             setBody("""{"email":"esc-${UUID.randomUUID()}@test.com","password":"Password1@","role":"ADMIN"}""")
         }
@@ -143,9 +143,9 @@ class UserRoutesTest {
     }
 
     @Test
-    fun `login with a wrong password returns 401`() = usersTest {
+    fun `sign in with a wrong password returns 401`() = usersTest {
         val (email, _) = createUser()
-        val response = client.post("${ApiVersion.BASE}/auth/login") {
+        val response = client.post("${ApiVersion.BASE}/auth/sign-in") {
             contentType(ContentType.Application.Json)
             setBody("""{"email":"$email","password":"wrong-password"}""")
         }
@@ -153,18 +153,18 @@ class UserRoutesTest {
     }
 
     @Test
-    fun `repeated login attempts are rate limited with 429`() = usersTest {
-        val statuses = (1..LOGIN_ATTEMPTS).map {
-            client.post("${ApiVersion.BASE}/auth/login") {
+    fun `repeated sign-in attempts are rate limited with 429`() = usersTest {
+        val statuses = (1..SIGN_IN_ATTEMPTS).map {
+            client.post("${ApiVersion.BASE}/auth/sign-in") {
                 contentType(ContentType.Application.Json)
                 setBody("""{"email":"spray@test.com","password":"wrong"}""")
             }.status
         }
         assertTrue(
             statuses.contains(HttpStatusCode.TooManyRequests),
-            "login must return 429 once the per-IP rate limit is exceeded",
+            "sign-in must return 429 once the per-IP rate limit is exceeded",
         )
     }
 }
 
-private const val LOGIN_ATTEMPTS = 15
+private const val SIGN_IN_ATTEMPTS = 15

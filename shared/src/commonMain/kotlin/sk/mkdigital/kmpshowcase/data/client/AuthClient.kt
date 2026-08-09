@@ -1,8 +1,8 @@
 package sk.mkdigital.kmpshowcase.data.client
 
 import sk.mkdigital.kmpshowcase.contracts.auth.AuthResponseDTO
-import sk.mkdigital.kmpshowcase.contracts.auth.LoginRequestDTO
-import sk.mkdigital.kmpshowcase.contracts.auth.RegisterRequestDTO
+import sk.mkdigital.kmpshowcase.contracts.auth.SignInRequestDTO
+import sk.mkdigital.kmpshowcase.contracts.auth.SignUpRequestDTO
 import sk.mkdigital.kmpshowcase.data.network.handleApiCall
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -12,8 +12,8 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
 interface AuthClient {
-    suspend fun login(email: String, password: String): AuthResponseDTO
-    suspend fun register(email: String, password: String, name: String): AuthResponseDTO
+    suspend fun signIn(email: String, password: String): AuthResponseDTO
+    suspend fun signUp(email: String, password: String, name: String): AuthResponseDTO
     suspend fun me(token: String): AuthResponseDTO
 }
 
@@ -21,15 +21,15 @@ class AuthClientImpl(
     private val client: HttpClient
 ) : AuthClient {
 
-    override suspend fun login(email: String, password: String): AuthResponseDTO = handleApiCall {
-        client.post("auth/login") {
-            setBody(LoginRequestDTO(email, password))
+    override suspend fun signIn(email: String, password: String): AuthResponseDTO = handleApiCall {
+        client.post("auth/sign-in") {
+            setBody(SignInRequestDTO(email, password))
         }.body()
     }
 
-    override suspend fun register(email: String, password: String, name: String): AuthResponseDTO = handleApiCall {
-        client.post("auth/register") {
-            setBody(RegisterRequestDTO(email, password, name))
+    override suspend fun signUp(email: String, password: String, name: String): AuthResponseDTO = handleApiCall {
+        client.post("auth/sign-up") {
+            setBody(SignUpRequestDTO(email, password, name))
         }.body()
     }
 

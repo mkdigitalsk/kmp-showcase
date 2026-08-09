@@ -19,8 +19,8 @@ object DeepLinkHandler {
         "scanner" to Route.HomeSection.Scanner,
         "database" to Route.HomeSection.Database,
         "calendar" to Route.HomeSection.Calendar,
-        "login" to Route.Login,
-        "register" to Route.Register,
+        "sign-in" to Route.SignIn,
+        "sign-up" to Route.SignUp,
     )
 
     fun parseDeepLink(deepLink: String): Route? {
