@@ -95,9 +95,6 @@ class SignUpViewModel(
             else -> null
         }
     }
-
-    companion object {
-    }
 }
 
 enum class SignUpEmailError {
