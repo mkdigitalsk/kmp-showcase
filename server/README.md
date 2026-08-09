@@ -39,9 +39,11 @@ The server adds missing columns on boot and never drops one, so a column removed
 survives on an existing database and breaks the next insert. Clear it, then restart the server:
 
 ```bash
-scripts/reset-db.sh --yes                                   # local
-DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… scripts/reset-db.sh --yes   # a deployed branch
+node scripts/drop-db.mjs --env=production --yes
 ```
+
+The environment name selects the Neon branch, so no connection string is typed or stored. Redeploy the
+service afterwards — it recreates the tables on boot.
 
 ## API Endpoints
 
