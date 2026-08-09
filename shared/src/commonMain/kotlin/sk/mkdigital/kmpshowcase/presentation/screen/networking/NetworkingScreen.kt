@@ -130,8 +130,6 @@ private fun UserCard(user: UserUiModel) {
             .fillMaxWidth()
             .padding(space4)
     ) {
-        TextTitleLargeNeutral80(user.name)
-        Spacer2()
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.Email,

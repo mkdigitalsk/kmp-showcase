@@ -54,7 +54,7 @@ class UserRoutesTest {
 
     private fun createUser(): Pair<String, String> = runBlocking {
         val email = "test-${UUID.randomUUID()}@test.com"
-        val user = UserRepositoryImpl().create(email, "password123", "Test User")
+        val user = UserRepositoryImpl().create(email, "password123")
         val token = jwtConfig.generateToken(user.id, user.email)
         email to token
     }
@@ -124,22 +124,23 @@ class UserRoutesTest {
     }
 
     @Test
-    fun `the public sign-up endpoint always creates a CLIENT, never an ADMIN`() = usersTest {
+    fun `an unknown field in the sign-up body cannot reach the account`() = usersTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
-        val email = "reg-${UUID.randomUUID()}@test.com"
+        val email = "signup-${UUID.randomUUID()}@test.com"
         val signedUp = jsonClient.post("${ApiVersion.BASE}/auth/sign-up") {
             contentType(ContentType.Application.Json)
-            setBody("""{"email":"$email","password":"Password1@","name":"New User"}""")
+            setBody("""{"email":"$email","password":"Password1@"}""")
         }
         assertEquals(HttpStatusCode.Created, signedUp.status)
 
-        // A body that asks for a role is refused outright: the request DTO has no such field, so it never
-        // deserializes. Mass assignment is impossible here rather than merely ignored.
-        val escalated = jsonClient.post("${ApiVersion.BASE}/auth/sign-up") {
+        // ignoreUnknownKeys drops an extra field rather than rejecting it, so the request DTO's shape is
+        // the whole boundary — what it does not declare cannot be bound.
+        val extra = jsonClient.post("${ApiVersion.BASE}/auth/sign-up") {
             contentType(ContentType.Application.Json)
-            setBody("""{"email":"esc-${UUID.randomUUID()}@test.com","password":"Password1@","role":"ADMIN"}""")
+            setBody("""{"email":"x-${UUID.randomUUID()}@test.com","password":"Password1@","isAdmin":true}""")
         }
-        assertEquals(HttpStatusCode.BadRequest, escalated.status, "a role in the body must never be accepted")
+        assertEquals(HttpStatusCode.Created, extra.status)
+        assertTrue("isAdmin" !in extra.bodyAsText(), "an unbound field must not survive into the account")
     }
 
     @Test

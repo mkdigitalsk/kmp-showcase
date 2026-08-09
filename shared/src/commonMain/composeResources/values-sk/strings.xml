@@ -308,10 +308,6 @@
     <!-- SignUp Screen -->
     <string name="screen_sign_up">Registrácia</string>
     <string name="sign_up_title">Vytvoriť účet</string>
-    <string name="sign_up_name_label">Meno</string>
-    <string name="sign_up_name_placeholder">Zadajte vaše meno</string>
-    <string name="sign_up_name_empty">Meno je povinné</string>
-    <string name="sign_up_name_short">Meno musí mať aspoň 2 znaky</string>
     <string name="sign_up_email_label">Email</string>
     <string name="sign_up_email_placeholder">Zadajte váš email</string>
     <string name="sign_up_email_empty">Email je povinný</string>

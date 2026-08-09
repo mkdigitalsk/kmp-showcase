@@ -16,4 +16,4 @@ class UserRepositoryImpl(
         client.fetchUsers().map { it.toUser() }
 }
 
-private fun UserResponseDTO.toUser() = User(id = id, email = email, name = name)
+private fun UserResponseDTO.toUser() = User(id = id, email = email)

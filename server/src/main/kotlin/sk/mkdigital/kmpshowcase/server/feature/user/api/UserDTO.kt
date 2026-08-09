@@ -8,7 +8,6 @@ import sk.mkdigital.kmpshowcase.server.feature.user.service.User
 internal fun User.toUserResponseDTO() = UserResponseDTO(
     id = id,
     email = email,
-    name = name,
     createdAt = createdAt,
     themeMode = themeMode.toThemeModeDTO(),
     locale = locale,

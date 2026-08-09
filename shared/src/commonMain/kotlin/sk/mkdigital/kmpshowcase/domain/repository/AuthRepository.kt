@@ -4,7 +4,7 @@ import sk.mkdigital.kmpshowcase.domain.model.AuthSession
 
 interface AuthRepository {
     suspend fun signIn(email: String, password: String): AuthSession
-    suspend fun signUp(name: String, email: String, password: String): AuthSession
+    suspend fun signUp(email: String, password: String): AuthSession
     suspend fun signInWithToken(): AuthSession?
     suspend fun signOut()
     suspend fun getToken(): String?

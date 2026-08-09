@@ -26,7 +26,7 @@ class UserRepositoryImplTest : BaseTest<UserRepositoryImpl>() {
     @Test
     fun getUser() = runTest {
         val dto = testUserResponseDTO(id = 1L)
-        val expected = User(id = dto.id, email = dto.email, name = dto.name)
+        val expected = User(id = dto.id, email = dto.email)
 
         test(
             given = { everySuspend { client.fetchUser(1L) } returns dto },
@@ -38,7 +38,7 @@ class UserRepositoryImplTest : BaseTest<UserRepositoryImpl>() {
     @Test
     fun getUsers() = runTest {
         val dto = testUserResponseDTO()
-        val expected = User(id = dto.id, email = dto.email, name = dto.name)
+        val expected = User(id = dto.id, email = dto.email)
 
         test(
             given = { everySuspend { client.fetchUsers() } returns listOf(dto) },
@@ -50,7 +50,6 @@ class UserRepositoryImplTest : BaseTest<UserRepositoryImpl>() {
 
 private fun testUserResponseDTO(
     id: Long = 1L,
-    name: String = "Test User",
     email: String = "test@example.com",
     createdAt: Long = 0L,
     themeMode: ThemeModeDTO = ThemeModeDTO.SYSTEM,
@@ -58,7 +57,6 @@ private fun testUserResponseDTO(
 ) = UserResponseDTO(
     id = id,
     email = email,
-    name = name,
     createdAt = createdAt,
     themeMode = themeMode,
     locale = locale,

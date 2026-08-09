@@ -28,7 +28,6 @@ internal class NetworkingScreenPreviewParams : PreviewParameterProvider<Networki
                 User(
                     email = "jane.doe@example.com",
                     id = 1L,
-                    name = "Jane Doe"
                 ).toUiModel()
             )
         )

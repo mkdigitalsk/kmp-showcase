@@ -6,5 +6,4 @@ import kotlinx.serialization.Serializable
 data class SignUpRequestDTO(
     val email: String,
     val password: String,
-    val name: String,
 )

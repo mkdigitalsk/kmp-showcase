@@ -29,7 +29,7 @@ internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
         rateLimit(AuthRateLimit) {
             post("/sign-up") {
                 val request = call.receive<SignUpRequestDTO>()
-                val user = userService.signUp(request.email, request.password, request.name)
+                val user = userService.signUp(request.email, request.password)
                 val token = jwtConfig.generateToken(user.id, user.email)
                 logger.info("User signed up: ${user.id} (${user.email.maskEmail()})")
                 call.response.headers.append(HttpHeaders.Location, "${ApiVersion.BASE}/users/me")

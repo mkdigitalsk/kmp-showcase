@@ -30,12 +30,10 @@ class GetUsersUseCaseTest : BaseTest<GetUsersUseCase>() {
             User(
                 email = "john@example.com",
                 id = 1L,
-                name = "John Doe"
             ),
             User(
                 email = "jane@example.com",
                 id = 2L,
-                name = "Jane Smith"
             )
         )
 
@@ -49,8 +47,6 @@ class GetUsersUseCaseTest : BaseTest<GetUsersUseCase>() {
             then = {
                 assertEquals(users, it)
                 assertEquals(2, it.size)
-                assertEquals("John Doe", it[0].name)
-                assertEquals("Jane Smith", it[1].name)
             }
         )
     }

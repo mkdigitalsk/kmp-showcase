@@ -24,7 +24,7 @@ class NetworkingViewModelTest : BaseViewModelTest() {
 
     private val getUsersUseCase = mock<GetUsersUseCase>()
 
-    private val alice = User(id = 1, email = "alice@mk.sk", name = "Alice")
+    private val alice = User(id = 1, email = "alice@mk.sk")
 
     @Test
     fun `fetchUsers maps domain users into UI models`() = runTest {
@@ -35,7 +35,7 @@ class NetworkingViewModelTest : BaseViewModelTest() {
 
         val state = viewModel.state.value
         assertFalse(state.isLoading)
-        assertEquals(listOf(UserUiModel(id = 1, name = "Alice", email = "alice@mk.sk")), state.users)
+        assertEquals(listOf(UserUiModel(id = 1, email = "alice@mk.sk")), state.users)
     }
 
     @Test

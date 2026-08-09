@@ -13,7 +13,7 @@ import io.ktor.client.request.setBody
 
 interface AuthClient {
     suspend fun signIn(email: String, password: String): AuthResponseDTO
-    suspend fun signUp(email: String, password: String, name: String): AuthResponseDTO
+    suspend fun signUp(email: String, password: String): AuthResponseDTO
     suspend fun me(token: String): AuthResponseDTO
 }
 
@@ -27,9 +27,9 @@ class AuthClientImpl(
         }.body()
     }
 
-    override suspend fun signUp(email: String, password: String, name: String): AuthResponseDTO = handleApiCall {
+    override suspend fun signUp(email: String, password: String): AuthResponseDTO = handleApiCall {
         client.post("auth/sign-up") {
-            setBody(SignUpRequestDTO(email, password, name))
+            setBody(SignUpRequestDTO(email, password))
         }.body()
     }
 

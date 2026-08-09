@@ -25,41 +25,38 @@ class SignUpUseCaseTest : BaseTest<SignUpUseCase>() {
 
     @Test
     fun `invoke signs up user and returns auth session`() = runTest {
-        val name = "John Doe"
         val email = "john@example.com"
         val password = "Test123!"
         val expectedSession = AuthSession(
             token = "jwt-token",
             userId = 1L,
             email = email,
-            name = name
         )
 
         test(
             given = {
-                everySuspend { authRepository.signUp(name, email, password) } returns expectedSession
+                everySuspend { authRepository.signUp(email, password) } returns expectedSession
             },
             whenAction = {
-                classUnderTest(SignUpUseCase.Params(name, email, password))
+                classUnderTest(SignUpUseCase.Params(email, password))
             },
             then = { result ->
                 assertEquals(expectedSession, result)
-                verifySuspend { authRepository.signUp(name, email, password) }
+                verifySuspend { authRepository.signUp(email, password) }
             }
         )
     }
 
     @Test
     fun `invoke throws exception when sign up fails`() = runTest {
-        val name = "John Doe"
         val email = "john@example.com"
         val password = "Test123!"
         val exception = RuntimeException("Sign up failed")
 
-        everySuspend { authRepository.signUp(name, email, password) } throws exception
+        everySuspend { authRepository.signUp(email, password) } throws exception
 
         assertFailsWith<RuntimeException> {
-            classUnderTest(SignUpUseCase.Params(name, email, password))
+            classUnderTest(SignUpUseCase.Params(email, password))
         }
     }
 }

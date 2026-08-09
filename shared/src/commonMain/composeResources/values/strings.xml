@@ -309,10 +309,6 @@
     <!-- SignUp Screen -->
     <string name="screen_sign_up">Sign Up</string>
     <string name="sign_up_title">Create Account</string>
-    <string name="sign_up_name_label">Name</string>
-    <string name="sign_up_name_placeholder">Enter your name</string>
-    <string name="sign_up_name_empty">Name is required</string>
-    <string name="sign_up_name_short">Name must be at least 2 characters</string>
     <string name="sign_up_email_label">Email</string>
     <string name="sign_up_email_placeholder">Enter your email</string>
     <string name="sign_up_email_empty">Email is required</string>

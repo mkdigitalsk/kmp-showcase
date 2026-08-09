@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -58,10 +57,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_email_label
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_email_placeholder
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_has_account
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_sign_in
-import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_name_empty
-import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_name_label
-import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_name_placeholder
-import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_name_short
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_empty
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_label
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_placeholder
@@ -79,7 +74,6 @@ fun SignUpScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     SignUpScreen(
         state = state,
-        onNameChange = viewModel::onNameChange,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
         onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
@@ -91,7 +85,6 @@ fun SignUpScreen(
 @Composable
 fun SignUpScreen(
     state: SignUpUiState,
-    onNameChange: (String) -> Unit = {},
     onEmailChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
     onConfirmPasswordChange: (String) -> Unit = {},
@@ -111,32 +104,6 @@ fun SignUpScreen(
         Spacer8()
         TextTitleLargePrimary(stringResource(Res.string.sign_up_title))
         Spacer8()
-
-        AppTextField(
-            value = state.name,
-            onValueChange = onNameChange,
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(Res.string.sign_up_name_label),
-            placeholder = stringResource(Res.string.sign_up_name_placeholder),
-            isError = state.nameError != null,
-            supportingText = state.nameError?.let { error ->
-                when (error) {
-                    SignUpNameError.EMPTY -> stringResource(Res.string.sign_up_name_empty)
-                    SignUpNameError.TOO_SHORT -> stringResource(Res.string.sign_up_name_short)
-                }
-            },
-            leadingIcon = {
-                AppIconNeutral80(imageVector = Icons.Filled.Person, contentDescription = null)
-            },
-            showClearButton = false,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) }
-            )
-        )
 
         Spacer(modifier = Modifier.height(space2))
 
@@ -214,21 +181,15 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(space6))
 
-        if (state.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(space12),
-                color = MaterialTheme.colorScheme.primary
-            )
-        } else {
-            ContainedButton(
+        ContainedButton(
                 text = stringResource(Res.string.sign_up_button),
                 onClick = {
                     focusManager.clearFocus()
                     onSignUp()
                 },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+            modifier = Modifier.fillMaxWidth(),
+            loading = state.isLoading
+        )
 
         Spacer4()
 

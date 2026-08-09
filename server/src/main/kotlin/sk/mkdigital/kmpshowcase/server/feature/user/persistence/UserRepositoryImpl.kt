@@ -30,7 +30,7 @@ internal class UserRepositoryImpl : UserRepository {
             .mapToSingleOrNull { it.toUser() }
     }
 
-    override suspend fun create(email: String, password: String, name: String): User =
+    override suspend fun create(email: String, password: String): User =
         suspendTransaction {
             val now = System.currentTimeMillis()
             val passwordHash = BCrypt.withDefaults().hashToString(BCRYPT_COST, password.toCharArray())
@@ -38,7 +38,6 @@ internal class UserRepositoryImpl : UserRepository {
             val id = UsersTable.insert {
                 it[UsersTable.email] = email
                 it[UsersTable.passwordHash] = passwordHash
-                it[UsersTable.name] = name
                 it[createdAt] = now
                 it[updatedAt] = now
             } get UsersTable.id
@@ -46,7 +45,6 @@ internal class UserRepositoryImpl : UserRepository {
             User(
                 id = id.value,
                 email = email,
-                name = name,
                 createdAt = now,
                 themeMode = ThemeMode.SYSTEM,
                 locale = UsersTable.DEFAULT_LOCALE,
@@ -99,7 +97,6 @@ internal class UserRepositoryImpl : UserRepository {
     private fun ResultRow.toUser() = User(
         id = this[UsersTable.id].value,
         email = this[UsersTable.email],
-        name = this[UsersTable.name],
         createdAt = this[UsersTable.createdAt],
         themeMode = this[UsersTable.themeMode],
         locale = this[UsersTable.locale],

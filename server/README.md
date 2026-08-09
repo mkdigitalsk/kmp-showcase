@@ -33,6 +33,16 @@ Server runs at `http://localhost:8080`
 docker compose up --build
 ```
 
+### Reset the database
+
+The server adds missing columns on boot and never drops one, so a column removed from the code
+survives on an existing database and breaks the next insert. Clear it, then restart the server:
+
+```bash
+scripts/reset-db.sh --yes                                   # local
+DATABASE_URL=… DATABASE_USER=… DATABASE_PASSWORD=… scripts/reset-db.sh --yes   # a deployed branch
+```
+
 ## API Endpoints
 
 ### Auth

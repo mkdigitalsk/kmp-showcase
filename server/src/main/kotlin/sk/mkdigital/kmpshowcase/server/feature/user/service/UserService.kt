@@ -5,14 +5,13 @@ import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UserRepository
 internal class UserService(
     private val repository: UserRepository,
 ) {
-    suspend fun signUp(email: String, password: String, name: String): User {
+    suspend fun signUp(email: String, password: String): User {
         require(email.contains("@")) { "Invalid email format" }
         require(PASSWORD_REGEX.matches(password)) { PASSWORD_REQUIREMENT }
-        require(name.isNotBlank()) { "Name cannot be blank" }
 
         check(repository.findByEmail(email) == null) { "User already exists" }
 
-        return repository.create(email, password, name)
+        return repository.create(email, password)
     }
 
     suspend fun authenticate(email: String, password: String): User? =

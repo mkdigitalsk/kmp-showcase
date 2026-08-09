@@ -18,8 +18,8 @@ class AuthRepositoryImpl(
         return session
     }
 
-    override suspend fun signUp(name: String, email: String, password: String): AuthSession {
-        val response = client.signUp(email, password, name)
+    override suspend fun signUp(email: String, password: String): AuthSession {
+        val response = client.signUp(email, password)
         val session = response.toAuthSession()
         preferences.setToken(session.token)
         return session

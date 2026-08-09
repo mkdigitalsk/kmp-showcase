@@ -7,7 +7,7 @@ internal interface UserRepository {
     suspend fun findAll(): List<User>
     suspend fun findByEmail(email: String): User?
     suspend fun findById(id: Long): User?
-    suspend fun create(email: String, password: String, name: String): User
+    suspend fun create(email: String, password: String): User
     suspend fun authenticate(email: String, password: String): User?
     suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User?
     suspend fun updateLocale(id: Long, locale: String): User?

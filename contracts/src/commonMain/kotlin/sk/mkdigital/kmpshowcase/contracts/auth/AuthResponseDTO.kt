@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 data class AuthUserDTO(
     val id: Long,
     val email: String,
-    val name: String,
     val themeMode: ThemeModeDTO,
     val locale: String,
 )
