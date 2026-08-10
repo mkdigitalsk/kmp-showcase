@@ -1,8 +1,7 @@
-// Destructive: drops every table in the public schema, so the next server start rebuilds them.
+// Destructive: drops every table in the public schema so the next server start rebuilds them.
 //
-// The server calls SchemaUtils.createMissingTablesAndColumns on boot, which adds a missing column and
-// never drops one — so a column removed from the code outlives it and breaks the next insert. This is
-// how you start over.
+// SchemaUtils.createMissingTablesAndColumns adds a missing column and never drops one, so a column
+// removed from the code outlives it and breaks the next insert. This is how you start over.
 //
 // Enumerated rather than listed by name: a hardcoded list silently stops covering tables added later.
 //

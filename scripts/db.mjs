@@ -1,21 +1,16 @@
-// One environment name selects everything: the Neon branch AND the API the scripts talk to.
-// A pair that must agree is one value, not two.
-//
-// Nothing here reads .env. A credential for an environment this machine does not run has no reason to
-// sit on disk, and a stored password is wrong the moment the role is rotated.
-//
-// The environment is required rather than defaulted, so no run inherits whichever one a file was left
-// pointing at.
+// One environment name selects both the Neon branch and the API in front of it — a pair that has to
+// agree is one value, not two. It is required rather than defaulted, so no run inherits a leftover
+// target.
 //
 //   node <script>.mjs --env=production
 import { execFileSync } from 'node:child_process'
 import { neon } from '@neondatabase/serverless'
 
-const PROJECT = 'wild-butterfly-73160403' // showcase — `neon projects list`
-const ORG = 'org-fragrant-math-50654029' // MK Digital — the CLI prompts for it when not a terminal
+// Not secret, but it identifies infrastructure and differs per deploy, so it is passed in rather than
+// written down. `neon projects list` prints both.
+const PROJECT = process.env.NEON_PROJECT_ID
+const ORG = process.env.NEON_ORG_ID
 
-// The showcase has one deployed environment. Preview builds read the same API, so there is no second
-// branch to name here.
 const ENVIRONMENTS = {
   local: { branch: null, api: 'http://localhost:8080' },
   production: { branch: 'production', api: 'https://api.showcase.mkdigital.sk' },
@@ -31,11 +26,20 @@ function select(argv) {
   return { name, ...env }
 }
 
+/** The API in front of an environment. A seed goes through it, so it needs no Neon branch. */
+export function target(argv = process.argv) {
+  return select(argv)
+}
+
 /** A database connection and the API that sits in front of the same environment. */
 export function connect(argv = process.argv) {
   const { name, branch, api } = select(argv)
   if (!branch) {
     console.error(`--env=${name} has no Neon branch; it is the locally-run server.`)
+    process.exit(2)
+  }
+  if (!PROJECT || !ORG) {
+    console.error('Set NEON_PROJECT_ID and NEON_ORG_ID. `neon projects list` prints both.')
     process.exit(2)
   }
 
