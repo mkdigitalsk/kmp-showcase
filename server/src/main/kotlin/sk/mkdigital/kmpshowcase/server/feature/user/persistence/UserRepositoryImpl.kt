@@ -14,10 +14,6 @@ import org.jetbrains.exposed.v1.jdbc.update
 
 internal class UserRepositoryImpl : UserRepository {
 
-    override suspend fun findAll(): List<User> = suspendTransaction {
-        UsersTable.selectAll().map { it.toUser() }
-    }
-
     override suspend fun findByEmail(email: String): User? = suspendTransaction {
         UsersTable.selectAll()
             .where { UsersTable.email eq email }

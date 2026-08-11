@@ -4,7 +4,6 @@ import sk.mkdigital.kmpshowcase.server.feature.user.service.ThemeMode
 import sk.mkdigital.kmpshowcase.server.feature.user.service.User
 
 internal interface UserRepository {
-    suspend fun findAll(): List<User>
     suspend fun findByEmail(email: String): User?
     suspend fun findById(id: Long): User?
     suspend fun create(email: String, password: String): User
