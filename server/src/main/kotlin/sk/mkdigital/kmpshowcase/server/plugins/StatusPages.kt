@@ -36,6 +36,8 @@ internal data class ProblemDetail(
     val instance: String? = null,
 )
 
+internal class ForbiddenException(message: String) : Exception(message)
+
 private val problemJson = Json { explicitNulls = false }
 private val problemContentType = ContentType("application", "problem+json")
 
@@ -84,6 +86,10 @@ internal fun Application.configureStatusPages() {
         exception<IllegalStateException> { call, cause ->
             logger.warn("Conflict: ${cause.message?.maskEmails()}")
             call.respondProblem(HttpStatusCode.Conflict, cause.message ?: "Conflict")
+        }
+        exception<ForbiddenException> { call, cause ->
+            logger.debug("Forbidden: ${cause.message?.maskEmails()}")
+            call.respondProblem(HttpStatusCode.Forbidden, cause.message ?: "Forbidden")
         }
         exception<NoSuchElementException> { call, cause ->
             logger.debug("Not found: ${cause.message?.maskEmails()}")

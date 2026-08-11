@@ -9,6 +9,7 @@ data class AuthUserDTO(
     val email: String,
     val themeMode: ThemeModeDTO,
     val locale: String,
+    val demo: Boolean = false,
 )
 
 @Serializable

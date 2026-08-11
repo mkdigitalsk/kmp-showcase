@@ -4,7 +4,9 @@ import sk.mkdigital.kmpshowcase.contracts.ApiVersion
 import sk.mkdigital.kmpshowcase.contracts.user.UpdateLocaleRequestDTO
 import sk.mkdigital.kmpshowcase.contracts.user.UpdateThemeModeRequestDTO
 import sk.mkdigital.kmpshowcase.server.core.auth.userId
+import sk.mkdigital.kmpshowcase.server.feature.user.service.DeleteResult
 import sk.mkdigital.kmpshowcase.server.feature.user.service.UserService
+import sk.mkdigital.kmpshowcase.server.plugins.ForbiddenException
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
@@ -31,8 +33,10 @@ internal fun Route.userRoutes(userService: UserService) {
             // would erase its local copy and report success against a live account.
             delete("/me") {
                 val userId = call.userId() ?: return@delete call.respond(HttpStatusCode.Unauthorized)
-                userService.delete(userId)
-                call.respond(HttpStatusCode.NoContent)
+                when (userService.delete(userId)) {
+                    DeleteResult.Deleted -> call.respond(HttpStatusCode.NoContent)
+                    DeleteResult.Refused -> throw ForbiddenException("A demo account cannot be deleted")
+                }
             }
             put("/me/theme-mode") {
                 val userId = call.userId() ?: return@put call.respond(HttpStatusCode.Unauthorized)

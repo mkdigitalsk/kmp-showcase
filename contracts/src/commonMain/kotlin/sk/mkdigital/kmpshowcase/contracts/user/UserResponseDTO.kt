@@ -9,4 +9,5 @@ data class UserResponseDTO(
     val createdAt: Long,
     val themeMode: ThemeModeDTO,
     val locale: String,
+    val demo: Boolean = false,
 )

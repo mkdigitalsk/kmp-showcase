@@ -52,8 +52,7 @@ class UserRoutesTest {
         }
     }
 
-    private fun createUser(): Pair<String, String> = runBlocking {
-        val email = "test-${UUID.randomUUID()}@test.com"
+    private fun createUser(email: String = "test-${UUID.randomUUID()}@test.com"): Pair<String, String> = runBlocking {
         val user = UserRepositoryImpl().create(email, "password123")
         val token = jwtConfig.generateToken(user.id, user.email)
         email to token
@@ -100,6 +99,25 @@ class UserRoutesTest {
                 "a 404 here reads to a client exactly like a route that does not exist",
             )
         }
+    }
+
+    @Test
+    fun `a demo account refuses to be deleted`() = usersTest {
+        val (_, token) = createUser(email = "test01@mkdigital.sk")
+
+        val response = client.delete("${ApiVersion.BASE}/users/me") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+
+        assertEquals(
+            HttpStatusCode.Forbidden,
+            response.status,
+            "the sign-in screen hands this account out, so any visitor could delete everyone's demo",
+        )
+        val afterwards = client.get("${ApiVersion.BASE}/users/me") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        assertEquals(HttpStatusCode.OK, afterwards.status, "the account is still there")
     }
 
     @Test

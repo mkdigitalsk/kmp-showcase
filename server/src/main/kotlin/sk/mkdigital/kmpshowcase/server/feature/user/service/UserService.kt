@@ -2,6 +2,11 @@ package sk.mkdigital.kmpshowcase.server.feature.user.service
 
 import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UserRepository
 
+internal sealed interface DeleteResult {
+    data object Deleted : DeleteResult
+    data object Refused : DeleteResult
+}
+
 internal class UserService(
     private val repository: UserRepository,
 ) {
@@ -23,7 +28,12 @@ internal class UserService(
 
     suspend fun updateLocale(id: Long, locale: String): User? = repository.updateLocale(id, locale)
 
-    suspend fun delete(id: Long): Boolean = repository.delete(id)
+    suspend fun delete(id: Long): DeleteResult {
+        val user = repository.findById(id) ?: return DeleteResult.Deleted
+        if (user.demo) return DeleteResult.Refused
+        repository.delete(id)
+        return DeleteResult.Deleted
+    }
 
     private companion object {
         val PASSWORD_REGEX = Regex(

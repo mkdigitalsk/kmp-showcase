@@ -6,4 +6,6 @@ internal data class User(
     val createdAt: Long,
     val themeMode: ThemeMode,
     val locale: String,
-)
+) {
+    val demo: Boolean get() = isDemoAccount(email)
+}
