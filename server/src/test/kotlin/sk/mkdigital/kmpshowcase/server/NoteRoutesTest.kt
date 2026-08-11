@@ -4,6 +4,7 @@ import sk.mkdigital.kmpshowcase.contracts.ApiVersion
 import sk.mkdigital.kmpshowcase.contracts.note.CreateNoteRequestDTO
 import sk.mkdigital.kmpshowcase.contracts.note.NoteResponseDTO
 import sk.mkdigital.kmpshowcase.contracts.note.UpdateNoteRequestDTO
+import sk.mkdigital.kmpshowcase.server.config.DatabaseConfig
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
 import sk.mkdigital.kmpshowcase.server.di.AppDependencies
 import sk.mkdigital.kmpshowcase.server.feature.note.persistence.NotesTable
@@ -32,12 +33,12 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.deleteAll
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.testcontainers.containers.PostgreSQLContainer
 import java.util.UUID
+import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -50,6 +51,8 @@ import kotlin.test.assertNotEquals
  * 90131 where Postgres re-evaluates the predicate — so "no row returned means stale" would pass or
  * fail here for the wrong reason.
  */
+private val PreconditionRequired = HttpStatusCode(428, "Precondition Required")
+
 class NoteRoutesTest {
 
     companion object {
@@ -62,12 +65,29 @@ class NoteRoutesTest {
         )
     }
 
+    // The schema comes from DatabaseConfig, the same call production boots with, rather than from a
+    // create() listing the tables this file happens to need. Listing them here would have passed while
+    // the app created no `notes` table at all — which is exactly what shipped.
     @BeforeTest
     fun setup() {
         if (!connected) {
-            Database.connect(postgres.jdbcUrl, "org.postgresql.Driver", postgres.username, postgres.password)
-            transaction { SchemaUtils.create(UsersTable, NotesTable) }
+            DatabaseConfig.init(
+                MapApplicationConfig(
+                    "database.useH2" to "false",
+                    "database.url" to postgres.jdbcUrl,
+                    "database.user" to postgres.username,
+                    "database.password" to postgres.password,
+                ),
+            )
             connected = true
+        }
+    }
+
+    @AfterTest
+    fun clear() {
+        transaction {
+            NotesTable.deleteAll()
+            UsersTable.deleteAll()
         }
     }
 
@@ -195,7 +215,7 @@ class NoteRoutesTest {
             contentType(ContentType.Application.Json)
             setBody(UpdateNoteRequestDTO(title = "No tag", content = "no"))
         }
-        assertEquals(HttpStatusCode(428, "Precondition Required"), response.status)
+        assertEquals(PreconditionRequired, response.status)
     }
 
     // `*` matches whenever the row exists, so honouring it would be last-write-wins wearing the
@@ -212,7 +232,7 @@ class NoteRoutesTest {
             contentType(ContentType.Application.Json)
             setBody(UpdateNoteRequestDTO(title = "Star", content = "no"))
         }
-        assertEquals(HttpStatusCode(428, "Precondition Required"), response.status)
+        assertEquals(PreconditionRequired, response.status)
     }
 
     // If-Match compares strongly, so a weak tag can never match — and a gzipping proxy is what turns a
@@ -230,7 +250,7 @@ class NoteRoutesTest {
             setBody(UpdateNoteRequestDTO(title = "Weak", content = "no"))
         }
         assertEquals(
-            HttpStatusCode(428, "Precondition Required"),
+            PreconditionRequired,
             response.status,
             "a proxy that weakened the tag must not turn a conditional write unconditional",
         )

@@ -1,5 +1,6 @@
 package sk.mkdigital.kmpshowcase.server.config
 
+import sk.mkdigital.kmpshowcase.server.feature.note.persistence.NotesTable
 import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UsersTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -18,9 +19,7 @@ internal object DatabaseConfig {
         val database = Database.connect(hikari(appConfig))
 
         transaction(database) {
-            // createMissingTablesAndColumns (not create) so an added column lands on an
-            // already-populated database instead of failing.
-            SchemaUtils.createMissingTablesAndColumns(UsersTable)
+            SchemaUtils.createMissingTablesAndColumns(UsersTable, NotesTable)
             logger.info("Database tables created/verified")
         }
     }
