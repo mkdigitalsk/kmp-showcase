@@ -10,9 +10,9 @@ enum ShareSheet {
 
     static func present(text: String, title: String, url: String) {
         guard let link = URL(string: url),
-              let root = UIApplication.shared.connectedScenes
-                  .compactMap({ ($0 as? UIWindowScene)?.keyWindow })
-                  .first?.rootViewController
+            let root = UIApplication.shared.connectedScenes
+                .compactMap({ ($0 as? UIWindowScene)?.keyWindow })
+                .first?.rootViewController
         else { return }
 
         let source = LinkItemSource(text: text, title: title, url: link)
@@ -41,7 +41,9 @@ private final class LinkItemSource: NSObject, UIActivityItemSource {
 
     func activityViewControllerPlaceholderItem(_ controller: UIActivityViewController) -> Any { url }
 
-    func activityViewController(_ controller: UIActivityViewController, itemForActivityType type: UIActivity.ActivityType?) -> Any? {
+    func activityViewController(
+        _ controller: UIActivityViewController, itemForActivityType type: UIActivity.ActivityType?
+    ) -> Any? {
         // Messages and Mail render the card from the URL; everything else gets the copy with the link.
         switch type {
         case .some(.message), .some(.mail): return url
@@ -49,7 +51,9 @@ private final class LinkItemSource: NSObject, UIActivityItemSource {
         }
     }
 
-    func activityViewController(_ controller: UIActivityViewController, subjectForActivityType type: UIActivity.ActivityType?) -> String {
+    func activityViewController(
+        _ controller: UIActivityViewController, subjectForActivityType type: UIActivity.ActivityType?
+    ) -> String {
         title
     }
 

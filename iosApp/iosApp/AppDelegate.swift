@@ -5,8 +5,9 @@ import FirebaseCrashlytics
 import FirebaseMessaging
 import UserNotifications
 
-
-class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNotificationCenterDelegate, MessagingDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject, UNUserNotificationCenterDelegate,
+    MessagingDelegate
+{
 
     private var buildTypeString: String {
         Bundle.main.object(forInfoDictionaryKey: "BuildType") as? String ?? "debug"
@@ -39,7 +40,10 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
         PushNotificationBridge.setup()
     }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
         FirebaseApp.configure()
         setupCrashlytics()
         setupPushNotifications(application: application)
@@ -53,7 +57,7 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
                 code: 0,
                 userInfo: [
                     NSLocalizedDescriptionKey: message,
-                    "stackTrace": stackTrace
+                    "stackTrace": stackTrace,
                 ]
             )
             Crashlytics.crashlytics().record(error: error)
@@ -73,7 +77,10 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
     // MARK: - UNUserNotificationCenterDelegate
 
     // Handle foreground notifications
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
         let userInfo = notification.request.content.userInfo
         handleNotification(userInfo: userInfo)
         // Show banner even when app is in foreground
@@ -81,7 +88,10 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
     }
 
     // Handle notification tap
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
         let userInfo = response.notification.request.content.userInfo
         handleNotification(userInfo: userInfo)
 
@@ -113,7 +123,8 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
     // MARK: - Helper
 
     private func handleNotification(userInfo: [AnyHashable: Any]) {
-        let title = (userInfo["aps"] as? [String: Any])?["alert"] as? String
+        let title =
+            (userInfo["aps"] as? [String: Any])?["alert"] as? String
             ?? ((userInfo["aps"] as? [String: Any])?["alert"] as? [String: Any])?["title"] as? String
         let body = ((userInfo["aps"] as? [String: Any])?["alert"] as? [String: Any])?["body"] as? String
         let deepLink = userInfo["deep_link"] as? String
