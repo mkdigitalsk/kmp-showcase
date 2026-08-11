@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,7 +39,6 @@ import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyM
 import sk.mkdigital.kmpshowcase.presentation.component.text.headlineMedium.TextHeadlineMediumPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
-import sk.mkdigital.kmpshowcase.presentation.foundation.emptyStateHeight
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_add
@@ -140,15 +138,10 @@ private fun NotesList(
 
         if (state.notes.isEmpty()) {
             item {
-                Box(
-                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = emptyStateHeight),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    when {
-                        state.isLoading -> LoadingView()
-                        state.error != null -> ErrorView(message = state.error.text(), onRetry = onRefresh)
-                        else -> TextBodyMediumNeutral80(text = stringResource(Res.string.networking_empty))
-                    }
+                when {
+                    state.isLoading -> LoadingView()
+                    state.error != null -> ErrorView(message = state.error.text(), onRetry = onRefresh)
+                    else -> TextBodyMediumNeutral80(text = stringResource(Res.string.networking_empty))
                 }
             }
         }

@@ -44,7 +44,6 @@ class NetworkingViewModel(
         )
     }
 
-    // etag is the caller's, read when editing began; re-reading it here would overwrite an unseen edit.
     fun updateNote(id: Long, title: String, content: String, etag: String) {
         execute(
             action = { updateRemoteNoteUseCase(UpdateRemoteNoteUseCase.Params(id, title, content, etag)) },
