@@ -37,8 +37,6 @@ class RemoteNoteClientImpl(
         client.post("notes") { setBody(request) }.body()
     }
 
-    // The server refuses a write that names no version, so the tag is a required argument rather than an
-    // optional header — an edit with nothing to send must not reach the wire.
     override suspend fun updateNote(id: Long, request: UpdateNoteRequestDTO, etag: String): NoteResponseDTO =
         handleApiCall {
             try {
@@ -47,8 +45,7 @@ class RemoteNoteClientImpl(
                     setBody(request)
                 }.body()
             } catch (e: ClientRequestException) {
-                // 412 carries the current row precisely so it can be shown next to the draft. Letting it
-                // fall through to a generic ApiException would discard the one thing the person needs.
+                // handleApiCall would flatten this into a generic ApiException and lose the row.
                 if (e.response.status == HttpStatusCode.PreconditionFailed) {
                     throw NoteConflictException(e.response.body<NoteResponseDTO>().toRemoteNote(), e)
                 }

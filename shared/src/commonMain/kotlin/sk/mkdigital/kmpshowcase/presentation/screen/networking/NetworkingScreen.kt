@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,6 +40,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyM
 import sk.mkdigital.kmpshowcase.presentation.component.text.headlineMedium.TextHeadlineMediumPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
+import sk.mkdigital.kmpshowcase.presentation.foundation.emptyStateHeight
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_add
@@ -86,8 +88,6 @@ fun NetworkingScreen(
     onDiscardMine: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // The heading and the form are not waiting on anything, so they do not flicker away while the
-        // list loads — only the part that has nothing to show yet is replaced.
         NotesList(
             state = state,
             onRefresh = onRefresh,
@@ -119,54 +119,54 @@ private fun NotesList(
     onSave: (Long, String, String, String) -> Unit,
     onDelete: (Long) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(space4)) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.weight(1f)) {
-                TextHeadlineMediumPrimary(text = stringResource(Res.string.networking_title))
-                TextBodyMediumNeutral80(text = stringResource(Res.string.networking_subtitle))
-            }
-            IconButton(onClick = onRefresh, enabled = !state.isLoading) {
-                Icon(Icons.Default.Refresh, contentDescription = stringResource(Res.string.networking_refresh))
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(space4, space4, space4, floatingNavBarSpace),
+        verticalArrangement = Arrangement.spacedBy(space4),
+    ) {
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.weight(1f)) {
+                    TextHeadlineMediumPrimary(text = stringResource(Res.string.networking_title))
+                    TextBodyMediumNeutral80(text = stringResource(Res.string.networking_subtitle))
+                }
+                IconButton(onClick = onRefresh, enabled = !state.isLoading) {
+                    Icon(Icons.Default.Refresh, contentDescription = stringResource(Res.string.networking_refresh))
+                }
             }
         }
-        Spacer2()
-        CreateNoteCard(isSaving = state.isSaving, isLoading = state.isLoading, onCreate = onCreate)
-        Spacer4()
 
-        Box(
-            modifier = Modifier.fillMaxWidth().weight(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            when {
-                state.isLoading && state.notes.isEmpty() -> LoadingView()
-                state.error != null && state.notes.isEmpty() ->
-                    ErrorView(message = state.error.text(), onRetry = onRefresh)
+        item { CreateNoteCard(isSaving = state.isSaving, isLoading = state.isLoading, onCreate = onCreate) }
 
-                state.notes.isEmpty() ->
-                    TextBodyMediumNeutral80(text = stringResource(Res.string.networking_empty))
-
-                else -> LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = floatingNavBarSpace),
-                    verticalArrangement = Arrangement.spacedBy(space4),
+        if (state.notes.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = emptyStateHeight),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    items(state.notes, key = { it.id }) { note ->
-                        if (state.editing?.id == note.id) {
-                            EditNoteCard(
-                                note = state.editing,
-                                isSaving = state.isSaving,
-                                onCancel = onCancelEditing,
-                                onSave = onSave,
-                            )
-                        } else {
-                            NoteCard(
-                                note = note,
-                                onEdit = { onStartEditing(note) },
-                                onDelete = { onDelete(note.id) },
-                            )
-                        }
+                    when {
+                        state.isLoading -> LoadingView()
+                        state.error != null -> ErrorView(message = state.error.text(), onRetry = onRefresh)
+                        else -> TextBodyMediumNeutral80(text = stringResource(Res.string.networking_empty))
                     }
                 }
+            }
+        }
+
+        items(state.notes, key = { it.id }) { note ->
+            if (state.editing?.id == note.id) {
+                EditNoteCard(
+                    note = state.editing,
+                    isSaving = state.isSaving,
+                    onCancel = onCancelEditing,
+                    onSave = onSave,
+                )
+            } else {
+                NoteCard(
+                    note = note,
+                    onEdit = { onStartEditing(note) },
+                    onDelete = { onDelete(note.id) },
+                )
             }
         }
     }
@@ -257,7 +257,6 @@ private fun EditNoteCard(
                 ContainedButton(text = stringResource(Res.string.networking_cancel), onClick = onCancel)
                 ContainedButton(
                     text = stringResource(Res.string.networking_save),
-                    // note.etag is the version this row was read at, carried through the edit unchanged.
                     onClick = { onSave(note.id, title, content, note.etag) },
                     enabled = !isSaving,
                     loading = isSaving,

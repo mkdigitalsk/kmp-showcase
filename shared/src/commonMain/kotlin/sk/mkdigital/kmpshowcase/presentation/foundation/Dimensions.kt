@@ -38,3 +38,6 @@ val floatingNavBarSpace: Dp
     @Composable get() = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() +
         space4 + floatingNavBarHeight + space8
 
+// Reserves the room a list would take, so an empty or loading state sits where the list will be
+// rather than tucked under the form.
+val emptyStateHeight: Dp = 240.dp
