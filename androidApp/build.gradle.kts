@@ -138,7 +138,6 @@ dependencies {
 
     // Firebase (BOM manages versions)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
     debugImplementation(libs.firebase.app.check.debug)

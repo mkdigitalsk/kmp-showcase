@@ -1,14 +1,10 @@
-package sk.mkdigital.kmpshowcase.data.analytics
+package sk.mkdigital.kmpshowcase.data.crash
 
-class IOSAnalyticsClient : AnalyticsClient {
-
-    override fun trackScreen(screenName: String) {
-        screenTrackingHandler?.invoke(screenName)
-    }
+class IOSCrashReporter : CrashReporter {
 
     override fun recordException(throwable: Throwable) {
         exceptionHandler?.invoke(
-            throwable.message ?: AnalyticsClient.UNKNOWN_ERROR,
+            throwable.message ?: CrashReporter.UNKNOWN_ERROR,
             throwable.stackTraceToString()
         )
     }
@@ -18,7 +14,6 @@ class IOSAnalyticsClient : AnalyticsClient {
     }
 
     companion object {
-        var screenTrackingHandler: ((String) -> Unit)? = null
         var exceptionHandler: ((message: String, stackTrace: String) -> Unit)? = null
         var logHandler: ((String) -> Unit)? = null
     }

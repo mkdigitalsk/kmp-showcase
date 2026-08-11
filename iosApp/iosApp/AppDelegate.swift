@@ -47,7 +47,7 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
     }
 
     private func setupCrashlytics() {
-        IOSAnalyticsClient.companion.exceptionHandler = { message, stackTrace in
+        IOSCrashReporter.companion.exceptionHandler = { message, stackTrace in
             let error = NSError(
                 domain: "KMPException",
                 code: 0,
@@ -59,7 +59,7 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
             Crashlytics.crashlytics().record(error: error)
         }
 
-        IOSAnalyticsClient.companion.logHandler = { message in
+        IOSCrashReporter.companion.logHandler = { message in
             Crashlytics.crashlytics().log(message)
         }
     }

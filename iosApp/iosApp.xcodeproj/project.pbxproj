@@ -12,7 +12,6 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		350D980F2F2250FB004D996B /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 350D980D2F2250FB004D996B /* InfoPlist.xcstrings */; };
 		350D98102F2250FB004D996B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 350D980E2F2250FB004D996B /* Localizable.xcstrings */; };
-		357697E02F225D2300A55252 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 357697DF2F225D2300A55252 /* FirebaseAnalytics */; };
 		357697E22F225D2300A55252 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 357697E12F225D2300A55252 /* FirebaseCrashlytics */; };
 		359A18A32DB54FA70046F000 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359A18A22DB54FA70046F000 /* AppDelegate.swift */; };
 		35A1B2C42E0100020046F001 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35A1B2C32E0100010046F001 /* ShareSheet.swift */; };
@@ -55,7 +54,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				35F2906C2F23D3580093E0E9 /* FirebaseMessaging in Frameworks */,
-				357697E02F225D2300A55252 /* FirebaseAnalytics in Frameworks */,
 				357697E22F225D2300A55252 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,7 +230,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -eu\n# Firebase documents no build-time selection for a single target. Its single-target answer is runtime\n# FirebaseOptions, rejected here because it \"can impact Analytics collection\" and Analytics is linked.\n[ -n \"${FIREBASE_PLIST:-}\" ] || { echo \"error: FIREBASE_PLIST unset - see Configuration/*.xcconfig\" >&2; exit 1; }\n[ -f \"$FIREBASE_PLIST\" ] || { echo \"error: missing $FIREBASE_PLIST\" >&2; exit 1; }\n\nplist_id=$(/usr/libexec/PlistBuddy -c \"Print :BUNDLE_ID\" \"$FIREBASE_PLIST\")\n[ \"$plist_id\" = \"$PRODUCT_BUNDLE_IDENTIFIER\" ] || { echo \"error: $FIREBASE_PLIST targets $plist_id, build is $PRODUCT_BUNDLE_IDENTIFIER\" >&2; exit 1; }\n\ncp \"$FIREBASE_PLIST\" \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/GoogleService-Info.plist\"\n";
+			shellScript = "set -eu\n# Firebase documents no build-time selection for a single target. Its single-target answer is runtime\n# FirebaseOptions, rejected here because upload-symbols reads GoogleService-Info.plist out of the built\n# bundle, which a runtime-configured app never puts there.\n[ -n \"${FIREBASE_PLIST:-}\" ] || { echo \"error: FIREBASE_PLIST unset - see Configuration/*.xcconfig\" >&2; exit 1; }\n[ -f \"$FIREBASE_PLIST\" ] || { echo \"error: missing $FIREBASE_PLIST\" >&2; exit 1; }\n\nplist_id=$(/usr/libexec/PlistBuddy -c \"Print :BUNDLE_ID\" \"$FIREBASE_PLIST\")\n[ \"$plist_id\" = \"$PRODUCT_BUNDLE_IDENTIFIER\" ] || { echo \"error: $FIREBASE_PLIST targets $plist_id, build is $PRODUCT_BUNDLE_IDENTIFIER\" >&2; exit 1; }\n\ncp \"$FIREBASE_PLIST\" \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/GoogleService-Info.plist\"\n";
 		};
 		AABBCCDD11223344 /* Firebase Crashlytics - Upload dSYM */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -519,11 +517,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		357697DF2F225D2300A55252 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 357697DE2F225D2300A55252 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
 		357697E12F225D2300A55252 /* FirebaseCrashlytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 357697DE2F225D2300A55252 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

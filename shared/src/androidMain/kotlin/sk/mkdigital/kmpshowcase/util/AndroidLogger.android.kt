@@ -1,10 +1,10 @@
 package sk.mkdigital.kmpshowcase.util
 
 import android.util.Log
-import sk.mkdigital.kmpshowcase.data.analytics.AnalyticsClient
+import sk.mkdigital.kmpshowcase.data.crash.CrashReporter
 
 class AndroidLogger(
-    private val analyticsClient: AnalyticsClient,
+    private val crashReporter: CrashReporter,
 ) : Logger {
 
     override fun e(log: String) {
@@ -13,12 +13,12 @@ class AndroidLogger(
 
     override fun e(e: Throwable) {
         Log.e(TAG, e.stackTraceToString())
-        analyticsClient.recordException(e)
+        crashReporter.recordException(e)
     }
 
     override fun e(log: String, e: Throwable) {
         Log.e(TAG, log, e)
-        analyticsClient.recordException(e)
+        crashReporter.recordException(e)
     }
 
     override fun d(log: String) {

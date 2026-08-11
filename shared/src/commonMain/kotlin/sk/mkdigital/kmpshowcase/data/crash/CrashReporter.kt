@@ -1,7 +1,6 @@
-package sk.mkdigital.kmpshowcase.data.analytics
+package sk.mkdigital.kmpshowcase.data.crash
 
-interface AnalyticsClient {
-    fun trackScreen(screenName: String)
+interface CrashReporter {
     fun recordException(throwable: Throwable)
     fun log(message: String)
 

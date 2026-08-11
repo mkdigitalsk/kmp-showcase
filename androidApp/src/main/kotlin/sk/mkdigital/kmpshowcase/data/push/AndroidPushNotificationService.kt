@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.tasks.await
-import sk.mkdigital.kmpshowcase.data.analytics.AnalyticsClient
+import sk.mkdigital.kmpshowcase.data.crash.CrashReporter
 import sk.mkdigital.kmpshowcase.domain.model.Notification
 import sk.mkdigital.kmpshowcase.domain.model.NotificationChannel
 import sk.mkdigital.kmpshowcase.domain.repository.NotificationRepository
@@ -26,7 +26,7 @@ class AndroidPushNotificationService(
     private val context: Context,
     private val firebaseMessaging: FirebaseMessaging,
     private val notificationRepository: NotificationRepository,
-    private val analyticsClient: AnalyticsClient
+    private val crashReporter: CrashReporter
 ) : PushNotificationService {
 
     private val _token = MutableStateFlow<String?>(null)
@@ -61,7 +61,7 @@ class AndroidPushNotificationService(
             throw e
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
             // A token refresh is best-effort: any failure is reported and the old token stays usable.
-            analyticsClient.recordException(e)
+            crashReporter.recordException(e)
         }
     }
 
@@ -99,7 +99,7 @@ class AndroidPushNotificationService(
         _notifications.trySend(notification)
         deepLink?.let { _deepLinks.trySend(it) }
 
-        analyticsClient.log("Push notification received: ${notification.title}")
+        crashReporter.log("Push notification received: ${notification.title}")
     }
 
     fun onDeepLinkReceived(deepLink: String) {

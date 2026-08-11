@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import sk.mkdigital.kmpshowcase.domain.exceptions.base.BaseException
 import sk.mkdigital.kmpshowcase.domain.exceptions.base.UnknownException
-import sk.mkdigital.kmpshowcase.domain.useCase.analytics.TrackScreenUseCase
 import sk.mkdigital.kmpshowcase.util.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -29,7 +28,6 @@ abstract class BaseViewModel<STATE : Any>(
     defaultState: STATE,
 ) : ViewModel(), ScreenLifecycle, KoinComponent {
 
-    private val trackScreenUseCase: TrackScreenUseCase by inject()
     private val logger: Logger by inject()
 
     protected val tag = this::class.simpleName
@@ -72,7 +70,6 @@ abstract class BaseViewModel<STATE : Any>(
     protected fun logScreenName() {
         val screenName = tag?.removeSuffix("ViewModel") ?: return
         logger.d("Screen: $screenName")
-        trackScreenUseCase(screenName)
     }
 
     @Suppress("TooGenericExceptionCaught")

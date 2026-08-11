@@ -4,8 +4,6 @@ import sk.mkdigital.kmpshowcase.domain.useCase.note.CreateRemoteNoteUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.note.DeleteRemoteNoteUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.note.GetRemoteNotesUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.note.UpdateRemoteNoteUseCase
-import sk.mkdigital.kmpshowcase.domain.useCase.TrackButtonClickUseCase
-import sk.mkdigital.kmpshowcase.domain.useCase.analytics.TrackScreenUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.DeleteAccountUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.IsDemoAccountUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignInUseCase
@@ -44,8 +42,6 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val domainModule = module {
-    factoryOf(::TrackScreenUseCase)
-    factoryOf(::TrackButtonClickUseCase)
     factoryOf(::GetRemoteNotesUseCase)
     factoryOf(::CreateRemoteNoteUseCase)
     factoryOf(::UpdateRemoteNoteUseCase)

@@ -1,11 +1,11 @@
 package sk.mkdigital.kmpshowcase.util
 
 import sk.mkdigital.kmpshowcase.BuildType
-import sk.mkdigital.kmpshowcase.data.analytics.AnalyticsClient
+import sk.mkdigital.kmpshowcase.data.crash.CrashReporter
 import platform.Foundation.NSLog
 
 class IosLogger(
-    private val analyticsClient: AnalyticsClient,
+    private val crashReporter: CrashReporter,
     private val buildType: BuildType,
 ) : Logger {
 
@@ -15,12 +15,12 @@ class IosLogger(
 
     override fun e(e: Throwable) {
         NSLog("$TAG ❗️ ${e.message ?: e.toString()}\n${e.stackTraceToString()}")
-        analyticsClient.recordException(e)
+        crashReporter.recordException(e)
     }
 
     override fun e(log: String, e: Throwable) {
         NSLog("$TAG ❗️ $log\n${e.message ?: e.toString()}\n${e.stackTraceToString()}")
-        analyticsClient.recordException(e)
+        crashReporter.recordException(e)
     }
 
     override fun d(log: String) {

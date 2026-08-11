@@ -1,8 +1,5 @@
 package sk.mkdigital.kmpshowcase.presentation.base
 
-import sk.mkdigital.kmpshowcase.data.analytics.AnalyticsClient
-import sk.mkdigital.kmpshowcase.domain.useCase.analytics.TrackScreenUseCase
-import sk.mkdigital.kmpshowcase.fake.NoOpAnalyticsClient
 import sk.mkdigital.kmpshowcase.fake.NoOpLogger
 import sk.mkdigital.kmpshowcase.util.Logger
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +25,7 @@ abstract class BaseViewModelTest {
         startKoin {
             modules(
                 module {
-                    single<AnalyticsClient> { NoOpAnalyticsClient }
                     single<Logger> { NoOpLogger }
-                    single { TrackScreenUseCase(get()) }
                 }
             )
         }
