@@ -6,23 +6,27 @@ import sk.mkdigital.kmpshowcase.server.feature.user.service.ThemeMode
 import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UserRepository
 import sk.mkdigital.kmpshowcase.server.feature.user.service.User
 import kotlinx.coroutines.test.runTest
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.days
 
-private const val NOW = 1_800_000_000_000L
+private fun utc(day: String, time: String = "00:00"): Long =
+    LocalDateTime.parse("${day}T$time").toInstant(ZoneOffset.UTC).toEpochMilli()
 
 class InactiveAccountPurgeTest {
 
     private val repository = FakeUserRepository()
-    private var clock = NOW
+    private var clock = utc("2026-01-31")
     private val purge = InactiveAccountPurge(repository) { clock }
 
     @Test
     fun `an account nobody has opened past the limit is removed`() = runTest {
-        repository.add("dormant@test.com", lastSeenAt = NOW - (INACTIVITY_LIMIT + 1.days).inWholeMilliseconds)
+        val longGone = utc("2026-01-31") - (INACTIVITY_LIMIT + 2.days).inWholeMilliseconds
+        repository.add("dormant@test.com", lastSeenAt = longGone)
 
         purge.run()
 
@@ -31,7 +35,8 @@ class InactiveAccountPurgeTest {
 
     @Test
     fun `an account opened inside the limit is kept`() = runTest {
-        repository.add("active@test.com", lastSeenAt = NOW - (INACTIVITY_LIMIT - 1.days).inWholeMilliseconds)
+        val recent = utc("2026-01-31") - (INACTIVITY_LIMIT - 1.days).inWholeMilliseconds
+        repository.add("active@test.com", lastSeenAt = recent)
 
         purge.run()
 
@@ -40,12 +45,25 @@ class InactiveAccountPurgeTest {
 
     @Test
     fun `a dormant demo account survives, because the sign-in screen hands it out`() = runTest {
-        val forever = NOW - (INACTIVITY_LIMIT * 10).inWholeMilliseconds
+        val forever = utc("2026-01-31") - (INACTIVITY_LIMIT * 10).inWholeMilliseconds
         repository.add("test01@mkdigital.sk", lastSeenAt = forever)
 
         purge.run()
 
         assertEquals(listOf("test01@mkdigital.sk"), repository.emails())
+    }
+
+    @Test
+    fun `a late-night visit still counts as that whole day`() = runTest {
+        repository.add("night-owl@test.com", lastSeenAt = utc("2026-01-01", "23:55"))
+
+        clock = utc("2026-01-31", "12:00")
+        purge.run()
+        assertEquals(listOf("night-owl@test.com"), repository.emails(), "thirty days have not passed in full")
+
+        clock = utc("2026-02-01", "00:01")
+        purge.run()
+        assertEquals(emptyList(), repository.emails(), "the day of the visit, then thirty whole days")
     }
 
     @Test
