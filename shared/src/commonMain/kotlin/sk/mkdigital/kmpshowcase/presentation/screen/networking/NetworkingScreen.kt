@@ -33,6 +33,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.LoadingView
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
+import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
 import sk.mkdigital.kmpshowcase.presentation.component.text
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.headlineMedium.TextHeadlineMediumPrimary
@@ -130,6 +131,7 @@ private fun NotesList(
         }
         Spacer2()
         CreateNoteCard(isSaving = state.isSaving, isLoading = state.isLoading, onCreate = onCreate)
+        Spacer4()
 
         Box(
             modifier = Modifier.fillMaxWidth().weight(1f),
