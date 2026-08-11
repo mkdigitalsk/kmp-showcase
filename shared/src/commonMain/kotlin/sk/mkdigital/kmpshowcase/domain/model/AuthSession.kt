@@ -4,4 +4,5 @@ data class AuthSession(
     val token: String,
     val userId: Long,
     val email: String,
+    val demo: Boolean,
 )

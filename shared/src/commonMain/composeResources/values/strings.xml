@@ -302,6 +302,7 @@
     <string name="settings_delete_account_message">This deletes your account and the notes on the server. Notes saved on this device go too. It cannot be undone.</string>
     <string name="settings_delete_account_confirm">Delete</string>
     <string name="settings_delete_account_error">Your account could not be deleted. Try again.</string>
+    <string name="settings_delete_account_demo">This is a demo account, so it cannot be deleted.</string>
 
     <!-- SignIn Screen -->
     <string name="screen_sign_in">Sign In</string>

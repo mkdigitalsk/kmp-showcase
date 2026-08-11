@@ -4,6 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import sk.mkdigital.kmpshowcase.contracts.auth.AuthResponseDTO
+import sk.mkdigital.kmpshowcase.contracts.auth.AuthUserDTO
+import sk.mkdigital.kmpshowcase.contracts.user.ThemeModeDTO
 import sk.mkdigital.kmpshowcase.data.client.AuthClient
 import sk.mkdigital.kmpshowcase.data.local.preferences.PersistentPreferences
 import sk.mkdigital.kmpshowcase.data.local.preferences.PersistentPreferencesImpl
@@ -19,7 +21,9 @@ import sk.mkdigital.kmpshowcase.domain.repository.NoteRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class AuthRepositoryImplTest : BaseTest<AuthRepositoryImpl>() {
     override lateinit var classUnderTest: AuthRepositoryImpl
@@ -105,6 +109,57 @@ class AuthRepositoryImplTest : BaseTest<AuthRepositoryImpl>() {
         assertEquals(1L, noteRepository.count())
     }
 
+    @Test
+    fun `relaunching keeps the demo flag the server sent`() = runTest {
+        persistentPreferences.setToken(TOKEN)
+        client.meResponse = authResponse(demo = true)
+
+        classUnderTest.signInWithToken()
+
+        assertTrue(classUnderTest.isDemoAccount(), "the launch path re-reads the account, so it must persist it too")
+    }
+
+    @Test
+    fun `signing in keeps the demo flag the server sent`() = runTest {
+        client.signInResponse = authResponse(demo = true)
+
+        classUnderTest.signIn(EMAIL, PASSWORD)
+
+        assertTrue(classUnderTest.isDemoAccount())
+    }
+
+    @Test
+    fun `signing in to a normal account clears the previous demo flag`() = runTest {
+        client.signInResponse = authResponse(demo = true)
+        classUnderTest.signIn(EMAIL, PASSWORD)
+
+        client.signInResponse = authResponse(demo = false)
+        classUnderTest.signIn(EMAIL, PASSWORD)
+
+        assertFalse(classUnderTest.isDemoAccount())
+    }
+
+    @Test
+    fun `signing out drops the demo flag`() = runTest {
+        client.signInResponse = authResponse(demo = true)
+        classUnderTest.signIn(EMAIL, PASSWORD)
+
+        classUnderTest.signOut()
+
+        assertFalse(classUnderTest.isDemoAccount(), "it would hide the control from whoever signs in next")
+    }
+
+    private fun authResponse(demo: Boolean) = AuthResponseDTO(
+        token = TOKEN,
+        user = AuthUserDTO(
+            id = 1L,
+            email = EMAIL,
+            themeMode = ThemeModeDTO.SYSTEM,
+            locale = "en",
+            demo = demo,
+        ),
+    )
+
     private suspend fun givenSignedInWithLocalData() {
         persistentPreferences.setToken(TOKEN)
         persistentPreferences.setFcmToken(FCM_TOKEN)
@@ -124,6 +179,8 @@ class AuthRepositoryImplTest : BaseTest<AuthRepositoryImpl>() {
 
     private companion object {
         const val TOKEN = "jwt-token"
+        const val EMAIL = "demo01@mkdigital.sk"
+        const val PASSWORD = "MKDigitalTest1@"
         const val FCM_TOKEN = "fcm-token"
         const val PERSISTENT_COUNTER = 7
         const val SESSION_COUNTER = 3
@@ -142,15 +199,20 @@ private class FakeAuthClient(
     var notesWhenDeleted: Long? = null
         private set
 
+    var signInResponse: AuthResponseDTO? = null
+    var meResponse: AuthResponseDTO? = null
+
     override suspend fun deleteAccount() {
         tokenWhenDeleted = preferences.getToken()
         notesWhenDeleted = noteRepository.count()
         failure?.let { throw it }
     }
 
-    override suspend fun signIn(email: String, password: String): AuthResponseDTO = unused()
+    override suspend fun signIn(email: String, password: String): AuthResponseDTO =
+        signInResponse ?: unused()
+
     override suspend fun signUp(email: String, password: String): AuthResponseDTO = unused()
-    override suspend fun me(token: String): AuthResponseDTO = unused()
+    override suspend fun me(token: String): AuthResponseDTO = meResponse ?: unused()
 
     private fun unused(): Nothing = throw UnsupportedOperationException("not part of the deletion flow")
 }

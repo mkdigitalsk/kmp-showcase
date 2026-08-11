@@ -3,6 +3,7 @@ package sk.mkdigital.kmpshowcase.presentation.screen.settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import sk.mkdigital.kmpshowcase.AppConfig
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.DeleteAccountUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.IsDemoAccountUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignOutUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.base.invoke
 import sk.mkdigital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
@@ -27,6 +28,7 @@ data class SettingsState(
     val showDeleteAccountDialog: Boolean = false,
     val isDeletingAccount: Boolean = false,
     val deleteAccountFailed: Boolean = false,
+    val isDemoAccount: Boolean = false,
     val showCrashButton: Boolean,
     val versionName: String,
     val versionCode: String,
@@ -48,6 +50,7 @@ class SettingsViewModel(
     private val setThemeModeUseCase: SetThemeModeUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val isDemoAccountUseCase: IsDemoAccountUseCase,
     appConfig: AppConfig,
 ) : BaseViewModel<SettingsState>(
     SettingsState(
@@ -60,6 +63,7 @@ class SettingsViewModel(
     override fun loadInitialData() {
         loadThemeMode()
         loadCurrentLanguage()
+        loadDemoAccount()
     }
 
     override fun onResumed() {
@@ -70,6 +74,13 @@ class SettingsViewModel(
         val currentTag = getCurrentLanguageTag()
         val language = LanguageState.fromTag(currentTag)
         newState { it.copy(currentLanguage = language) }
+    }
+
+    private fun loadDemoAccount() {
+        execute(
+            action = { isDemoAccountUseCase() },
+            onSuccess = { isDemoAccount -> newState { it.copy(isDemoAccount = isDemoAccount) } }
+        )
     }
 
     private fun loadThemeMode() {

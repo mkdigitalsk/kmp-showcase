@@ -7,4 +7,5 @@ fun AuthResponseDTO.toAuthSession() = AuthSession(
     token = token,
     userId = user.id,
     email = user.email,
+    demo = user.demo,
 )

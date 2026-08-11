@@ -59,6 +59,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about_web
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_appearance
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_confirm
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_demo
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_error
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_message
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_title
@@ -244,11 +245,19 @@ fun SettingsScreen(
         }
 
         item {
-            AppTextButtonError(
-                text = stringResource(Res.string.settings_delete_account),
-                onClick = onDeleteAccountClick,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (state.isDemoAccount) {
+                TextBodyMediumNeutral80(
+                    text = stringResource(Res.string.settings_delete_account_demo),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                AppTextButtonError(
+                    text = stringResource(Res.string.settings_delete_account),
+                    onClick = onDeleteAccountClick,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
 
         if (state.deleteAccountFailed) {

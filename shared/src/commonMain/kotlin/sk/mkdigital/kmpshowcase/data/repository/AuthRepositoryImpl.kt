@@ -18,21 +18,21 @@ class AuthRepositoryImpl(
     override suspend fun signIn(email: String, password: String): AuthSession {
         val response = client.signIn(email, password)
         val session = response.toAuthSession()
-        preferences.setToken(session.token)
+        persist(session)
         return session
     }
 
     override suspend fun signUp(email: String, password: String): AuthSession {
         val response = client.signUp(email, password)
         val session = response.toAuthSession()
-        preferences.setToken(session.token)
+        persist(session)
         return session
     }
 
     override suspend fun signInWithToken(): AuthSession? {
         val token = preferences.getToken() ?: return null
         return runCatching { client.me(token).toAuthSession() }
-            .onSuccess { preferences.setToken(it.token) }
+            .onSuccess { persist(it) }
             .getOrNull()
     }
 
@@ -46,6 +46,13 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun getToken(): String? = preferences.getToken()
+
+    override suspend fun isDemoAccount(): Boolean = preferences.isDemoAccount()
+
+    private suspend fun persist(session: AuthSession) {
+        preferences.setToken(session.token)
+        preferences.setDemoAccount(session.demo)
+    }
 
     // The token clears last, and is the only clear worth failing on — a wipe that keeps the session alive
     // is retried on the next attempt, one that drops it strands the previous account's data on the device.

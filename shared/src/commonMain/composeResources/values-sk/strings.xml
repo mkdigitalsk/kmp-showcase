@@ -301,6 +301,7 @@
     <string name="settings_delete_account_message">Zmaže sa váš účet aj poznámky na serveri. Poznámky uložené v tomto zariadení zmiznú tiež. Túto akciu nie je možné vrátiť späť.</string>
     <string name="settings_delete_account_confirm">Zmazať</string>
     <string name="settings_delete_account_error">Váš účet sa nepodarilo zmazať. Skúste to znova.</string>
+    <string name="settings_delete_account_demo">Toto je ukážkový účet, preto ho nie je možné zmazať.</string>
 
     <!-- SignIn Screen -->
     <string name="screen_sign_in">Prihlásenie</string>

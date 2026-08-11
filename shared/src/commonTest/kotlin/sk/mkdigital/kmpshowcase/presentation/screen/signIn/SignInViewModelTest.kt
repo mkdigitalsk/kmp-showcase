@@ -25,7 +25,7 @@ class SignInViewModelTest : BaseViewModelTest() {
 
     private fun createViewModel(): SignInViewModel {
         everySuspend { signInUseCase(any()) } returns
-            AuthSession(token = "token", userId = 1L, email = "test@example.com")
+            AuthSession(token = "token", userId = 1L, email = "test@example.com", demo = false)
         return SignInViewModel(
             signInUseCase = signInUseCase,
             signInWithTokenUseCase = signInWithTokenUseCase,

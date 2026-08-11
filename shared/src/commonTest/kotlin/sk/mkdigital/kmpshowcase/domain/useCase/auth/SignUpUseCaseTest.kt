@@ -31,6 +31,7 @@ class SignUpUseCaseTest : BaseTest<SignUpUseCase>() {
             token = "jwt-token",
             userId = 1L,
             email = email,
+            demo = false,
         )
 
         test(

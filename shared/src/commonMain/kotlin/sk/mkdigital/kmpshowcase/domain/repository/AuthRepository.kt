@@ -9,4 +9,5 @@ interface AuthRepository {
     suspend fun signOut()
     suspend fun deleteAccount()
     suspend fun getToken(): String?
+    suspend fun isDemoAccount(): Boolean
 }

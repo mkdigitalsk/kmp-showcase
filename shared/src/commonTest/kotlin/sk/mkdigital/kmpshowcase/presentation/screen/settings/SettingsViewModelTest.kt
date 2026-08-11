@@ -14,6 +14,7 @@ import sk.mkdigital.kmpshowcase.AppConfig
 import sk.mkdigital.kmpshowcase.BuildType
 import sk.mkdigital.kmpshowcase.domain.exceptions.base.ApiException
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.DeleteAccountUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.IsDemoAccountUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignOutUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.base.None
 import sk.mkdigital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
@@ -31,14 +32,37 @@ class SettingsViewModelTest : BaseViewModelTest() {
     private val setThemeModeUseCase = mock<SetThemeModeUseCase>()
     private val signOutUseCase = mock<SignOutUseCase>()
     private val deleteAccountUseCase = mock<DeleteAccountUseCase>()
+    private val isDemoAccountUseCase = mock<IsDemoAccountUseCase>()
 
     private fun createViewModel(): SettingsViewModel = SettingsViewModel(
         getThemeModeUseCase = getThemeModeUseCase,
         setThemeModeUseCase = setThemeModeUseCase,
         signOutUseCase = signOutUseCase,
         deleteAccountUseCase = deleteAccountUseCase,
+        isDemoAccountUseCase = isDemoAccountUseCase,
         appConfig = AppConfig(BuildType.DEBUG, "1.0.0", "1", "test.example.com"),
     )
+
+    private fun createLoadedViewModel(demoAccount: Boolean): SettingsViewModel {
+        everySuspend { getThemeModeUseCase(None) } returns ThemeMode.SYSTEM
+        everySuspend { isDemoAccountUseCase(None) } returns demoAccount
+        return createViewModel().also { it.onCreated() }
+    }
+
+    @Test
+    fun `a demo account is carried into the state`() = runTest {
+        val viewModel = createLoadedViewModel(demoAccount = true)
+
+        assertTrue(viewModel.state.value.isDemoAccount)
+    }
+
+    @Test
+    fun `a normal account is carried into the state`() = runTest {
+        val viewModel = createLoadedViewModel(demoAccount = false)
+
+        verifySuspend { isDemoAccountUseCase(None) }
+        assertFalse(viewModel.state.value.isDemoAccount)
+    }
 
 
     @Test

@@ -12,6 +12,10 @@ interface PersistentPreferences {
 
     suspend fun getToken(): String?
     suspend fun setToken(value: String)
+
+    suspend fun isDemoAccount(): Boolean
+    suspend fun setDemoAccount(value: Boolean)
+
     suspend fun clearUserData()
 }
 
@@ -29,12 +33,16 @@ class PersistentPreferencesImpl(private val preferences: Preferences) : Persiste
     override suspend fun getToken(): String? = preferences.getString(TOKEN_KEY)
     override suspend fun setToken(value: String) = preferences.putString(TOKEN_KEY, value)
 
+    override suspend fun isDemoAccount(): Boolean = preferences.getBoolean(DEMO_ACCOUNT_KEY) ?: false
+    override suspend fun setDemoAccount(value: Boolean) = preferences.putBoolean(DEMO_ACCOUNT_KEY, value)
+
     // Key by key rather than clear(): the theme is the device's preference, not the account holder's,
     // and it has to survive whoever signs in next.
     override suspend fun clearUserData() {
         preferences.remove(FB_TOKEN_KEY)
         preferences.remove(PERSISTENT_COUNTER_KEY)
         preferences.remove(TOKEN_KEY)
+        preferences.remove(DEMO_ACCOUNT_KEY)
     }
 
     private companion object {
@@ -43,5 +51,6 @@ class PersistentPreferencesImpl(private val preferences: Preferences) : Persiste
         private const val DEFAULT_THEME_MODE = "SYSTEM"
         private const val FB_TOKEN_KEY = "fcm_token"
         private const val TOKEN_KEY = "auth_token"
+        private const val DEMO_ACCOUNT_KEY = "demo_account"
     }
 }

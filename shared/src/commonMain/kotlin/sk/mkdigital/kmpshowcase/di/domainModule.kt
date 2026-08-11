@@ -7,6 +7,7 @@ import sk.mkdigital.kmpshowcase.domain.useCase.note.UpdateRemoteNoteUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.TrackButtonClickUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.analytics.TrackScreenUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.DeleteAccountUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.IsDemoAccountUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignInUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignInWithTokenUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignOutUseCase
@@ -70,6 +71,7 @@ val domainModule = module {
     factoryOf(::SignOutUseCase)
     factoryOf(::SignUpUseCase)
     factoryOf(::DeleteAccountUseCase)
+    factoryOf(::IsDemoAccountUseCase)
 
     factoryOf(::GetLastKnownLocationUseCase)
     factoryOf(::ObserveLocationUpdatesUseCase)
