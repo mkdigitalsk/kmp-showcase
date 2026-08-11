@@ -87,6 +87,22 @@ class UserRoutesTest {
     }
 
     @Test
+    fun `deleting an account that is already gone still answers no content`() = usersTest {
+        val (_, token) = createUser()
+
+        repeat(2) {
+            val response = client.delete("${ApiVersion.BASE}/users/me") {
+                header(HttpHeaders.Authorization, "Bearer $token")
+            }
+            assertEquals(
+                HttpStatusCode.NoContent,
+                response.status,
+                "a 404 here reads to a client exactly like a route that does not exist",
+            )
+        }
+    }
+
+    @Test
     fun `deleting an account without auth returns unauthorized`() = usersTest {
         val response = client.delete("${ApiVersion.BASE}/users/me")
         assertEquals(HttpStatusCode.Unauthorized, response.status)

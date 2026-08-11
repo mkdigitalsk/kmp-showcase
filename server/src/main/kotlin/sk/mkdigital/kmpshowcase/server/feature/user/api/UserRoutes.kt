@@ -25,9 +25,13 @@ internal fun Route.userRoutes(userService: UserService) {
             }
             // GDPR Art 17 — erasure is the account holder's to trigger, not only ours.
             // https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_17
+            //
+            // 204 whether or not the row was there: a bare 404 here is indistinguishable from the one
+            // Ktor returns for a route it does not have, so a client that read 404 as "already gone"
+            // would erase its local copy and report success against a live account.
             delete("/me") {
                 val userId = call.userId() ?: return@delete call.respond(HttpStatusCode.Unauthorized)
-                if (!userService.delete(userId)) return@delete call.respond(HttpStatusCode.NotFound)
+                userService.delete(userId)
                 call.respond(HttpStatusCode.NoContent)
             }
             put("/me/theme-mode") {
