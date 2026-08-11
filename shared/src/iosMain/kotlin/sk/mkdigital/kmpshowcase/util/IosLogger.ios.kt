@@ -1,10 +1,12 @@
 package sk.mkdigital.kmpshowcase.util
 
+import sk.mkdigital.kmpshowcase.BuildType
 import sk.mkdigital.kmpshowcase.data.analytics.AnalyticsClient
 import platform.Foundation.NSLog
 
 class IosLogger(
     private val analyticsClient: AnalyticsClient,
+    private val buildType: BuildType,
 ) : Logger {
 
     override fun e(log: String) {
@@ -22,7 +24,9 @@ class IosLogger(
     }
 
     override fun d(log: String) {
-        NSLog("$TAG: $log")
+        if (buildType.isDebug) {
+            NSLog("$TAG: $log")
+        }
     }
 
     private companion object {

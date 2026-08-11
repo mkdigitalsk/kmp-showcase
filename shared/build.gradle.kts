@@ -152,6 +152,7 @@ kotlin {
             implementation(kotlin("test"))
             implementation(libs.coroutines.test)
             implementation(libs.turbine)
+            implementation(libs.ktor.client.mock)
         }
 
         // androidHostTest inherits from commonTest, runs on JVM without device

@@ -1,5 +1,6 @@
 package sk.mkdigital.kmpshowcase.di
 
+import sk.mkdigital.kmpshowcase.AppConfig
 import sk.mkdigital.kmpshowcase.data.analytics.AnalyticsClient
 import sk.mkdigital.kmpshowcase.data.analytics.IOSAnalyticsClient
 import sk.mkdigital.kmpshowcase.util.IosLogger
@@ -38,11 +39,11 @@ actual val platformModule: Module = module {
     singleOf(::BiometricClientImpl) { bind<BiometricClient>() }
     singleOf(::FlashlightClientImpl) { bind<FlashlightClient>() }
     singleOf(::IOSAnalyticsClient) { bind<AnalyticsClient>() }
-    singleOf(::IosLogger) { bind<Logger>() }
+    single<Logger> { IosLogger(get(), get<AppConfig>().buildType) }
 
     singleOf(::LocalNotificationServiceImpl) { bind<LocalNotificationService>() }
     single<PushNotificationService> {
-        IOSPushNotificationService(get()).also {
+        IOSPushNotificationService(get(), get()).also {
             IOSPushNotificationService.setInstance(it)
         }
     }

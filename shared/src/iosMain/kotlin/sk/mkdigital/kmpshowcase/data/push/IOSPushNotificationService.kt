@@ -5,6 +5,7 @@ import sk.mkdigital.kmpshowcase.domain.model.NotificationChannel
 import sk.mkdigital.kmpshowcase.domain.repository.NotificationRepository
 import sk.mkdigital.kmpshowcase.domain.repository.PushNotificationService
 import sk.mkdigital.kmpshowcase.domain.repository.PushPermissionStatus
+import sk.mkdigital.kmpshowcase.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -21,7 +22,8 @@ import kotlin.time.Clock
 private const val TOKEN_PREVIEW_LENGTH = 10
 
 class IOSPushNotificationService(
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    private val logger: Logger,
 ) : PushNotificationService {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -45,9 +47,9 @@ class IOSPushNotificationService(
     override fun logToken() {
         val currentToken = _token.value
         if (currentToken != null) {
-            println("FCM Token: $currentToken")
+            logger.d("FCM Token: $currentToken")
         } else {
-            println("FCM Token: not available yet")
+            logger.d("FCM Token: not available yet")
         }
     }
 
@@ -84,7 +86,7 @@ class IOSPushNotificationService(
                 service.scope.launch {
                     service.notificationRepository.setToken(token)
                 }
-                println("FCM Token received: ${token.take(TOKEN_PREVIEW_LENGTH)}...")
+                service.logger.d("FCM Token received: ${token.take(TOKEN_PREVIEW_LENGTH)}...")
             }
         }
 

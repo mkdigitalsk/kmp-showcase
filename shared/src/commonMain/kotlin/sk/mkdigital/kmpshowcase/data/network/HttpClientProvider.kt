@@ -1,6 +1,8 @@
 package sk.mkdigital.kmpshowcase.data.network
 
+import sk.mkdigital.kmpshowcase.BuildType
 import sk.mkdigital.kmpshowcase.contracts.ApiVersion
+import sk.mkdigital.kmpshowcase.util.Logger as AppLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.HttpTimeout
@@ -10,17 +12,18 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-expect class HttpClientProvider(baseUrl: String) {
+expect class HttpClientProvider(baseUrl: String, buildType: BuildType, logger: AppLogger) {
     fun create(): HttpClient
 }
 
-fun HttpClientConfig<*>.applyCommonConfig(baseUrl: String) {
+fun HttpClientConfig<*>.applyCommonConfig(baseUrl: String, buildType: BuildType, logger: AppLogger) {
     defaultRequest {
         url {
             protocol = URLProtocol.HTTPS
@@ -41,8 +44,10 @@ fun HttpClientConfig<*>.applyCommonConfig(baseUrl: String) {
     }
 
     install(Logging) {
-        logger = KtorLogger
-        level = LogLevel.BODY
+        this.logger = KtorLogger(logger)
+        level = if (buildType.isDebug) LogLevel.BODY else LogLevel.NONE
+        filter { request -> !request.url.pathSegments.contains(AUTH_PATH_SEGMENT) }
+        sanitizeHeader { header -> header == HttpHeaders.Authorization }
     }
 
     install(HttpTimeout) {
@@ -53,12 +58,15 @@ fun HttpClientConfig<*>.applyCommonConfig(baseUrl: String) {
 
 private const val REQUEST_TIME_OUT_MILLIS: Long = 30_000
 private const val CONNECT_TIME_OUT_MILLIS: Long = 30_000
+private const val AUTH_PATH_SEGMENT = "auth"
 
-private object KtorLogger : Logger {
+private class KtorLogger(private val logger: AppLogger) : Logger {
     override fun log(message: String) {
-        message.chunked(LOG_CHUNK_SIZE).forEach { println("HTTP: $it") }
+        message.chunked(LOG_CHUNK_SIZE).forEach { logger.d("HTTP: $it") }
     }
 
-    private const val LOG_CHUNK_SIZE = 4000
+    private companion object {
+        private const val LOG_CHUNK_SIZE = 4000
+    }
 }
 

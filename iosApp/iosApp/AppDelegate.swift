@@ -96,7 +96,6 @@ class AppDelegate : NSObject, UIApplicationDelegate, ObservableObject, UNUserNot
 
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         if let token = fcmToken {
-            print("FCM Token: \(token)")
             IOSPushNotificationService.companion.onTokenReceived(token: token)
         }
     }
