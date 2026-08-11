@@ -1,9 +1,10 @@
 package sk.mkdigital.kmpshowcase.presentation.base.router
 
+import sk.mkdigital.kmpshowcase.util.Logger
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 
-actual class LinkRouterImpl : LinkRouter {
+actual class LinkRouterImpl(private val logger: Logger) : LinkRouter {
     actual override fun openLink(url: String) {
         val nsUrl = NSURL(string = url)
         UIApplication.sharedApplication.openURL(
@@ -11,7 +12,7 @@ actual class LinkRouterImpl : LinkRouter {
             options = emptyMap<Any?, Any>(),
             completionHandler = {
                 if (!it) {
-                    println("LinkRouter: Invalid URL: '$url'")
+                    logger.e("LinkRouter: Invalid URL: '$url'")
                 }
             }
         )

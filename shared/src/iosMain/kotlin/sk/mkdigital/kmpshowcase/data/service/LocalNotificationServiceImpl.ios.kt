@@ -2,6 +2,7 @@ package sk.mkdigital.kmpshowcase.data.service
 
 import sk.mkdigital.kmpshowcase.domain.model.Notification
 import sk.mkdigital.kmpshowcase.domain.repository.LocalNotificationService
+import sk.mkdigital.kmpshowcase.util.Logger
 import platform.Foundation.NSError
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
@@ -9,7 +10,7 @@ import platform.UserNotifications.UNNotificationSound
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
-actual class LocalNotificationServiceImpl : LocalNotificationService {
+actual class LocalNotificationServiceImpl(private val logger: Logger) : LocalNotificationService {
 
     private val center: UNUserNotificationCenter
         get() = UNUserNotificationCenter.currentNotificationCenter()
@@ -42,9 +43,9 @@ actual class LocalNotificationServiceImpl : LocalNotificationService {
 
         center.addNotificationRequest(request) { error: NSError? ->
             if (error != null) {
-                println("Error showing notification: $error")
+                logger.e("Error showing notification: $error")
             } else {
-                println("Notification shown: ${notification.title}")
+                logger.d("Notification shown: ${notification.title}")
             }
         }
     }

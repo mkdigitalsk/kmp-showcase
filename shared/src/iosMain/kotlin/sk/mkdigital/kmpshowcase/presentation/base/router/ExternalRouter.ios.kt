@@ -1,8 +1,10 @@
 package sk.mkdigital.kmpshowcase.presentation.base.router
 
-actual class ExternalRouter :
+import sk.mkdigital.kmpshowcase.util.Logger
+
+actual class ExternalRouter(logger: Logger) :
     DialRouter by DialRouterImpl(),
-    LinkRouter by LinkRouterImpl(),
+    LinkRouter by LinkRouterImpl(logger),
     ShareRouter by ShareRouterImpl(),
     CopyRouter by CopyRouterImpl(),
     EmailRouter by EmailRouterImpl(),
