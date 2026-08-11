@@ -23,6 +23,7 @@ private fun NetworkingScreenPreview(
 internal class NetworkingScreenPreviewParams : PreviewParameterProvider<NetworkingUiState> {
     override val values = sequenceOf(
         NetworkingUiState(isLoading = true),
+        NetworkingUiState(),
         NetworkingUiState(error = AppError.UNAUTHORIZED),
         NetworkingUiState(
             notes = listOf(

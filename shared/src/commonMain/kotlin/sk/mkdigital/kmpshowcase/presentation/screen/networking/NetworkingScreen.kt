@@ -28,7 +28,6 @@ import org.jetbrains.compose.resources.stringResource
 import sk.mkdigital.kmpshowcase.presentation.base.lifecycleAwareViewModel
 import sk.mkdigital.kmpshowcase.presentation.component.AppAlertDialog
 import sk.mkdigital.kmpshowcase.presentation.component.AppTextField
-import sk.mkdigital.kmpshowcase.presentation.component.CircularProgress
 import sk.mkdigital.kmpshowcase.presentation.component.ErrorView
 import sk.mkdigital.kmpshowcase.presentation.component.LoadingView
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
@@ -51,6 +50,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_content
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_delete
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_edit
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_empty
+import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_refresh
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_save
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_subtitle
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_title
@@ -85,23 +85,17 @@ fun NetworkingScreen(
     onDiscardMine: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        when {
-            state.isLoading && state.notes.isEmpty() -> LoadingView()
-            state.error != null && state.notes.isEmpty() -> ErrorView(
-                message = state.error.text(),
-                onRetry = onRefresh,
-            )
-
-            else -> NotesList(
-                state = state,
-                onRefresh = onRefresh,
-                onCreate = onCreate,
-                onStartEditing = onStartEditing,
-                onCancelEditing = onCancelEditing,
-                onSave = onSave,
-                onDelete = onDelete,
-            )
-        }
+        // The heading and the form are not waiting on anything, so they do not flicker away while the
+        // list loads — only the part that has nothing to show yet is replaced.
+        NotesList(
+            state = state,
+            onRefresh = onRefresh,
+            onCreate = onCreate,
+            onStartEditing = onStartEditing,
+            onCancelEditing = onCancelEditing,
+            onSave = onSave,
+            onDelete = onDelete,
+        )
 
         state.conflict?.let { conflict ->
             ConflictDialog(
@@ -124,46 +118,60 @@ private fun NotesList(
     onSave: (Long, String, String, String) -> Unit,
     onDelete: (Long) -> Unit,
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(space4, space4, space4, floatingNavBarSpace),
-        verticalArrangement = Arrangement.spacedBy(space4),
-    ) {
-        item {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.weight(1f)) {
-                    TextHeadlineMediumPrimary(text = stringResource(Res.string.networking_title))
-                    TextBodyMediumNeutral80(text = stringResource(Res.string.networking_subtitle))
-                }
-                IconButton(onClick = onRefresh) {
-                    if (state.isLoading) CircularProgress() else Icon(Icons.Default.Refresh, null)
-                }
+    Column(modifier = Modifier.fillMaxSize().padding(space4)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.weight(1f)) {
+                TextHeadlineMediumPrimary(text = stringResource(Res.string.networking_title))
+                TextBodyMediumNeutral80(text = stringResource(Res.string.networking_subtitle))
+            }
+            IconButton(onClick = onRefresh, enabled = !state.isLoading) {
+                Icon(Icons.Default.Refresh, contentDescription = stringResource(Res.string.networking_refresh))
             }
         }
+        Spacer2()
+        CreateNoteCard(isSaving = state.isSaving, isLoading = state.isLoading, onCreate = onCreate)
 
-        item { CreateNoteCard(isSaving = state.isSaving, onCreate = onCreate) }
+        Box(
+            modifier = Modifier.fillMaxWidth().weight(1f),
+            contentAlignment = Alignment.Center,
+        ) {
+            when {
+                state.isLoading && state.notes.isEmpty() -> LoadingView()
+                state.error != null && state.notes.isEmpty() ->
+                    ErrorView(message = state.error.text(), onRetry = onRefresh)
 
-        if (state.notes.isEmpty()) {
-            item { TextBodyMediumNeutral80(text = stringResource(Res.string.networking_empty)) }
-        }
+                state.notes.isEmpty() ->
+                    TextBodyMediumNeutral80(text = stringResource(Res.string.networking_empty))
 
-        items(state.notes, key = { it.id }) { note ->
-            if (state.editing?.id == note.id) {
-                EditNoteCard(
-                    note = state.editing,
-                    isSaving = state.isSaving,
-                    onCancel = onCancelEditing,
-                    onSave = onSave,
-                )
-            } else {
-                NoteCard(note = note, onEdit = { onStartEditing(note) }, onDelete = { onDelete(note.id) })
+                else -> LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = floatingNavBarSpace),
+                    verticalArrangement = Arrangement.spacedBy(space4),
+                ) {
+                    items(state.notes, key = { it.id }) { note ->
+                        if (state.editing?.id == note.id) {
+                            EditNoteCard(
+                                note = state.editing,
+                                isSaving = state.isSaving,
+                                onCancel = onCancelEditing,
+                                onSave = onSave,
+                            )
+                        } else {
+                            NoteCard(
+                                note = note,
+                                onEdit = { onStartEditing(note) },
+                                onDelete = { onDelete(note.id) },
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun CreateNoteCard(isSaving: Boolean, onCreate: (String, String) -> Unit) {
+private fun CreateNoteCard(isSaving: Boolean, isLoading: Boolean, onCreate: (String, String) -> Unit) {
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
 
@@ -191,7 +199,7 @@ private fun CreateNoteCard(isSaving: Boolean, onCreate: (String, String) -> Unit
                     title = ""
                     content = ""
                 },
-                enabled = title.isNotBlank() && !isSaving,
+                enabled = title.isNotBlank() && !isSaving && !isLoading,
                 loading = isSaving,
             )
         }

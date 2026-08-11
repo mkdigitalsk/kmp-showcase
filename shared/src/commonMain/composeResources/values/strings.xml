@@ -160,6 +160,7 @@
     <string name="networking_empty">No notes yet — add one above</string>
     <string name="networking_note_title">Title</string>
     <string name="networking_content">Content</string>
+    <string name="networking_refresh">Refresh notes</string>
     <string name="networking_add">Add note</string>
     <string name="networking_edit">Edit note</string>
     <string name="networking_delete">Delete note</string>

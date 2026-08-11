@@ -159,6 +159,7 @@
     <string name="networking_empty">Zatiaľ žiadne poznámky — pridajte ju vyššie</string>
     <string name="networking_note_title">Názov</string>
     <string name="networking_content">Obsah</string>
+    <string name="networking_refresh">Obnoviť poznámky</string>
     <string name="networking_add">Pridať poznámku</string>
     <string name="networking_edit">Upraviť poznámku</string>
     <string name="networking_delete">Odstrániť poznámku</string>
