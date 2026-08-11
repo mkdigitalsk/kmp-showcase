@@ -72,6 +72,10 @@ class SignUpViewModel(
         navigate(SignUpNavEvent.ToSignIn)
     }
 
+    fun openPrivacy() {
+        navigate(SignUpNavEvent.OpenPrivacy(PRIVACY_URL))
+    }
+
     private fun validateEmail(email: String): SignUpEmailError? {
         return when {
             email.isBlank() -> SignUpEmailError.EMPTY
@@ -126,9 +130,12 @@ data class SignUpUiState(
     val error: AppError? = null,
 )
 
+private const val PRIVACY_URL = "https://showcase.mkdigital.sk/privacy"
+
 sealed interface SignUpNavEvent : NavEvent {
     data object ToHome : SignUpNavEvent
     data object ToSignIn : SignUpNavEvent
+    data class OpenPrivacy(val url: String) : SignUpNavEvent
 }
 
 private class EmailAlreadyExistsException(

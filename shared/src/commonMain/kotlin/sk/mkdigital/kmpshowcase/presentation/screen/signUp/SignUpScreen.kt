@@ -33,6 +33,7 @@ import sk.mkdigital.kmpshowcase.presentation.base.Route
 import sk.mkdigital.kmpshowcase.presentation.base.lifecycleAwareViewModel
 import sk.mkdigital.kmpshowcase.presentation.component.AppPasswordTextField
 import sk.mkdigital.kmpshowcase.presentation.component.AppTextField
+import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
 import sk.mkdigital.kmpshowcase.presentation.component.text.labelLarge.TextLabelLargeError
 import sk.mkdigital.kmpshowcase.presentation.component.text
@@ -40,7 +41,6 @@ import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer8
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
-import sk.mkdigital.kmpshowcase.presentation.component.text.labelLarge.TextLabelLargePrimary
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargePrimary
 import sk.mkdigital.kmpshowcase.presentation.foundation.space12
 import sk.mkdigital.kmpshowcase.presentation.foundation.space2
@@ -58,6 +58,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_email_invalid
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_email_label
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_email_placeholder
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_has_account
+import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_privacy
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_sign_in
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_empty
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_label
@@ -81,6 +82,7 @@ fun SignUpScreen(
         onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
         onSignUp = viewModel::signUp,
         onToSignIn = viewModel::toSignIn,
+        onPrivacy = viewModel::openPrivacy,
     )
 }
 
@@ -92,6 +94,7 @@ fun SignUpScreen(
     onConfirmPasswordChange: (String) -> Unit = {},
     onSignUp: () -> Unit = {},
     onToSignIn: () -> Unit = {},
+    onPrivacy: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -204,10 +207,10 @@ fun SignUpScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextBodyMediumNeutral80(stringResource(Res.string.sign_up_has_account))
-            TextButton(onClick = onToSignIn) {
-                TextLabelLargePrimary(stringResource(Res.string.sign_up_sign_in))
-            }
+            AppTextButtonPrimary(text = stringResource(Res.string.sign_up_sign_in), onClick = onToSignIn)
         }
+
+        AppTextButtonPrimary(text = stringResource(Res.string.sign_up_privacy), onClick = onPrivacy)
 
         Spacer(modifier = Modifier.weight(1f))
     }
@@ -228,6 +231,8 @@ private fun SignUpNavEvents(
             )
 
             is SignUpNavEvent.ToSignIn -> router.onBack()
+
+            is SignUpNavEvent.OpenPrivacy -> router.openLink(event.url)
         }
     }
 }

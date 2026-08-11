@@ -5,7 +5,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButton
+import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargePrimary
 import sk.mkdigital.kmpshowcase.presentation.foundation.appColorScheme
@@ -44,7 +44,7 @@ fun AppConfirmDialog(
         title = title,
         text = text,
         confirmButton = {
-            AppTextButton(text = stringResource(Res.string.button_ok), onClick = onDismissRequest)
+            AppTextButtonPrimary(text = stringResource(Res.string.button_ok), onClick = onDismissRequest)
         },
     )
 }
@@ -63,10 +63,10 @@ fun AppAlertDialog(
         title = title,
         text = text,
         confirmButton = {
-            AppTextButton(text = confirmButtonText, onClick = onConfirm)
+            AppTextButtonPrimary(text = confirmButtonText, onClick = onConfirm)
         },
         dismissButton = {
-            AppTextButton(text = dismissButtonText, onClick = onDismissRequest)
+            AppTextButtonPrimary(text = dismissButtonText, onClick = onDismissRequest)
         }
     )
 }

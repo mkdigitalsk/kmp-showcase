@@ -40,6 +40,7 @@ import sk.mkdigital.kmpshowcase.presentation.base.lifecycleAwareViewModel
 import sk.mkdigital.kmpshowcase.presentation.component.AppPasswordTextField
 import sk.mkdigital.kmpshowcase.presentation.component.AppTextField
 import sk.mkdigital.kmpshowcase.presentation.component.biometric.BiometricView
+import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
 import sk.mkdigital.kmpshowcase.presentation.component.text
 import sk.mkdigital.kmpshowcase.presentation.component.text.labelLarge.TextLabelLargeError
@@ -189,9 +190,7 @@ fun SignInScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextBodyMediumNeutral80(stringResource(Res.string.sign_in_no_account))
-            TextButton(onClick = onToSignUp) {
-                TextLabelLargePrimary(stringResource(Res.string.sign_in_sign_up))
-            }
+            AppTextButtonPrimary(text = stringResource(Res.string.sign_in_sign_up), onClick = onToSignUp)
         }
 
         if (state.biometricsAvailable) {

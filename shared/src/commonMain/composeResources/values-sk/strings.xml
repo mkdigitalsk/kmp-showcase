@@ -344,6 +344,7 @@
     <string name="sign_up_button">Vytvoriť účet</string>
     <string name="sign_up_has_account">Už máte účet?</string>
     <string name="sign_up_sign_in">Prihlásiť sa</string>
+    <string name="sign_up_privacy">Ochrana osobných údajov</string>
 
     <!-- Languages (not translated - always in native language) -->
     <string name="language_sk" translatable="false">Slovenčina</string>

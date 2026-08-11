@@ -46,7 +46,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.CircularProgress
 import sk.mkdigital.kmpshowcase.presentation.component.SnackbarType
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppFloatingActionButton
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppSegmentedButton
-import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButton
+import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.OutlinedButton
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppCard
@@ -164,7 +164,7 @@ fun UiComponentsScreen() {
                 horizontalArrangement = Arrangement.spacedBy(space4),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AppTextButton(
+                AppTextButtonPrimary(
                     text = stringResource(Res.string.button_text),
                     onClick = {}
                 )

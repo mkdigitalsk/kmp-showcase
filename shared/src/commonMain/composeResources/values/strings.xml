@@ -345,6 +345,7 @@
     <string name="sign_up_button">Sign Up</string>
     <string name="sign_up_has_account">Already have an account?</string>
     <string name="sign_up_sign_in">Sign In</string>
+    <string name="sign_up_privacy">Privacy</string>
 
     <!-- Languages (not translated - always in native language) -->
     <string name="language_sk" translatable="false">Slovenčina</string>

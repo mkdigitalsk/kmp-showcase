@@ -26,7 +26,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.AppAlertDialog
 import sk.mkdigital.kmpshowcase.presentation.component.AppRadioButton
 import sk.mkdigital.kmpshowcase.presentation.component.AvatarState
 import sk.mkdigital.kmpshowcase.presentation.component.AvatarView
-import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButton
+import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonError
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconPrimary
@@ -237,7 +237,7 @@ fun SettingsScreen(
         }
 
         item {
-            AppTextButton(
+            AppTextButtonPrimary(
                 text = stringResource(Res.string.settings_sign_out),
                 onClick = onSignOut,
                 modifier = Modifier.fillMaxWidth()
@@ -299,7 +299,7 @@ private fun DeleteAccountDialog(
         text = stringResource(Res.string.settings_delete_account_message),
         onDismissRequest = onDismiss,
         dismissButton = {
-            AppTextButton(text = stringResource(Res.string.button_cancel), onClick = onDismiss)
+            AppTextButtonPrimary(text = stringResource(Res.string.button_cancel), onClick = onDismiss)
         },
         confirmButton = {
             AppTextButtonError(

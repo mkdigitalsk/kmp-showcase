@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import sk.mkdigital.kmpshowcase.presentation.foundation.appColorScheme
 import sk.mkdigital.kmpshowcase.presentation.foundation.buttonProgressSize
 import sk.mkdigital.kmpshowcase.presentation.foundation.buttonProgressStroke
@@ -16,17 +17,43 @@ import sk.mkdigital.kmpshowcase.presentation.foundation.buttonProgressStroke
 fun AppTextButton(
     text: String,
     onClick: () -> Unit,
+    color: Color,
+    loading: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     TextButton(
         modifier = modifier,
         onClick = onClick,
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = MaterialTheme.colorScheme.primary,
-        ),
+        colors = ButtonDefaults.textButtonColors(contentColor = color),
+        enabled = !loading,
         content = {
-            Text(text = text, style = MaterialTheme.typography.labelLarge)
+            if (loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(buttonProgressSize),
+                    strokeWidth = buttonProgressStroke,
+                    color = color
+                )
+            } else {
+                Text(text = text, style = MaterialTheme.typography.labelLarge)
+            }
         }
+    )
+}
+
+
+@Composable
+fun AppTextButtonPrimary(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    loading: Boolean = false,
+) {
+    AppTextButton(
+        text = text,
+        onClick = onClick,
+        color = MaterialTheme.colorScheme.primary,
+        loading = loading,
+        modifier = modifier,
     )
 }
 
@@ -37,23 +64,11 @@ fun AppTextButtonError(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
 ) {
-    TextButton(
+    AppTextButton(
+        text = text,
         modifier = modifier,
         onClick = onClick,
-        enabled = !loading,
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = MaterialTheme.appColorScheme.error,
-        ),
-        content = {
-            if (loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(buttonProgressSize),
-                    strokeWidth = buttonProgressStroke,
-                    color = MaterialTheme.appColorScheme.error
-                )
-            } else {
-                Text(text = text, style = MaterialTheme.typography.labelLarge)
-            }
-        }
+        loading = loading,
+        color = MaterialTheme.appColorScheme.error
     )
 }
