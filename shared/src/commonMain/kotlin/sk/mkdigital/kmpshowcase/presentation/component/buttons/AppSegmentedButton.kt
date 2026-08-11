@@ -13,14 +13,14 @@ import sk.mkdigital.kmpshowcase.presentation.foundation.appColorScheme
 fun AppSegmentedButton(
     options: List<String>,
     selectedIndex: Int,
-    onSelectionChanged: (Int) -> Unit,
+    onSelectionChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     SingleChoiceSegmentedButtonRow(modifier = modifier) {
         options.forEachIndexed { index, label ->
             SegmentedButton(
                 selected = index == selectedIndex,
-                onClick = { onSelectionChanged(index) },
+                onClick = { onSelectionChange(index) },
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
                 colors = SegmentedButtonDefaults.colors(
                     activeContainerColor = MaterialTheme.colorScheme.primary,

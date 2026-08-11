@@ -18,7 +18,6 @@ import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import sk.mkdigital.kmpshowcase.presentation.foundation.space8
 import org.jetbrains.compose.resources.stringResource
 
-
 private val featureCardIconSize = space10
 
 @Composable

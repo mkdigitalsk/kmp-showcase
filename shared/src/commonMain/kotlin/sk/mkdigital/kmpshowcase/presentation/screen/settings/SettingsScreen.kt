@@ -77,14 +77,14 @@ import org.jetbrains.compose.resources.stringResource
 fun SettingsScreen(
     router: NavRouter<Route>,
     onSetLocale: ((String) -> Unit)?,
-    onThemeChanged: (ThemeMode) -> Unit,
+    onThemeChange: (ThemeMode) -> Unit,
     viewModel: SettingsViewModel = lifecycleAwareViewModel(),
     imagePickerViewModel: ImagePickerViewModel = lifecycleAwareViewModel(),
 ) {
     SettingsNavEvents(
         router = router,
         onSetLocale = onSetLocale,
-        onThemeChanged = onThemeChanged,
+        onThemeChange = onThemeChange,
     )
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -107,7 +107,7 @@ fun SettingsScreen(
         onDeleteAccountClick = viewModel::showDeleteAccountDialog,
         onDeleteAccountConfirm = viewModel::deleteAccount,
         onDeleteAccountDismiss = viewModel::hideDeleteAccountDialog,
-        onThemeSelected = { themeModeState ->
+        onThemeSelect = { themeModeState ->
             viewModel.setThemeMode(themeModeState)
             viewModel.hideThemeDialog()
         },
@@ -115,7 +115,14 @@ fun SettingsScreen(
         onWebClick = viewModel::openWeb,
     )
 
-    ImagePickerView(viewModel = imagePickerViewModel)
+    ImagePickerView(
+        state = imagePickerState,
+        onImageLoading = imagePickerViewModel::onImageLoading,
+        onImageResult = imagePickerViewModel::onImageResult,
+        onDialogDismiss = imagePickerViewModel::hideDialog,
+        onActionSelect = imagePickerViewModel::onActionSelected,
+        onActionReset = imagePickerViewModel::resetAction,
+    )
 }
 
 @Composable
@@ -130,7 +137,7 @@ fun SettingsScreen(
     onDeleteAccountClick: () -> Unit = {},
     onDeleteAccountConfirm: () -> Unit = {},
     onDeleteAccountDismiss: () -> Unit = {},
-    onThemeSelected: (ThemeModeState) -> Unit = {},
+    onThemeSelect: (ThemeModeState) -> Unit = {},
     onThemeDialogDismiss: () -> Unit = {},
     onWebClick: () -> Unit = {},
 ) {
@@ -274,7 +281,7 @@ fun SettingsScreen(
     if (state.showThemeDialog) {
         ThemeSelectionDialog(
             currentTheme = state.themeModeState,
-            onThemeSelected = onThemeSelected,
+            onThemeSelect = onThemeSelect,
             onDismiss = onThemeDialogDismiss
         )
     }
@@ -354,7 +361,7 @@ private fun SettingsItem(
 @Composable
 private fun ThemeSelectionDialog(
     currentTheme: ThemeModeState,
-    onThemeSelected: (ThemeModeState) -> Unit,
+    onThemeSelect: (ThemeModeState) -> Unit,
     onDismiss: () -> Unit,
 ) {
     AppAlertDialog(
@@ -366,7 +373,7 @@ private fun ThemeSelectionDialog(
                 ThemeOption(
                     title = stringResource(themeModeState.textId),
                     selected = currentTheme == themeModeState,
-                    onClick = { onThemeSelected(themeModeState) }
+                    onClick = { onThemeSelect(themeModeState) }
                 )
             }
         }
@@ -434,7 +441,7 @@ private fun VersionFooter(
 private fun SettingsNavEvents(
     router: NavRouter<Route>,
     onSetLocale: ((String) -> Unit)?,
-    onThemeChanged: (ThemeMode) -> Unit,
+    onThemeChange: (ThemeMode) -> Unit,
     viewModel: SettingsViewModel = lifecycleAwareViewModel(),
 ) {
     CollectNavEvents(navEventFlow = viewModel.navEvent) { event ->
@@ -447,7 +454,7 @@ private fun SettingsNavEvents(
                 inclusive = true
             )
 
-            is SettingNavEvents.ThemeChanged -> onThemeChanged(event.mode)
+            is SettingNavEvents.ThemeChanged -> onThemeChange(event.mode)
             is SettingNavEvents.OpenWeb -> router.openLink(event.url)
         }
     }

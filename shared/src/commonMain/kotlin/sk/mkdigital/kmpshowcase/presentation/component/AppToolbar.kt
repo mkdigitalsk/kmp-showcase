@@ -24,7 +24,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
 import sk.mkdigital.kmpshowcase.shared.generated.resources.content_description_back
 import org.jetbrains.compose.resources.stringResource
 
-
 @Composable
 fun TopAppBar(
     modifier: Modifier = Modifier,

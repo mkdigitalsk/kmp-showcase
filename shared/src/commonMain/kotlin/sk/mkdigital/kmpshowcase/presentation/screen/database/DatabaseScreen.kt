@@ -55,6 +55,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.database_sort_title_a
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_sort_title_desc
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_title_hint
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_title_label
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -62,12 +63,12 @@ fun DatabaseScreen(viewModel: DatabaseViewModel = lifecycleAwareViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     DatabaseScreen(
         state = state,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged,
-        onSortOptionChanged = viewModel::onSortOptionChanged,
+        onSearchQueryChange = viewModel::onSearchQueryChanged,
+        onSortOptionChange = viewModel::onSortOptionChanged,
         onToggleFilterMenu = viewModel::toggleFilterMenu,
         onDismissFilterMenu = viewModel::dismissFilterMenu,
-        onTitleChanged = viewModel::onTitleChanged,
-        onContentChanged = viewModel::onContentChanged,
+        onTitleChange = viewModel::onTitleChanged,
+        onContentChange = viewModel::onContentChanged,
         onAddNote = viewModel::addNote,
         onDeleteNote = viewModel::deleteNote,
         onDeleteAllNotes = viewModel::deleteAllNotes,
@@ -77,12 +78,12 @@ fun DatabaseScreen(viewModel: DatabaseViewModel = lifecycleAwareViewModel()) {
 @Composable
 fun DatabaseScreen(
     state: DatabaseUiState,
-    onSearchQueryChanged: (String) -> Unit = {},
-    onSortOptionChanged: (NoteSortOption) -> Unit = {},
+    onSearchQueryChange: (String) -> Unit = {},
+    onSortOptionChange: (NoteSortOption) -> Unit = {},
     onToggleFilterMenu: () -> Unit = {},
     onDismissFilterMenu: () -> Unit = {},
-    onTitleChanged: (String) -> Unit = {},
-    onContentChanged: (String) -> Unit = {},
+    onTitleChange: (String) -> Unit = {},
+    onContentChange: (String) -> Unit = {},
     onAddNote: () -> Unit = {},
     onDeleteNote: (Long) -> Unit = {},
     onDeleteAllNotes: () -> Unit = {}
@@ -100,9 +101,9 @@ fun DatabaseScreen(
         item {
             SearchBar(
                 query = state.searchQuery,
-                onQueryChanged = onSearchQueryChanged,
+                onQueryChange = onSearchQueryChange,
                 sortOption = state.sortOption,
-                onSortOptionChanged = onSortOptionChanged,
+                onSortOptionChange = onSortOptionChange,
                 showFilterMenu = state.showFilterMenu,
                 onToggleFilterMenu = onToggleFilterMenu,
                 onDismissFilterMenu = onDismissFilterMenu
@@ -113,8 +114,8 @@ fun DatabaseScreen(
             AddNoteCard(
                 title = state.newNoteTitle,
                 content = state.newNoteContent,
-                onTitleChanged = onTitleChanged,
-                onContentChanged = onContentChanged,
+                onTitleChange = onTitleChange,
+                onContentChange = onContentChange,
                 onAddClick = onAddNote
             )
         }
@@ -154,9 +155,9 @@ fun DatabaseScreen(
 @Composable
 private fun SearchBar(
     query: String,
-    onQueryChanged: (String) -> Unit,
+    onQueryChange: (String) -> Unit,
     sortOption: NoteSortOption,
-    onSortOptionChanged: (NoteSortOption) -> Unit,
+    onSortOptionChange: (NoteSortOption) -> Unit,
     showFilterMenu: Boolean,
     onToggleFilterMenu: () -> Unit,
     onDismissFilterMenu: () -> Unit,
@@ -168,72 +169,101 @@ private fun SearchBar(
     ) {
         AppSearchField(
             value = query,
-            onValueChange = onQueryChanged,
+            onValueChange = onQueryChange,
             modifier = Modifier.weight(1f),
             placeholder = stringResource(Res.string.database_search_hint)
         )
 
-        Box {
-            IconButton(onClick = onToggleFilterMenu) {
-                AppIconNeutral80(
-                    imageVector = Icons.Filled.FilterList,
-                    contentDescription = stringResource(Res.string.database_filter)
-                )
-            }
+        SortMenu(
+            sortOption = sortOption,
+            onSortOptionChange = onSortOptionChange,
+            expanded = showFilterMenu,
+            onToggle = onToggleFilterMenu,
+            onDismiss = onDismissFilterMenu
+        )
+    }
+}
 
-            DropdownMenu(
-                expanded = showFilterMenu,
-                onDismissRequest = onDismissFilterMenu,
-            ) {
-                TextLabelMediumNeutral80(
-                    text = stringResource(Res.string.database_sort_by),
-                    modifier = Modifier.padding(horizontal = space4, vertical = space4)
-                )
-                DropdownMenuItem(
-                    text = { TextBodyMediumNeutral80(stringResource(Res.string.database_sort_date_newest)) },
-                    onClick = { onSortOptionChanged(NoteSortOption.DATE_DESC) },
-                    leadingIcon = if (sortOption == NoteSortOption.DATE_DESC) {
-                        { TextBodyMediumNeutral80("✓") }
-                    } else null
-                )
-                DropdownMenuItem(
-                    text = { TextBodyMediumNeutral80(stringResource(Res.string.database_sort_date_oldest)) },
-                    onClick = { onSortOptionChanged(NoteSortOption.DATE_ASC) },
-                    leadingIcon = if (sortOption == NoteSortOption.DATE_ASC) {
-                        { TextBodyMediumNeutral80("✓") }
-                    } else null
-                )
-                DropdownMenuItem(
-                    text = { TextBodyMediumNeutral80(stringResource(Res.string.database_sort_title_asc)) },
-                    onClick = { onSortOptionChanged(NoteSortOption.TITLE_ASC) },
-                    leadingIcon = if (sortOption == NoteSortOption.TITLE_ASC) {
-                        { TextBodyMediumNeutral80("✓") }
-                    } else null
-                )
-                DropdownMenuItem(
-                    text = { TextBodyMediumNeutral80(stringResource(Res.string.database_sort_title_desc)) },
-                    onClick = { onSortOptionChanged(NoteSortOption.TITLE_DESC) },
-                    leadingIcon = if (sortOption == NoteSortOption.TITLE_DESC) {
-                        { TextBodyMediumNeutral80("✓") }
-                    } else null
-                )
-            }
+@Composable
+private fun SortMenu(
+    sortOption: NoteSortOption,
+    onSortOptionChange: (NoteSortOption) -> Unit,
+    expanded: Boolean,
+    onToggle: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Box {
+        IconButton(onClick = onToggle) {
+            AppIconNeutral80(
+                imageVector = Icons.Filled.FilterList,
+                contentDescription = stringResource(Res.string.database_filter)
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = onDismiss,
+        ) {
+            TextLabelMediumNeutral80(
+                text = stringResource(Res.string.database_sort_by),
+                modifier = Modifier.padding(horizontal = space4, vertical = space4)
+            )
+            SortOptionItem(
+                label = Res.string.database_sort_date_newest,
+                option = NoteSortOption.DATE_DESC,
+                selectedOption = sortOption,
+                onClick = onSortOptionChange
+            )
+            SortOptionItem(
+                label = Res.string.database_sort_date_oldest,
+                option = NoteSortOption.DATE_ASC,
+                selectedOption = sortOption,
+                onClick = onSortOptionChange
+            )
+            SortOptionItem(
+                label = Res.string.database_sort_title_asc,
+                option = NoteSortOption.TITLE_ASC,
+                selectedOption = sortOption,
+                onClick = onSortOptionChange
+            )
+            SortOptionItem(
+                label = Res.string.database_sort_title_desc,
+                option = NoteSortOption.TITLE_DESC,
+                selectedOption = sortOption,
+                onClick = onSortOptionChange
+            )
         }
     }
+}
+
+@Composable
+private fun SortOptionItem(
+    label: StringResource,
+    option: NoteSortOption,
+    selectedOption: NoteSortOption,
+    onClick: (NoteSortOption) -> Unit,
+) {
+    DropdownMenuItem(
+        text = { TextBodyMediumNeutral80(stringResource(label)) },
+        onClick = { onClick(option) },
+        leadingIcon = if (option == selectedOption) {
+            { TextBodyMediumNeutral80("✓") }
+        } else null
+    )
 }
 
 @Composable
 private fun AddNoteCard(
     title: String,
     content: String,
-    onTitleChanged: (String) -> Unit,
-    onContentChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
+    onContentChange: (String) -> Unit,
     onAddClick: () -> Unit,
 ) {
     AppElevatedCard(modifier = Modifier.fillMaxWidth().padding(space4)) {
         AppTextField(
             value = title,
-            onValueChange = onTitleChanged,
+            onValueChange = onTitleChange,
             label = stringResource(Res.string.database_title_label),
             placeholder = stringResource(Res.string.database_title_hint),
             modifier = Modifier.fillMaxWidth()
@@ -241,7 +271,7 @@ private fun AddNoteCard(
         Spacer2()
         AppTextField(
             value = content,
-            onValueChange = onContentChanged,
+            onValueChange = onContentChange,
             label = stringResource(Res.string.database_content_label),
             placeholder = stringResource(Res.string.database_content_hint),
             modifier = Modifier.fillMaxWidth()

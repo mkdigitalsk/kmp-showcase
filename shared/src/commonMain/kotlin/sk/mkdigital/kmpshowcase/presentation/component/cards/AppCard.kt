@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import sk.mkdigital.kmpshowcase.presentation.foundation.cardElevation
 
+// The caller's modifier goes inside the card surface, so the ripple covers the whole card.
+@Suppress("ModifierNotUsedAtRoot")
 @Composable
 fun AppCard(
     modifier: Modifier = Modifier,

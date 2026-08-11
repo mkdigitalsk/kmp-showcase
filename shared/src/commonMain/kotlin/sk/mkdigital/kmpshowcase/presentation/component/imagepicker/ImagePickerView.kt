@@ -3,7 +3,7 @@ package sk.mkdigital.kmpshowcase.presentation.component.imagepicker
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.runtime.rememberUpdatedState
 import sk.mkdigital.kmpshowcase.presentation.component.camera.rememberCameraManager
 import sk.mkdigital.kmpshowcase.presentation.component.galery.rememberGalleryManager
 import sk.mkdigital.kmpshowcase.presentation.component.permission.PermissionType
@@ -11,34 +11,41 @@ import sk.mkdigital.kmpshowcase.presentation.component.permission.PermissionView
 import sk.mkdigital.kmpshowcase.presentation.component.permission.galleryRequiresPermission
 
 @Composable
-fun ImagePickerView(viewModel: ImagePickerViewModel) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+fun ImagePickerView(
+    state: ImagePickerState,
+    onImageLoading: () -> Unit,
+    onImageResult: (ImageResult?) -> Unit,
+    onDialogDismiss: () -> Unit,
+    onActionSelect: (PickerAction) -> Unit,
+    onActionReset: () -> Unit,
+) {
+    val currentOnActionReset by rememberUpdatedState(onActionReset)
 
     val cameraManager = rememberCameraManager { result ->
-        viewModel.onImageLoading()
-        viewModel.onImageResult(result)
+        onImageLoading()
+        onImageResult(result)
     }
 
     val galleryManager = rememberGalleryManager { result ->
-        viewModel.onImageLoading()
-        viewModel.onImageResult(result)
+        onImageLoading()
+        onImageResult(result)
     }
 
     if (state.showOptionDialog) {
         ImageSourceOptionDialog(
-            onDismissRequest = { viewModel.hideDialog() },
-            onAction = { viewModel.onActionSelected(it) },
+            onDismissRequest = onDialogDismiss,
+            onAction = onActionSelect,
         )
     }
 
     when (state.action) {
         PickerAction.Camera -> PermissionView(
             permission = PermissionType.CAMERA,
-            onDeniedDialogDismiss = { viewModel.resetAction() },
+            onDeniedDialogDismiss = onActionReset,
         ) {
             LaunchedEffect(Unit) {
                 cameraManager.launch()
-                viewModel.resetAction()
+                currentOnActionReset()
             }
         }
 
@@ -46,17 +53,17 @@ fun ImagePickerView(viewModel: ImagePickerViewModel) {
             if (galleryRequiresPermission) {
                 PermissionView(
                     permission = PermissionType.GALLERY,
-                    onDeniedDialogDismiss = { viewModel.resetAction() },
+                    onDeniedDialogDismiss = onActionReset,
                 ) {
                     LaunchedEffect(Unit) {
                         galleryManager.launch()
-                        viewModel.resetAction()
+                        currentOnActionReset()
                     }
                 }
             } else {
                 LaunchedEffect(state.action) {
                     galleryManager.launch()
-                    viewModel.resetAction()
+                    currentOnActionReset()
                 }
             }
         }

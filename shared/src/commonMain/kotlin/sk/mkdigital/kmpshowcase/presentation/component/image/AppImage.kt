@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.ContentScale
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-
 @Composable
 fun AppImage(
     resource: DrawableResource,

@@ -6,8 +6,8 @@ import sk.mkdigital.kmpshowcase.domain.repository.PushPermissionStatus
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
+import platform.UserNotifications.UNAuthorizationStatus
 import platform.UserNotifications.UNAuthorizationStatusAuthorized
-import platform.UserNotifications.UNAuthorizationStatusDenied
 import platform.UserNotifications.UNAuthorizationStatusEphemeral
 import platform.UserNotifications.UNAuthorizationStatusNotDetermined
 import platform.UserNotifications.UNAuthorizationStatusProvisional
@@ -23,36 +23,39 @@ actual fun rememberNotificationPermissionRequester(
         NotificationPermissionRequester {
             val center = UNUserNotificationCenter.currentNotificationCenter()
             center.getNotificationSettingsWithCompletionHandler { settings ->
-                if (settings == null) {
-                    dispatchMain { onResult(PushPermissionStatus.DENIED) }
-                    return@getNotificationSettingsWithCompletionHandler
-                }
-
-                when (settings.authorizationStatus) {
-                    UNAuthorizationStatusAuthorized,
-                    UNAuthorizationStatusProvisional,
-                    UNAuthorizationStatusEphemeral -> {
-                        dispatchMain { onResult(PushPermissionStatus.GRANTED) }
-                    }
-                    UNAuthorizationStatusDenied -> {
-                        dispatchMain { onResult(PushPermissionStatus.DENIED) }
-                    }
-                    UNAuthorizationStatusNotDetermined -> {
-                        center.requestAuthorizationWithOptions(
-                            options = UNAuthorizationOptionAlert or
-                                    UNAuthorizationOptionBadge or
-                                    UNAuthorizationOptionSound
-                        ) { granted, _ ->
-                            dispatchMain {
-                                onResult(if (granted) PushPermissionStatus.GRANTED else PushPermissionStatus.DENIED)
-                            }
-                        }
-                    }
-                    else -> {
-                        dispatchMain { onResult(PushPermissionStatus.DENIED) }
-                    }
-                }
+                center.resolvePermission(settings?.authorizationStatus, onResult)
             }
+        }
+    }
+}
+
+private fun UNUserNotificationCenter.resolvePermission(
+    status: UNAuthorizationStatus?,
+    onResult: (PushPermissionStatus) -> Unit
+) {
+    when (status) {
+        UNAuthorizationStatusAuthorized,
+        UNAuthorizationStatusProvisional,
+        UNAuthorizationStatusEphemeral -> {
+            dispatchMain { onResult(PushPermissionStatus.GRANTED) }
+        }
+        UNAuthorizationStatusNotDetermined -> {
+            requestPermission(onResult)
+        }
+        else -> {
+            dispatchMain { onResult(PushPermissionStatus.DENIED) }
+        }
+    }
+}
+
+private fun UNUserNotificationCenter.requestPermission(onResult: (PushPermissionStatus) -> Unit) {
+    requestAuthorizationWithOptions(
+        options = UNAuthorizationOptionAlert or
+                UNAuthorizationOptionBadge or
+                UNAuthorizationOptionSound
+    ) { granted, _ ->
+        dispatchMain {
+            onResult(if (granted) PushPermissionStatus.GRANTED else PushPermissionStatus.DENIED)
         }
     }
 }

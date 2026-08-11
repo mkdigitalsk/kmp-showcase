@@ -17,7 +17,6 @@ import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
-
 @Composable
 fun ContainedButton(
     text: String,

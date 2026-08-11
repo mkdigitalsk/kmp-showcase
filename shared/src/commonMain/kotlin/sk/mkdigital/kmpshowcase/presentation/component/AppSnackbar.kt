@@ -36,7 +36,7 @@ fun AppSnackbarHost(
         modifier = modifier,
         snackbar = { snackbarData ->
             val type = (snackbarData.visuals as? AppSnackbarVisuals)?.type ?: SnackbarType.Default
-            AppSnackbar(snackbarData, type)
+            AppSnackbar(snackbarData, type = type)
         }
     )
 }
@@ -44,8 +44,8 @@ fun AppSnackbarHost(
 @Composable
 fun AppSnackbar(
     snackbarData: SnackbarData,
-    type: SnackbarType = SnackbarType.Default,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    type: SnackbarType = SnackbarType.Default
 ) {
     val containerColor = when (type) {
         SnackbarType.Default -> MaterialTheme.appColorScheme.neutral80

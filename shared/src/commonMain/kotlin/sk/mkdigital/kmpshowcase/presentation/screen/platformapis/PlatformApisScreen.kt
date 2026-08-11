@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -371,12 +372,14 @@ private fun rememberLocationActionHandler(
 ): (PendingLocationAction) -> Unit {
     val locationPermission = rememberLocationPermissionState()
     var pendingAction by remember { mutableStateOf(PendingLocationAction.NONE) }
+    val currentOnGetLocation by rememberUpdatedState(onGetLocation)
+    val currentOnStartUpdates by rememberUpdatedState(onStartUpdates)
 
     LaunchedEffect(locationPermission.isGranted, pendingAction) {
         if (locationPermission.isGranted && pendingAction != PendingLocationAction.NONE) {
             when (pendingAction) {
-                PendingLocationAction.GET_LOCATION -> onGetLocation()
-                PendingLocationAction.START_UPDATES -> onStartUpdates()
+                PendingLocationAction.GET_LOCATION -> currentOnGetLocation()
+                PendingLocationAction.START_UPDATES -> currentOnStartUpdates()
                 PendingLocationAction.NONE -> Unit
             }
             pendingAction = PendingLocationAction.NONE

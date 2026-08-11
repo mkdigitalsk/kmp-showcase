@@ -27,8 +27,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ImageSourceOptionDialog(
-    title: String = stringResource(Res.string.imagepicker_title),
     onDismissRequest: () -> Unit,
+    title: String = stringResource(Res.string.imagepicker_title),
     onAction: (PickerAction) -> Unit,
 ) {
     AppAlertDialog(

@@ -1,5 +1,7 @@
 package sk.mkdigital.kmpshowcase.data.local.preferences
 
+// One accessor pair per primitive type — the count tracks the type system, not the responsibilities.
+@Suppress("TooManyFunctions")
 interface Preferences {
     val storageName: String
 

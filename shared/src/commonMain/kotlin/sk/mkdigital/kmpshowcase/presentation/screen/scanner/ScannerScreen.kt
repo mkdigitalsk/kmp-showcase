@@ -60,11 +60,11 @@ fun ScannerScreen(viewModel: ScannerViewModel = lifecycleAwareViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     ScannerScreen(
         state = state,
-        onModeChanged = viewModel::onModeChanged,
-        onFormatChanged = viewModel::onFormatChanged,
-        onTextChanged = viewModel::onTextChanged,
+        onModeChange = viewModel::onModeChanged,
+        onFormatChange = viewModel::onFormatChanged,
+        onTextChange = viewModel::onTextChanged,
         onGenerateCode = viewModel::generateCode,
-        onCodeScanned = viewModel::onCodeScanned,
+        onCodeScan = viewModel::onCodeScanned,
         onClearScannedResult = viewModel::clearScannedResult,
     )
 }
@@ -73,11 +73,11 @@ fun ScannerScreen(viewModel: ScannerViewModel = lifecycleAwareViewModel()) {
 @Composable
 fun ScannerScreen(
     state: ScannerUiState,
-    onModeChanged: (Int) -> Unit = {},
-    onFormatChanged: (Int) -> Unit = {},
-    onTextChanged: (String) -> Unit = {},
+    onModeChange: (Int) -> Unit = {},
+    onFormatChange: (Int) -> Unit = {},
+    onTextChange: (String) -> Unit = {},
     onGenerateCode: () -> Unit = {},
-    onCodeScanned: (String) -> Unit = {},
+    onCodeScan: (String) -> Unit = {},
     onClearScannedResult: () -> Unit = {},
 ) {
     val modeOptions = listOf(
@@ -111,7 +111,7 @@ fun ScannerScreen(
             AppSegmentedButton(
                 options = modeOptions,
                 selectedIndex = state.selectedModeIndex,
-                onSelectionChanged = onModeChanged,
+                onSelectionChange = onModeChange,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -122,13 +122,13 @@ fun ScannerScreen(
                     AppSegmentedButton(
                         options = formatOptions,
                         selectedIndex = state.selectedFormatIndex,
-                        onSelectionChanged = onFormatChanged,
+                        onSelectionChange = onFormatChange,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer4()
                     AppTextField(
                         value = state.inputText,
-                        onValueChange = onTextChanged,
+                        onValueChange = onTextChange,
                         label = stringResource(Res.string.scanner_input_label),
                         placeholder = stringResource(Res.string.scanner_input_hint),
                         modifier = Modifier.fillMaxWidth()
@@ -183,7 +183,7 @@ fun ScannerScreen(
                                 onDeniedDialogDismiss = {},
                             ) {
                                 CodeScanner(
-                                    onScan = onCodeScanned,
+                                    onScan = onCodeScan,
                                     onError = { },
                                     modifier = Modifier.fillMaxSize()
                                 )

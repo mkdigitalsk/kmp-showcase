@@ -37,27 +37,19 @@ fun ScreenLifecycleEffect(
     val currentOnPause by rememberUpdatedState(onPause)
     val currentOnDispose by rememberUpdatedState(onDispose)
 
-    var isResumed by remember(key) { mutableStateOf(false) }
-    var isFirstComposition by remember(key) { mutableStateOf(true) }
+    val screenLifecycle = remember(key) { ScreenLifecycleState() }
 
     LaunchedEffect(key) {
-        if (isFirstComposition) {
-            isFirstComposition = false
-            currentOnCreate()
-        }
+        screenLifecycle.createOnce(currentOnCreate)
 
-        if (!isResumed && lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-            isResumed = true
-            currentOnResume()
+        if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            screenLifecycle.resumeOnce(currentOnResume)
         }
     }
 
     DisposableEffect(key) {
         onDispose {
-            if (isResumed) {
-                isResumed = false
-                currentOnPause()
-            }
+            screenLifecycle.pauseOnce(currentOnPause)
             currentOnDispose()
         }
     }
@@ -65,20 +57,8 @@ fun ScreenLifecycleEffect(
     DisposableEffect(lifecycleOwner, key) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_RESUME -> {
-                    if (!isResumed) {
-                        isResumed = true
-                        currentOnResume()
-                    }
-                }
-
-                Lifecycle.Event.ON_PAUSE -> {
-                    if (isResumed) {
-                        isResumed = false
-                        currentOnPause()
-                    }
-                }
-
+                Lifecycle.Event.ON_RESUME -> screenLifecycle.resumeOnce(currentOnResume)
+                Lifecycle.Event.ON_PAUSE -> screenLifecycle.pauseOnce(currentOnPause)
                 else -> {}
             }
         }
@@ -88,6 +68,33 @@ fun ScreenLifecycleEffect(
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
+    }
+}
+
+/**
+ * Both the composition and the lifecycle observer drive the same callbacks, so each transition is
+ * guarded here — without it a screen already RESUMED when it enters composition resumes twice.
+ */
+private class ScreenLifecycleState {
+    private var isCreated by mutableStateOf(false)
+    private var isResumed by mutableStateOf(false)
+
+    fun createOnce(onCreate: () -> Unit) {
+        if (isCreated) return
+        isCreated = true
+        onCreate()
+    }
+
+    fun resumeOnce(onResume: () -> Unit) {
+        if (isResumed) return
+        isResumed = true
+        onResume()
+    }
+
+    fun pauseOnce(onPause: () -> Unit) {
+        if (!isResumed) return
+        isResumed = false
+        onPause()
     }
 }
 

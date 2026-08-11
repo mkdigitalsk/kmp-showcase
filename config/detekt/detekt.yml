@@ -128,3 +128,6 @@ style:
 Compose:
   ModifierMissing:
     active: false
+  CompositionLocalAllowlist:
+    # The rule's own extension point: every implicit dependency the app permits, in one reviewable list.
+    allowedCompositionLocals: LocalColors,LocalSnackbarHostState

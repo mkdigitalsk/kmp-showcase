@@ -57,7 +57,8 @@ class GetPushPermissionStatusUseCaseTest : BaseTest<GetPushPermissionStatusUseCa
     fun `invoke returns NOT_DETERMINED when permission is not determined`() = runTest {
         test(
             given = {
-                everySuspend { pushNotificationService.getPermissionStatus() } returns PushPermissionStatus.NOT_DETERMINED
+                everySuspend { pushNotificationService.getPermissionStatus() } returns
+                    PushPermissionStatus.NOT_DETERMINED
             },
             whenAction = {
                 classUnderTest()

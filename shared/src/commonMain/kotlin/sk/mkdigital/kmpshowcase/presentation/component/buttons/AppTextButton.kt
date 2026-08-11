@@ -18,8 +18,8 @@ fun AppTextButton(
     text: String,
     onClick: () -> Unit,
     color: Color,
-    loading: Boolean = false,
     modifier: Modifier = Modifier,
+    loading: Boolean = false,
 ) {
     TextButton(
         modifier = modifier,

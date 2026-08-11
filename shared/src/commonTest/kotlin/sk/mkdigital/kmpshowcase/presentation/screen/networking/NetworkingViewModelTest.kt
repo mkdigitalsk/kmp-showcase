@@ -49,7 +49,10 @@ class NetworkingViewModelTest : BaseViewModelTest() {
 
         val state = viewModel.state.value
         assertFalse(state.isLoading)
-        assertEquals(listOf(RemoteNoteUiModel(id = 1, title = "Buy milk", content = "two litres", etag = "\"0\"")), state.notes)
+        assertEquals(
+            listOf(RemoteNoteUiModel(id = 1, title = "Buy milk", content = "two litres", etag = "\"0\"")),
+            state.notes,
+        )
     }
 
     @Test

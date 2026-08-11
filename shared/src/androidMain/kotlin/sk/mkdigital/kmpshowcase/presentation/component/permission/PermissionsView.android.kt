@@ -32,45 +32,12 @@ actual fun PermissionView(
     onDeniedDialogDismiss: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    when (permission) {
-        PermissionType.GALLERY -> content()
-        PermissionType.CAMERA,
-        PermissionType.LOCATION,
-        PermissionType.NOTIFICATION -> PermissionContendDefault(
-            permission = permission,
-            onDeniedDialogDismiss = onDeniedDialogDismiss,
-            content = content,
-        )
-    }
-}
-
-private fun PermissionType.toManifestPermission() = when (this) {
-    PermissionType.CAMERA -> Manifest.permission.CAMERA
-    PermissionType.GALLERY -> null
-    PermissionType.LOCATION -> Manifest.permission.ACCESS_FINE_LOCATION
-    PermissionType.NOTIFICATION -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        Manifest.permission.POST_NOTIFICATIONS
-    } else null
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun PermissionContendDefault(
-    permission: PermissionType,
-    onDeniedDialogDismiss: () -> Unit,
-    content: @Composable () -> Unit,
-) {
     val manifestPermission = permission.toManifestPermission()
-    if (manifestPermission == null) {
-        content()
-        return
-    }
-
-    val state = rememberPermissionState(manifestPermission)
+    val state = if (manifestPermission == null) null else rememberPermissionState(manifestPermission)
     var rationaleDismissed by remember { mutableStateOf(false) }
     var hasRequested by remember { mutableStateOf(false) }
 
-    if (state.status.isGranted) {
+    if (state == null || state.status.isGranted) {
         content()
     } else if (state.status.shouldShowRationale && !rationaleDismissed) {
         PermissionRationaleUi(
@@ -94,6 +61,15 @@ private fun PermissionContendDefault(
             onConfirm = { launchSettings(context) },
         )
     }
+}
+
+private fun PermissionType.toManifestPermission() = when (this) {
+    PermissionType.CAMERA -> Manifest.permission.CAMERA
+    PermissionType.GALLERY -> null
+    PermissionType.LOCATION -> Manifest.permission.ACCESS_FINE_LOCATION
+    PermissionType.NOTIFICATION -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Manifest.permission.POST_NOTIFICATIONS
+    } else null
 }
 
 private fun launchSettings(context: Context) {

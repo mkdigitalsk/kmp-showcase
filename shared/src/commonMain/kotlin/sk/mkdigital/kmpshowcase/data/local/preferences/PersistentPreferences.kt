@@ -1,5 +1,7 @@
 package sk.mkdigital.kmpshowcase.data.local.preferences
 
+// One accessor pair per stored key — the count tracks the stored data, not the responsibilities.
+@Suppress("TooManyFunctions")
 interface PersistentPreferences {
     suspend fun getPersistentCounter(): Int
     suspend fun setPersistentCounter(value: Int)

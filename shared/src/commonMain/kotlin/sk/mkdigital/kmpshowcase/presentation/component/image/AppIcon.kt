@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.Dp
 import sk.mkdigital.kmpshowcase.presentation.foundation.appColorScheme
 import sk.mkdigital.kmpshowcase.presentation.foundation.defaultIconSize
 
-
 @Composable
 fun AppIcon(
     imageVector: ImageVector,

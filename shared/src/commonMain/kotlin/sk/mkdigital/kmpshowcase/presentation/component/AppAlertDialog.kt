@@ -52,10 +52,10 @@ fun AppConfirmDialog(
 @Composable
 fun AppAlertDialog(
     text: String,
+    onConfirm: () -> Unit,
     title: String? = null,
     confirmButtonText: String = stringResource(Res.string.button_ok),
     dismissButtonText: String = stringResource(Res.string.button_cancel),
-    onConfirm: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     AppAlertDialog(

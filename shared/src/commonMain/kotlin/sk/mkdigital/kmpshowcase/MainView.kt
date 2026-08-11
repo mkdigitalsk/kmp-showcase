@@ -64,7 +64,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.nav_settings
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
-
 val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> {
     error("No SnackbarHostState provided")
 }
@@ -130,7 +129,7 @@ fun MainView(
                                 SettingsScreen(
                                     router = router,
                                     onSetLocale = onSetLocale,
-                                    onThemeChanged = { mode -> themeMode = mode },
+                                    onThemeChange = { mode -> themeMode = mode },
                                 )
                             }
                         }
