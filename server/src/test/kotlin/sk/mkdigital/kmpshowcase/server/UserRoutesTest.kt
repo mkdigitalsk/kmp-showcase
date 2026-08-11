@@ -101,12 +101,6 @@ class UserRoutesTest {
     }
 
     @Test
-    fun `get users without auth returns unauthorized`() = usersTest {
-        val response = client.get("${ApiVersion.BASE}/users")
-        assertEquals(HttpStatusCode.Unauthorized, response.status)
-    }
-
-    @Test
     fun `sign in with missing fields returns 400 as RFC 9457 problem detail`() = usersTest {
         val response = client.post("${ApiVersion.BASE}/auth/sign-in") {
             contentType(ContentType.Application.Json)

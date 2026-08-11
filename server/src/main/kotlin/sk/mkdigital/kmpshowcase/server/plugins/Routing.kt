@@ -1,6 +1,7 @@
 package sk.mkdigital.kmpshowcase.server.plugins
 
 import sk.mkdigital.kmpshowcase.server.di.AppDependencies
+import sk.mkdigital.kmpshowcase.server.feature.note.api.noteRoutes
 import sk.mkdigital.kmpshowcase.server.feature.user.api.authRoutes
 import sk.mkdigital.kmpshowcase.server.feature.user.api.userRoutes
 import io.ktor.server.application.Application
@@ -32,5 +33,6 @@ private fun Route.apiRoutes(dependencies: AppDependencies) {
     rateLimit(ApiRateLimit) {
         authRoutes(dependencies.userService, dependencies.jwtConfig)
         userRoutes(dependencies.userService)
+        noteRoutes(dependencies.noteService)
     }
 }

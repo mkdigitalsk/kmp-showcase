@@ -18,9 +18,6 @@ import io.ktor.server.routing.route
 internal fun Route.userRoutes(userService: UserService) {
     route("${ApiVersion.BASE}/users") {
         authenticate("auth-jwt") {
-            get {
-                call.respond(userService.getAll().map { it.toUserResponseDTO() })
-            }
             get("/me") {
                 val userId = call.userId() ?: return@get call.respond(HttpStatusCode.Unauthorized)
                 val user = userService.getById(userId) ?: return@get call.respond(HttpStatusCode.NotFound)
