@@ -11,4 +11,6 @@ internal interface UserRepository {
     suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User?
     suspend fun updateLocale(id: Long, locale: String): User?
     suspend fun delete(id: Long): Boolean
+    suspend fun touchLastSeen(id: Long)
+    suspend fun deleteInactiveSince(cutoff: Long, keep: Set<String>): Int
 }

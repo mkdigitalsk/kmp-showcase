@@ -4,6 +4,10 @@ import sk.mkdigital.kmpshowcase.server.config.DatabaseConfig
 import sk.mkdigital.kmpshowcase.server.config.useH2
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
 import sk.mkdigital.kmpshowcase.server.di.AppDependencies
+import sk.mkdigital.kmpshowcase.server.feature.user.service.PURGE_INTERVAL
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import sk.mkdigital.kmpshowcase.server.plugins.configureAuth
 import sk.mkdigital.kmpshowcase.server.plugins.configureCORS
 import sk.mkdigital.kmpshowcase.server.plugins.configureCallLogging
@@ -44,4 +48,16 @@ internal fun Application.module() {
     configureAuth(jwtConfig)
     configureRateLimit()
     configureRouting(dependencies)
+    schedulePurge(dependencies)
+}
+
+private fun Application.schedulePurge(dependencies: AppDependencies) {
+    launch {
+        while (isActive) {
+            runCatching { dependencies.inactiveAccountPurge.run() }
+                .onSuccess { removed -> if (removed > 0) logger.info("Purged $removed inactive account(s)") }
+                .onFailure { logger.error("Inactive account purge failed", it) }
+            delay(PURGE_INTERVAL)
+        }
+    }
 }

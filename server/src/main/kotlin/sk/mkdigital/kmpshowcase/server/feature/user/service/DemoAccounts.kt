@@ -12,3 +12,5 @@ private val DEMO_EMAILS = setOf(
 )
 
 internal fun isDemoAccount(email: String): Boolean = email.lowercase() in DEMO_EMAILS
+
+internal fun demoAccountEmails(): Set<String> = DEMO_EMAILS

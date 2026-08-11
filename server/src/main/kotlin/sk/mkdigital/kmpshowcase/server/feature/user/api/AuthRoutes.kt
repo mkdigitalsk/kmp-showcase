@@ -58,6 +58,7 @@ internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
                     ?: return@post call.respond(HttpStatusCode.Unauthorized)
                 val user = userService.getById(userId)
                     ?: return@post call.respond(HttpStatusCode.NotFound)
+                userService.markSeen(user.id)
                 logger.info("Token renewed: ${user.id} (${user.email.maskEmail()})")
                 call.respond(AuthResponseDTO(jwtConfig.generateToken(user.id, user.email), user.toAuthUserDTO()))
             }

@@ -5,6 +5,11 @@ import sk.mkdigital.kmpshowcase.server.config.DatabaseConfig
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
 import sk.mkdigital.kmpshowcase.server.di.AppDependencies
 import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UserRepositoryImpl
+import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UsersTable
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.jdbc.update
 import sk.mkdigital.kmpshowcase.server.plugins.configureAuth
 import sk.mkdigital.kmpshowcase.server.plugins.configureRateLimit
 import sk.mkdigital.kmpshowcase.server.plugins.configureRouting
@@ -99,6 +104,23 @@ class UserRoutesTest {
                 "a 404 here reads to a client exactly like a route that does not exist",
             )
         }
+    }
+
+    @Test
+    fun `an account that predates the activity column is not treated as inactive`() = usersTest {
+        val (email, _) = createUser()
+        runBlocking {
+            suspendTransaction { UsersTable.update({ UsersTable.email eq email }) { it[lastSeenAt] = 0 } }
+        }
+
+        DatabaseConfig.init(MapApplicationConfig("database.useH2" to "true"))
+
+        val lastSeen = runBlocking {
+            suspendTransaction {
+                UsersTable.selectAll().where { UsersTable.email eq email }.single()[UsersTable.lastSeenAt]
+            }
+        }
+        assertTrue(lastSeen > 0, "a zero here is older than every cutoff, so the first sweep would delete them all")
     }
 
     @Test

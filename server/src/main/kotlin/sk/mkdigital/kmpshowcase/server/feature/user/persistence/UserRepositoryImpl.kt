@@ -5,7 +5,11 @@ import sk.mkdigital.kmpshowcase.server.core.persistence.mapToSingleOrNull
 import sk.mkdigital.kmpshowcase.server.feature.user.service.ThemeMode
 import sk.mkdigital.kmpshowcase.server.feature.user.service.User
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.less
+import org.jetbrains.exposed.v1.core.not
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -36,6 +40,7 @@ internal class UserRepositoryImpl : UserRepository {
                 it[UsersTable.passwordHash] = passwordHash
                 it[createdAt] = now
                 it[updatedAt] = now
+                it[lastSeenAt] = now
             } get UsersTable.id
 
             User(
@@ -83,7 +88,21 @@ internal class UserRepositoryImpl : UserRepository {
             .verify(password.toCharArray(), row[UsersTable.passwordHash])
             .verified
 
-        if (isPasswordValid) row.toUser() else null
+        if (!isPasswordValid) return@suspendTransaction null
+
+        val id = row[UsersTable.id].value
+        UsersTable.update({ UsersTable.id eq id }) { it[lastSeenAt] = System.currentTimeMillis() }
+        UsersTable.selectAll().where { UsersTable.id eq id }.mapToSingleOrNull { it.toUser() }
+    }
+
+    override suspend fun touchLastSeen(id: Long) {
+        suspendTransaction {
+            UsersTable.update({ UsersTable.id eq id }) { it[lastSeenAt] = System.currentTimeMillis() }
+        }
+    }
+
+    override suspend fun deleteInactiveSince(cutoff: Long, keep: Set<String>): Int = suspendTransaction {
+        UsersTable.deleteWhere { (lastSeenAt less cutoff) and not(email inList keep) }
     }
 
     override suspend fun delete(id: Long): Boolean = suspendTransaction {

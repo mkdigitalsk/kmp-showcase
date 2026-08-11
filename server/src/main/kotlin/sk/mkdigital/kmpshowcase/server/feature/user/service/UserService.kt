@@ -24,6 +24,8 @@ internal class UserService(
 
     suspend fun getById(id: Long): User? = repository.findById(id)
 
+    suspend fun markSeen(id: Long) = repository.touchLastSeen(id)
+
     suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = repository.updateThemeMode(id, themeMode)
 
     suspend fun updateLocale(id: Long, locale: String): User? = repository.updateLocale(id, locale)
