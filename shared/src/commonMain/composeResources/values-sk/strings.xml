@@ -296,6 +296,11 @@
     <string name="settings_test_crash_title">Testovací pád</string>
     <string name="settings_test_crash_subtitle">Vyvolať pád aplikácie pre test Crashlytics</string>
     <string name="settings_sign_out">Odhlásiť sa</string>
+    <string name="settings_delete_account">Zmazať účet</string>
+    <string name="settings_delete_account_title">Zmazať účet?</string>
+    <string name="settings_delete_account_message">Zmaže sa váš účet aj poznámky na serveri. Poznámky uložené v tomto zariadení zmiznú tiež. Túto akciu nie je možné vrátiť späť.</string>
+    <string name="settings_delete_account_confirm">Zmazať</string>
+    <string name="settings_delete_account_error">Váš účet sa nepodarilo zmazať. Skúste to znova.</string>
 
     <!-- SignIn Screen -->
     <string name="screen_sign_in">Prihlásenie</string>

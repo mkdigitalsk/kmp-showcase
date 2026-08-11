@@ -2,6 +2,7 @@ package sk.mkdigital.kmpshowcase.presentation.screen.settings
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import sk.mkdigital.kmpshowcase.AppConfig
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.DeleteAccountUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignOutUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.base.invoke
 import sk.mkdigital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
@@ -23,6 +24,9 @@ data class SettingsState(
     val themeModeState: ThemeModeState = ThemeModeState.SYSTEM,
     val currentLanguage: LanguageState = LanguageState.EN,
     val showThemeDialog: Boolean = false,
+    val showDeleteAccountDialog: Boolean = false,
+    val isDeletingAccount: Boolean = false,
+    val deleteAccountFailed: Boolean = false,
     val showCrashButton: Boolean,
     val versionName: String,
     val versionCode: String,
@@ -43,6 +47,7 @@ class SettingsViewModel(
     private val getThemeModeUseCase: GetThemeModeUseCase,
     private val setThemeModeUseCase: SetThemeModeUseCase,
     private val signOutUseCase: SignOutUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
     appConfig: AppConfig,
 ) : BaseViewModel<SettingsState>(
     SettingsState(
@@ -107,6 +112,35 @@ class SettingsViewModel(
         )
     }
 
+    fun showDeleteAccountDialog() {
+        newState { it.copy(showDeleteAccountDialog = true, deleteAccountFailed = false) }
+    }
+
+    fun hideDeleteAccountDialog() {
+        newState { it.copy(showDeleteAccountDialog = false) }
+    }
+
+    fun deleteAccount() {
+        if (requireState().isDeletingAccount) return
+        execute(
+            action = { deleteAccountUseCase() },
+            onLoading = { newState { it.copy(isDeletingAccount = true, deleteAccountFailed = false) } },
+            onSuccess = {
+                newState { it.copy(isDeletingAccount = false, showDeleteAccountDialog = false) }
+                navigate(SettingNavEvents.AccountDeleted)
+            },
+            onError = {
+                newState {
+                    it.copy(
+                        isDeletingAccount = false,
+                        showDeleteAccountDialog = false,
+                        deleteAccountFailed = true
+                    )
+                }
+            }
+        )
+    }
+
     @Suppress("TooGenericExceptionThrown")
     fun triggerTestCrash() {
         execute(action = { throw RuntimeException("Test Crash for Firebase Crashlytics") })
@@ -144,6 +178,8 @@ sealed interface SettingNavEvents : NavEvent {
     data object ToSettings : SettingNavEvents
 
     data object SignOut : SettingNavEvents
+
+    data object AccountDeleted : SettingNavEvents
 
     data class ThemeChanged(val mode: ThemeMode) : SettingNavEvents
 

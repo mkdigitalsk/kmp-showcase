@@ -297,6 +297,11 @@
     <string name="settings_test_crash_title">Test Crash</string>
     <string name="settings_test_crash_subtitle">Trigger a crash to test Crashlytics</string>
     <string name="settings_sign_out">Sign Out</string>
+    <string name="settings_delete_account">Delete account</string>
+    <string name="settings_delete_account_title">Delete your account?</string>
+    <string name="settings_delete_account_message">This deletes your account and the notes on the server. Notes saved on this device go too. It cannot be undone.</string>
+    <string name="settings_delete_account_confirm">Delete</string>
+    <string name="settings_delete_account_error">Your account could not be deleted. Try again.</string>
 
     <!-- SignIn Screen -->
     <string name="screen_sign_in">Sign In</string>

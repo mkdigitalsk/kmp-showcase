@@ -1,14 +1,102 @@
 package sk.mkdigital.kmpshowcase.presentation.screen.settings
 
+import app.cash.turbine.test
+import dev.mokkery.answering.calls
+import dev.mokkery.answering.returns
+import dev.mokkery.answering.throws
+import dev.mokkery.everySuspend
+import dev.mokkery.mock
+import dev.mokkery.verify.VerifyMode.Companion.exactly
+import dev.mokkery.verifySuspend
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.test.runTest
 import sk.mkdigital.kmpshowcase.AppConfig
 import sk.mkdigital.kmpshowcase.BuildType
+import sk.mkdigital.kmpshowcase.domain.exceptions.base.ApiException
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.DeleteAccountUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.auth.SignOutUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.base.None
+import sk.mkdigital.kmpshowcase.domain.useCase.settings.GetThemeModeUseCase
+import sk.mkdigital.kmpshowcase.domain.useCase.settings.SetThemeModeUseCase
+import sk.mkdigital.kmpshowcase.presentation.base.BaseViewModelTest
 import sk.mkdigital.kmpshowcase.presentation.foundation.ThemeMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class SettingsViewModelTest {
+class SettingsViewModelTest : BaseViewModelTest() {
+
+    private val getThemeModeUseCase = mock<GetThemeModeUseCase>()
+    private val setThemeModeUseCase = mock<SetThemeModeUseCase>()
+    private val signOutUseCase = mock<SignOutUseCase>()
+    private val deleteAccountUseCase = mock<DeleteAccountUseCase>()
+
+    private fun createViewModel(): SettingsViewModel = SettingsViewModel(
+        getThemeModeUseCase = getThemeModeUseCase,
+        setThemeModeUseCase = setThemeModeUseCase,
+        signOutUseCase = signOutUseCase,
+        deleteAccountUseCase = deleteAccountUseCase,
+        appConfig = AppConfig(BuildType.DEBUG, "1.0.0", "1", "test.example.com"),
+    )
+
+
+    @Test
+    fun `confirming deletion deletes the account and then navigates to sign in`() = runTest {
+        everySuspend { deleteAccountUseCase(None) } returns Unit
+        val viewModel = createViewModel()
+        viewModel.showDeleteAccountDialog()
+
+        viewModel.navEvent.test {
+            viewModel.deleteAccount()
+
+            assertEquals(SettingNavEvents.AccountDeleted, awaitItem())
+        }
+        verifySuspend { deleteAccountUseCase(None) }
+        assertFalse(viewModel.state.value.showDeleteAccountDialog)
+        assertFalse(viewModel.state.value.isDeletingAccount)
+    }
+
+    @Test
+    fun `a failed deletion surfaces the failure message and stays on settings`() = runTest {
+        everySuspend { deleteAccountUseCase(None) } throws ApiException(httpCode = 500, message = "Server error")
+        val viewModel = createViewModel()
+        viewModel.showDeleteAccountDialog()
+
+        viewModel.navEvent.test {
+            viewModel.deleteAccount()
+
+            expectNoEvents()
+        }
+        assertTrue(viewModel.state.value.deleteAccountFailed)
+        assertFalse(viewModel.state.value.isDeletingAccount)
+    }
+
+    @Test
+    fun `deletion in flight marks the confirm button pending and cannot be submitted twice`() = runTest {
+        val serverCall = CompletableDeferred<Unit>()
+        everySuspend { deleteAccountUseCase(None) } calls { serverCall.await() }
+        val viewModel = createViewModel()
+
+        viewModel.deleteAccount()
+        assertTrue(viewModel.state.value.isDeletingAccount)
+        viewModel.deleteAccount()
+        serverCall.complete(Unit)
+
+        verifySuspend(exactly(1)) { deleteAccountUseCase(None) }
+    }
+
+    @Test
+    fun `opening the delete dialog clears a previous failure`() = runTest {
+        everySuspend { deleteAccountUseCase(None) } throws ApiException(httpCode = 500, message = "Server error")
+        val viewModel = createViewModel()
+        viewModel.deleteAccount()
+
+        viewModel.showDeleteAccountDialog()
+
+        assertTrue(viewModel.state.value.showDeleteAccountDialog)
+        assertFalse(viewModel.state.value.deleteAccountFailed)
+    }
 
 
     @Test

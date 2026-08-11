@@ -44,5 +44,13 @@ internal class SettingsScreenPreviewParams : PreviewParameterProvider<SettingsSt
             versionName = "1.0.0",
             versionCode = "1"
         ),
+        SettingsState(
+            themeModeState = ThemeModeState.LIGHT,
+            currentLanguage = LanguageState.EN,
+            showDeleteAccountDialog = true,
+            showCrashButton = false,
+            versionName = "1.0.0",
+            versionCode = "1"
+        ),
     )
 }

@@ -26,6 +26,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.AppAlertDialog
 import sk.mkdigital.kmpshowcase.presentation.component.AppRadioButton
 import sk.mkdigital.kmpshowcase.presentation.component.AvatarState
 import sk.mkdigital.kmpshowcase.presentation.component.AvatarView
+import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButton
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.AppTextButtonError
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconPrimary
@@ -37,22 +38,30 @@ import sk.mkdigital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLa
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLargePrimary
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodySmall.TextBodySmallNeutral80
+import sk.mkdigital.kmpshowcase.presentation.component.text.labelLarge.TextLabelLargeError
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargePrimary
 import sk.mkdigital.kmpshowcase.presentation.foundation.ThemeMode
 import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
 import sk.mkdigital.kmpshowcase.presentation.foundation.space2
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.material3.MaterialTheme
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodySmall.TextBodySmall
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
+import sk.mkdigital.kmpshowcase.shared.generated.resources.button_cancel
 import sk.mkdigital.kmpshowcase.shared.generated.resources.mk_digital_lockup
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about_tagline
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_about_web
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_appearance
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_confirm
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_error
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_message
+import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_delete_account_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_sign_out
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_profile
 import sk.mkdigital.kmpshowcase.shared.generated.resources.settings_profile_photo
@@ -94,6 +103,9 @@ fun SettingsScreen(
         onLanguageNavEvent = viewModel::onLanguageNavEvent,
         onTriggerTestCrash = viewModel::triggerTestCrash,
         onSignOut = viewModel::signOut,
+        onDeleteAccountClick = viewModel::showDeleteAccountDialog,
+        onDeleteAccountConfirm = viewModel::deleteAccount,
+        onDeleteAccountDismiss = viewModel::hideDeleteAccountDialog,
         onThemeSelected = { themeModeState ->
             viewModel.setThemeMode(themeModeState)
             viewModel.hideThemeDialog()
@@ -114,6 +126,9 @@ fun SettingsScreen(
     onLanguageNavEvent: (SettingNavEvents) -> Unit = {},
     onTriggerTestCrash: () -> Unit = {},
     onSignOut: () -> Unit = {},
+    onDeleteAccountClick: () -> Unit = {},
+    onDeleteAccountConfirm: () -> Unit = {},
+    onDeleteAccountDismiss: () -> Unit = {},
     onThemeSelected: (ThemeModeState) -> Unit = {},
     onThemeDialogDismiss: () -> Unit = {},
     onWebClick: () -> Unit = {},
@@ -221,11 +236,29 @@ fun SettingsScreen(
         }
 
         item {
-            AppTextButtonError(
+            AppTextButton(
                 text = stringResource(Res.string.settings_sign_out),
                 onClick = onSignOut,
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+
+        item {
+            AppTextButtonError(
+                text = stringResource(Res.string.settings_delete_account),
+                onClick = onDeleteAccountClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        if (state.deleteAccountFailed) {
+            item {
+                TextLabelLargeError(
+                    text = stringResource(Res.string.settings_delete_account_error),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 
@@ -236,6 +269,37 @@ fun SettingsScreen(
             onDismiss = onThemeDialogDismiss
         )
     }
+
+    if (state.showDeleteAccountDialog) {
+        DeleteAccountDialog(
+            deleting = state.isDeletingAccount,
+            onConfirm = onDeleteAccountConfirm,
+            onDismiss = onDeleteAccountDismiss
+        )
+    }
+}
+
+@Composable
+private fun DeleteAccountDialog(
+    deleting: Boolean,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AppAlertDialog(
+        title = stringResource(Res.string.settings_delete_account_title),
+        text = stringResource(Res.string.settings_delete_account_message),
+        onDismissRequest = onDismiss,
+        dismissButton = {
+            AppTextButton(text = stringResource(Res.string.button_cancel), onClick = onDismiss)
+        },
+        confirmButton = {
+            AppTextButtonError(
+                text = stringResource(Res.string.settings_delete_account_confirm),
+                onClick = onConfirm,
+                loading = deleting
+            )
+        }
+    )
 }
 
 @Composable
@@ -368,7 +432,7 @@ private fun SettingsNavEvents(
         when (event) {
             is SettingNavEvents.SetLocaleTag -> onSetLocale?.invoke(event.tag)
             is SettingNavEvents.ToSettings -> router.openSettings()
-            is SettingNavEvents.SignOut -> router.navigateTo(
+            is SettingNavEvents.SignOut, is SettingNavEvents.AccountDeleted -> router.navigateTo(
                 Route.SignIn,
                 popUpTo = Route.HomeSection.Home::class,
                 inclusive = true
