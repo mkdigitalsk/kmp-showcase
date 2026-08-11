@@ -155,8 +155,20 @@
     <string name="calendar_range_format">From: %1$s\nTo: %2$s</string>
 
     <!-- Networking Screen -->
-    <string name="networking_title">Users</string>
-    <string name="networking_empty">No users found</string>
+    <string name="networking_title">Notes on the server</string>
+    <string name="networking_subtitle">A remote server demonstration — these notes live in the API and follow your account to any device.</string>
+    <string name="networking_empty">No notes yet — add one above</string>
+    <string name="networking_note_title">Title</string>
+    <string name="networking_content">Content</string>
+    <string name="networking_add">Add note</string>
+    <string name="networking_edit">Edit note</string>
+    <string name="networking_delete">Delete note</string>
+    <string name="networking_save">Save</string>
+    <string name="networking_cancel">Cancel</string>
+    <string name="networking_conflict_title">This note changed elsewhere</string>
+    <string name="networking_conflict_text">The server now holds \"%1$s\". Choose which version to keep.</string>
+    <string name="networking_conflict_keep">Keep mine</string>
+    <string name="networking_conflict_discard">Discard mine</string>
 
     <!-- Storage Screen -->
     <string name="storage_title">Local Storage</string>

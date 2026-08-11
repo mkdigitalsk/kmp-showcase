@@ -17,6 +17,8 @@ import sk.mkdigital.kmpshowcase.data.local.preferences.SessionPreferencesImpl
 import sk.mkdigital.kmpshowcase.data.network.HttpClientProvider
 import sk.mkdigital.kmpshowcase.data.client.AuthClient
 import sk.mkdigital.kmpshowcase.data.client.AuthClientImpl
+import sk.mkdigital.kmpshowcase.data.client.RemoteNoteClient
+import sk.mkdigital.kmpshowcase.data.client.RemoteNoteClientImpl
 import sk.mkdigital.kmpshowcase.data.client.UserClient
 import sk.mkdigital.kmpshowcase.data.client.UserClientImpl
 import sk.mkdigital.kmpshowcase.data.repository.AuthRepositoryImpl
@@ -28,6 +30,7 @@ import sk.mkdigital.kmpshowcase.data.repository.NoteRepositoryImpl
 import sk.mkdigital.kmpshowcase.data.repository.NotificationRepositoryImpl
 import sk.mkdigital.kmpshowcase.data.repository.SettingsRepositoryImpl
 import sk.mkdigital.kmpshowcase.data.repository.StorageRepositoryImpl
+import sk.mkdigital.kmpshowcase.data.repository.RemoteNoteRepositoryImpl
 import sk.mkdigital.kmpshowcase.data.repository.UserRepositoryImpl
 import sk.mkdigital.kmpshowcase.di.Qualifiers.app
 import sk.mkdigital.kmpshowcase.di.Qualifiers.session
@@ -40,6 +43,7 @@ import sk.mkdigital.kmpshowcase.domain.repository.NoteRepository
 import sk.mkdigital.kmpshowcase.domain.repository.NotificationRepository
 import sk.mkdigital.kmpshowcase.domain.repository.SettingsRepository
 import sk.mkdigital.kmpshowcase.domain.repository.StorageRepository
+import sk.mkdigital.kmpshowcase.domain.repository.RemoteNoteRepository
 import sk.mkdigital.kmpshowcase.domain.repository.UserRepository
 import sk.mkdigital.kmpshowcase.util.DefaultDispatcherProvider
 import sk.mkdigital.kmpshowcase.util.DispatcherProvider
@@ -52,8 +56,10 @@ val dataModule = module {
     single { provideHttpClient(get(), get<AppConfig>().baseUrl) }
     singleOf(::AuthClientImpl) { bind<AuthClient>() }
     singleOf(::UserClientImpl) { bind<UserClient>() }
+    singleOf(::RemoteNoteClientImpl) { bind<RemoteNoteClient>() }
     singleOf(::AuthRepositoryImpl) { bind<AuthRepository>() }
     singleOf(::UserRepositoryImpl) { bind<UserRepository>() }
+    singleOf(::RemoteNoteRepositoryImpl) { bind<RemoteNoteRepository>() }
 
     // Qualified preferences - need explicit qualifier
     single<SessionPreferences> { SessionPreferencesImpl(get(session)) }

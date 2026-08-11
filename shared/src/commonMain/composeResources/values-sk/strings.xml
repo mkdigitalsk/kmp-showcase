@@ -154,8 +154,20 @@
     <string name="calendar_range_format">Od: %1$s\nDo: %2$s</string>
 
     <!-- Networking Screen -->
-    <string name="networking_title">Používatelia</string>
-    <string name="networking_empty">Žiadni používatelia neboli nájdení</string>
+    <string name="networking_title">Poznámky na serveri</string>
+    <string name="networking_subtitle">Ukážka práce so vzdialeným serverom — tieto poznámky žijú v API a sprevádzajú váš účet na každom zariadení.</string>
+    <string name="networking_empty">Zatiaľ žiadne poznámky — pridajte ju vyššie</string>
+    <string name="networking_note_title">Názov</string>
+    <string name="networking_content">Obsah</string>
+    <string name="networking_add">Pridať poznámku</string>
+    <string name="networking_edit">Upraviť poznámku</string>
+    <string name="networking_delete">Odstrániť poznámku</string>
+    <string name="networking_save">Uložiť</string>
+    <string name="networking_cancel">Zrušiť</string>
+    <string name="networking_conflict_title">Poznámka sa medzitým zmenila</string>
+    <string name="networking_conflict_text">Na serveri je teraz \"%1$s\". Vyberte si, ktorú verziu ponechať.</string>
+    <string name="networking_conflict_keep">Ponechať moju</string>
+    <string name="networking_conflict_discard">Zahodiť moju</string>
 
     <!-- Storage Screen -->
     <string name="storage_title">Lokálne úložisko</string>
