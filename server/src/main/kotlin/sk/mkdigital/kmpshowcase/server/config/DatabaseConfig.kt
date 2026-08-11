@@ -25,7 +25,7 @@ internal object DatabaseConfig {
     }
 
     private fun hikari(appConfig: ApplicationConfig): HikariDataSource {
-        val isH2 = appConfig.property("database.useH2").getString().toBoolean()
+        val isH2 = appConfig.useH2()
 
         val config = HikariConfig().apply {
             if (isH2) {

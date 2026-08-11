@@ -12,7 +12,7 @@ jwt:
   audience: "$JWT_AUDIENCE:mkdigital-showcase-users"
 
 database:
-  useH2: "$USE_H2:true"
+  useH2: "$USE_H2"
   url: "$DATABASE_URL:jdbc:postgresql://localhost:5432/showcase"
   user: "$DATABASE_USER:postgres"
   password: "$DATABASE_PASSWORD:postgres"

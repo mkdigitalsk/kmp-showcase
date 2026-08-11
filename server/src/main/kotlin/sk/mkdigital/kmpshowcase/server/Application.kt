@@ -1,6 +1,7 @@
 package sk.mkdigital.kmpshowcase.server
 
 import sk.mkdigital.kmpshowcase.server.config.DatabaseConfig
+import sk.mkdigital.kmpshowcase.server.config.useH2
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
 import sk.mkdigital.kmpshowcase.server.di.AppDependencies
 import sk.mkdigital.kmpshowcase.server.plugins.configureAuth
@@ -23,7 +24,7 @@ internal fun Application.module() {
     logger.info("Server starting...")
     val config = environment.config
 
-    val isH2 = config.property("database.useH2").getString().toBoolean()
+    val isH2 = config.useH2()
     check(isH2 || System.getenv("JWT_SECRET") != null) {
         "JWT_SECRET must be set when running against a production database"
     }
