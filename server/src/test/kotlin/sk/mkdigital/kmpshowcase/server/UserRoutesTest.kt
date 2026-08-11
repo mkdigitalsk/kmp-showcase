@@ -152,6 +152,21 @@ class UserRoutesTest {
     }
 
     @Test
+    fun `a field equal to its default is still on the wire`() = usersTest {
+        val jsonClient = createClient { install(ContentNegotiation) { json() } }
+
+        val response = jsonClient.post("${ApiVersion.BASE}/auth/sign-up") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"email":"wire-${UUID.randomUUID()}@test.com","password":"Password1@"}""")
+        }
+
+        assertTrue(
+            "\"demo\"" in response.bodyAsText(),
+            "a client that does not share the contract cannot supply the default it never received",
+        )
+    }
+
+    @Test
     fun `an unknown field in the sign-up body cannot reach the account`() = usersTest {
         val jsonClient = createClient { install(ContentNegotiation) { json() } }
         val email = "signup-${UUID.randomUUID()}@test.com"

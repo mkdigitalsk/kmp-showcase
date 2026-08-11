@@ -12,6 +12,9 @@ internal fun Application.configureSerialization() {
             prettyPrint = true
             isLenient = true
             ignoreUnknownKeys = true
+            // Off by default, which drops every property equal to its declared default — so a contract
+            // field written as `= false` reaches a client that does not share the contract as absent.
+            encodeDefaults = true
         })
     }
 }
