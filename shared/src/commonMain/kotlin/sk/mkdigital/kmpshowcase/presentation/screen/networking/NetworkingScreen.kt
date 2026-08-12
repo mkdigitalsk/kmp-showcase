@@ -106,6 +106,7 @@ fun NetworkingScreen(
 }
 
 @Composable
+@Suppress("LongParameterList")
 private fun NotesList(
     state: NetworkingUiState,
     onRefresh: () -> Unit,

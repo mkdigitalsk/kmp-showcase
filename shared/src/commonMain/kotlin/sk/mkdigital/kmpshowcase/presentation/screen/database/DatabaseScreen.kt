@@ -159,6 +159,7 @@ fun DatabaseScreen(
 }
 
 @Composable
+@Suppress("LongParameterList")
 private fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,

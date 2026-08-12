@@ -11,6 +11,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.permission.PermissionView
 import sk.mkdigital.kmpshowcase.presentation.component.permission.galleryRequiresPermission
 
 @Composable
+@Suppress("LongParameterList")
 fun ImagePickerView(
     state: ImagePickerState,
     onImageLoading: () -> Unit,
