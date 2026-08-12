@@ -7,6 +7,7 @@ import sk.mkdigital.kmpshowcase.data.local.preferences.SessionPreferences
 import sk.mkdigital.kmpshowcase.domain.model.AuthSession
 import sk.mkdigital.kmpshowcase.domain.repository.AuthRepository
 import sk.mkdigital.kmpshowcase.domain.repository.NoteRepository
+import sk.mkdigital.kmpshowcase.util.suspendRunCatching
 
 class AuthRepositoryImpl(
     private val client: AuthClient,
@@ -31,7 +32,7 @@ class AuthRepositoryImpl(
 
     override suspend fun signInWithToken(): AuthSession? {
         val token = preferences.getToken() ?: return null
-        return runCatching { client.me(token).toAuthSession() }
+        return suspendRunCatching { client.me(token).toAuthSession() }
             .onSuccess { persist(it) }
             .getOrNull()
     }
@@ -42,7 +43,7 @@ class AuthRepositoryImpl(
     // cannot turn a completed erasure into "deletion failed" and park the person on a dead account.
     override suspend fun deleteAccount() {
         client.deleteAccount()
-        runCatching { clearLocalUserData() }
+        suspendRunCatching { clearLocalUserData() }
     }
 
     override suspend fun getToken(): String? = preferences.getToken()
@@ -57,8 +58,8 @@ class AuthRepositoryImpl(
     // The token clears last, and is the only clear worth failing on — a wipe that keeps the session alive
     // is retried on the next attempt, one that drops it strands the previous account's data on the device.
     private suspend fun clearLocalUserData() {
-        runCatching { noteRepository.deleteAll() }
-        runCatching { sessionPreferences.clear() }
+        suspendRunCatching { noteRepository.deleteAll() }
+        suspendRunCatching { sessionPreferences.clear() }
         preferences.clearUserData()
     }
 }

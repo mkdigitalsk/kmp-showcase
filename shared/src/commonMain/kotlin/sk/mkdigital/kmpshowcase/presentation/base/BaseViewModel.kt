@@ -2,6 +2,7 @@ package sk.mkdigital.kmpshowcase.presentation.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -100,6 +101,8 @@ abstract class BaseViewModel<STATE : Any>(
     ): Job = scope.launch {
         try {
             onStart?.invoke()
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: BaseException) {
             logger.e("${tag}: ${e.message}", e)
             onError(e)
