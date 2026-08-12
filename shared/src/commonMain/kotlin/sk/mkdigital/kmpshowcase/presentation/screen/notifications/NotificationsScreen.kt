@@ -34,7 +34,6 @@ import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
-import sk.mkdigital.kmpshowcase.presentation.component.text.headlineMedium.TextHeadlineMediumPrimary
 import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
 import sk.mkdigital.kmpshowcase.shared.generated.resources.Res
@@ -108,8 +107,7 @@ fun NotificationsScreen(
     ) {
         item {
             Column {
-                TextHeadlineMediumPrimary(stringResource(Res.string.notifications_title))
-                TextBodyMediumNeutral80(stringResource(Res.string.notifications_subtitle))
+                TextBodyLargeNeutral80(stringResource(Res.string.notifications_subtitle))
             }
         }
 

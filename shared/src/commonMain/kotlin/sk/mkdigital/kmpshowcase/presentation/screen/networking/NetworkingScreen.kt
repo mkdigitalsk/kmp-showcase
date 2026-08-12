@@ -36,7 +36,6 @@ import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spac
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
 import sk.mkdigital.kmpshowcase.presentation.component.text
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
-import sk.mkdigital.kmpshowcase.presentation.component.text.headlineMedium.TextHeadlineMediumPrimary
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
@@ -125,7 +124,6 @@ private fun NotesList(
         item {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
-                    TextHeadlineMediumPrimary(text = stringResource(Res.string.networking_title))
                     TextBodyMediumNeutral80(text = stringResource(Res.string.networking_subtitle))
                 }
                 IconButton(onClick = onRefresh, enabled = !state.isLoading) {

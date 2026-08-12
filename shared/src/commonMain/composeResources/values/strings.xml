@@ -101,7 +101,7 @@
     <string name="segment_month">Month</string>
 
     <!-- Database Screen -->
-    <string name="database_title">Database</string>
+    <string name="database_subtitle">SQLDelight database with CRUD operations, search, and sorting</string>
     <string name="database_title_label">Title</string>
     <string name="database_title_hint">Enter note title…</string>
     <string name="database_content_label">Content</string>

@@ -100,7 +100,7 @@
     <string name="segment_month">Mesiac</string>
 
     <!-- Database Screen -->
-    <string name="database_title">Databáza</string>
+    <string name="database_subtitle">Databáza SQLDelight s operáciami CRUD, vyhľadávaním a triedením</string>
     <string name="database_title_label">Nadpis</string>
     <string name="database_title_hint">Zadajte nadpis poznámky…</string>
     <string name="database_content_label">Obsah</string>

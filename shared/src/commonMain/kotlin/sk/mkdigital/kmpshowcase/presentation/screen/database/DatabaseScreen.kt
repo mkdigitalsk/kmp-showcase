@@ -32,6 +32,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.buttons.OutlinedButton
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
+import sk.mkdigital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodySmall.TextBodySmallNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.labelMedium.TextLabelMediumNeutral80
@@ -48,6 +49,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.database_empty
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_error
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_filter
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_search_hint
+import sk.mkdigital.kmpshowcase.shared.generated.resources.database_subtitle
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_sort_by
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_sort_date_newest
 import sk.mkdigital.kmpshowcase.shared.generated.resources.database_sort_date_oldest
@@ -98,6 +100,10 @@ fun DatabaseScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(space4)
     ) {
+        item {
+            TextBodyLargeNeutral80(stringResource(Res.string.database_subtitle))
+        }
+
         item {
             SearchBar(
                 query = state.searchQuery,
