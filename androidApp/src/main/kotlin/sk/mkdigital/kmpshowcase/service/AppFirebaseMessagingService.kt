@@ -15,6 +15,7 @@ import sk.mkdigital.kmpshowcase.domain.repository.LocalNotificationService
 import sk.mkdigital.kmpshowcase.domain.repository.PushNotificationService
 import org.koin.android.ext.android.inject
 
+@Suppress("InjectDispatcher")
 class AppFirebaseMessagingService : FirebaseMessagingService() {
 
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -44,8 +45,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
         val body = remoteMessage.notification?.body
             ?: remoteMessage.data[KEY_BODY]
-            ?: remoteMessage.data[KEY_MESSAGE]
-            ?: ""
+            ?: remoteMessage.data[KEY_MESSAGE].orEmpty()
 
         val deepLink = remoteMessage.data[KEY_DEEP_LINK]
 

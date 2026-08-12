@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import sk.mkdigital.kmpshowcase.domain.model.Notification
-import sk.mkdigital.kmpshowcase.domain.model.NotificationChannel
 import sk.mkdigital.kmpshowcase.domain.repository.LocalNotificationService
 import sk.mkdigital.kmpshowcase.domain.repository.PushNotificationService
 import sk.mkdigital.kmpshowcase.domain.repository.PushPermissionStatus

@@ -30,18 +30,17 @@ subprojects {
     // Per subproject: detekt derives type-resolution tasks from Kotlin compilations, and the root has none.
     apply(plugin = "dev.detekt")
 
-    // A multiplatform module has no src/main/kotlin, so the aggregate task finds nothing and reports
-    // NO-SOURCE — a green gate over an unread module. The per-source-set tasks are the ones with source.
-    plugins.withId("org.jetbrains.kotlin.multiplatform") {
-        tasks.named("detekt") {
-            dependsOn(
-                tasks.matching { task ->
-                    task.name.startsWith("detekt") &&
-                        task.name.endsWith("SourceSet") &&
-                        !task.name.startsWith("detektBaseline")
-                }
-            )
-        }
+    // detekt skips type-resolution rules silently, so the per-compilation tasks matter; the source-set
+    // ones are what reaches Kotlin/Native.
+    tasks.named("detekt") {
+        dependsOn(
+            tasks.matching { task ->
+                task.name.startsWith("detekt") &&
+                    task.name != "detekt" &&
+                    !task.name.startsWith("detektBaseline") &&
+                    !task.name.startsWith("detektGenerateConfig")
+            }
+        )
     }
 
     extensions.configure<DetektExtension> {
