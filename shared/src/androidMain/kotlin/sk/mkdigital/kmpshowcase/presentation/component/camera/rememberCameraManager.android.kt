@@ -28,9 +28,10 @@ actual fun rememberCameraManager(onResult: (ImageResult?) -> Unit): CameraManage
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
-        if (success && imageUri != null) {
-            val byteArray = BitmapUtils.getByteArray(imageUri!!, contentResolver)
-            val bitmap = BitmapUtils.getBitmapFromUri(imageUri!!, byteArray, contentResolver)
+        val capturedUri = imageUri
+        if (success && capturedUri != null) {
+            val byteArray = BitmapUtils.getByteArray(capturedUri, contentResolver)
+            val bitmap = BitmapUtils.getBitmapFromUri(capturedUri, byteArray, contentResolver)
                 ?.asImageBitmap()
             onResult(bitmap?.let { ImageResult(byteArray, it) })
         } else {

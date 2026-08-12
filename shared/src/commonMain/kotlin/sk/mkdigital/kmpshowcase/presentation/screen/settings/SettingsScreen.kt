@@ -89,9 +89,10 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val imagePickerState by imagePickerViewModel.state.collectAsStateWithLifecycle()
 
+    val avatarBitmap = imagePickerState.imageBitmap
     val avatarState = when {
         imagePickerState.isLoading -> AvatarState.Loading
-        imagePickerState.imageBitmap != null -> AvatarState.Loaded(imagePickerState.imageBitmap!!)
+        avatarBitmap != null -> AvatarState.Loaded(avatarBitmap)
         else -> AvatarState.Empty
     }
 
