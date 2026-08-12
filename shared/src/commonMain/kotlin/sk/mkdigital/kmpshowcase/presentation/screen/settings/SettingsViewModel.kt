@@ -93,7 +93,7 @@ class SettingsViewModel(
     fun setThemeMode(themeModeState: ThemeModeState) {
         execute(
             action = { setThemeModeUseCase(themeModeState.mode) },
-            onSuccess = {
+            onSuccess = { _ ->
                 newState { it.copy(themeModeState = themeModeState) }
                 navigate(SettingNavEvents.ThemeChanged(themeModeState.mode))
             }
@@ -136,11 +136,11 @@ class SettingsViewModel(
         execute(
             action = { deleteAccountUseCase() },
             onLoading = { newState { it.copy(isDeletingAccount = true, deleteAccountFailed = false) } },
-            onSuccess = {
+            onSuccess = { _ ->
                 newState { it.copy(isDeletingAccount = false, showDeleteAccountDialog = false) }
                 navigate(SettingNavEvents.AccountDeleted)
             },
-            onError = {
+            onError = { _ ->
                 newState {
                     it.copy(
                         isDeletingAccount = false,

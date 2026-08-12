@@ -39,7 +39,7 @@ class NetworkingViewModel(
         execute(
             action = { createRemoteNoteUseCase(CreateRemoteNoteUseCase.Params(title, content)) },
             onLoading = { newState { it.copy(isSaving = true, error = null) } },
-            onSuccess = { newState { it.copy(isSaving = false) }; fetchNotes() },
+            onSuccess = { _ -> newState { it.copy(isSaving = false) }; fetchNotes() },
             onError = { error -> newState { it.copy(isSaving = false, error = error.toAppError()) } },
         )
     }
@@ -48,7 +48,7 @@ class NetworkingViewModel(
         execute(
             action = { updateRemoteNoteUseCase(UpdateRemoteNoteUseCase.Params(id, title, content, etag)) },
             onLoading = { newState { it.copy(isSaving = true, error = null, conflict = null) } },
-            onSuccess = { newState { it.copy(isSaving = false, editing = null) }; fetchNotes() },
+            onSuccess = { _ -> newState { it.copy(isSaving = false, editing = null) }; fetchNotes() },
             onError = { error ->
                 newState {
                     if (error is NoteConflictException) {

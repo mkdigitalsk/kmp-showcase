@@ -49,7 +49,7 @@ class SignUpViewModel(
         execute(
             action = { signUpUseCase(SignUpUseCase.Params(email, password)) },
             onLoading = { newState { it.copy(isLoading = true) } },
-            onSuccess = {
+            onSuccess = { _ ->
                 newState { it.copy(isLoading = false) }
                 navigate(SignUpNavEvent.ToHome)
             },
