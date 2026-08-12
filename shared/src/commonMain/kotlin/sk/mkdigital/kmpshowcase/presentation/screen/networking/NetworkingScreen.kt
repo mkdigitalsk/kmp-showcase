@@ -35,6 +35,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
 import sk.mkdigital.kmpshowcase.presentation.component.text
+import sk.mkdigital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.foundation.floatingNavBarSpace
@@ -53,7 +54,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_empty
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_refresh
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_save
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_subtitle
-import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.networking_note_title
 
 @Composable
@@ -122,11 +122,13 @@ private fun NotesList(
         verticalArrangement = Arrangement.spacedBy(space4),
     ) {
         item {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.weight(1f)) {
-                    TextBodyMediumNeutral80(text = stringResource(Res.string.networking_subtitle))
-                }
-                IconButton(onClick = onRefresh, enabled = !state.isLoading) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                TextBodyLargeNeutral80(text = stringResource(Res.string.networking_subtitle))
+                IconButton(
+                    onClick = onRefresh,
+                    enabled = !state.isLoading,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
                     Icon(Icons.Default.Refresh, contentDescription = stringResource(Res.string.networking_refresh))
                 }
             }

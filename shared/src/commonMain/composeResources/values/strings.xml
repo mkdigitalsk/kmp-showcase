@@ -120,7 +120,6 @@
     <string name="database_error">Failed to load notes. Please try again.</string>
 
     <!-- Calendar Screen -->
-    <string name="calendar_title">Date Range Picker</string>
     <string name="calendar_subtitle">Select a date range by clicking two dates</string>
     <string name="calendar_selected_range">Selected Range</string>
     <string name="calendar_clear_selection">Clear Selection</string>
@@ -155,7 +154,6 @@
     <string name="calendar_range_format">From: %1$s\nTo: %2$s</string>
 
     <!-- Networking Screen -->
-    <string name="networking_title">Notes on the server</string>
     <string name="networking_subtitle">A remote server demonstration — these notes live in the API and follow your account to any device.</string>
     <string name="networking_empty">No notes yet — add one above</string>
     <string name="networking_note_title">Title</string>
@@ -172,7 +170,6 @@
     <string name="networking_conflict_discard">Discard mine</string>
 
     <!-- Storage Screen -->
-    <string name="storage_title">Local Storage</string>
     <string name="storage_subtitle">Session vs Persistent storage demo</string>
     <string name="storage_session_label">Session Counter</string>
     <string name="storage_session_hint">Cleared when you tap "Clear Session"</string>
@@ -181,7 +178,6 @@
     <string name="storage_clear_session">Clear Session</string>
 
     <!-- Platform APIs Screen -->
-    <string name="platform_apis_title">Platform APIs</string>
     <string name="platform_apis_subtitle">Native platform integrations via expect/actual</string>
     <string name="platform_apis_share_title">Share</string>
     <string name="platform_apis_share_action">Share Text</string>
@@ -222,7 +218,6 @@
     <string name="platform_apis_demo_copy_text">Text copied from KMP Showcase</string>
 
     <!-- Scanner Screen -->
-    <string name="scanner_title">Scanner</string>
     <string name="scanner_subtitle">Generate and scan QR codes &amp; barcodes</string>
     <string name="scanner_mode_generate">Generate</string>
     <string name="scanner_mode_scan">Scan</string>
@@ -237,7 +232,6 @@
     <string name="scanner_scan_again">Scan Again</string>
 
     <!-- Notifications Screen -->
-    <string name="notifications_title">Notifications</string>
     <string name="notifications_subtitle">Test local and push notifications</string>
     <string name="notifications_permission_title">Permission</string>
     <string name="notifications_permission_granted">Status: Granted</string>

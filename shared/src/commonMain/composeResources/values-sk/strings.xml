@@ -119,7 +119,6 @@
     <string name="database_error">Nepodarilo sa načítať poznámky. Skúste to prosím znova.</string>
 
     <!-- Calendar Screen -->
-    <string name="calendar_title">Výber rozsahu dátumov</string>
     <string name="calendar_subtitle">Vyberte rozsah dátumov kliknutím na dva dátumy</string>
     <string name="calendar_selected_range">Vybraný rozsah</string>
     <string name="calendar_clear_selection">Vymazať výber</string>
@@ -154,7 +153,6 @@
     <string name="calendar_range_format">Od: %1$s\nDo: %2$s</string>
 
     <!-- Networking Screen -->
-    <string name="networking_title">Poznámky na serveri</string>
     <string name="networking_subtitle">Ukážka práce so vzdialeným serverom — tieto poznámky žijú v API a sprevádzajú váš účet na každom zariadení.</string>
     <string name="networking_empty">Zatiaľ žiadne poznámky — pridajte ju vyššie</string>
     <string name="networking_note_title">Názov</string>
@@ -171,7 +169,6 @@
     <string name="networking_conflict_discard">Zahodiť moju</string>
 
     <!-- Storage Screen -->
-    <string name="storage_title">Lokálne úložisko</string>
     <string name="storage_subtitle">Demo session vs trvalé úložisko</string>
     <string name="storage_session_label">Počítadlo relácie</string>
     <string name="storage_session_hint">Vymazané po kliknutí na "Vymazať reláciu"</string>
@@ -180,7 +177,6 @@
     <string name="storage_clear_session">Vymazať reláciu</string>
 
     <!-- Platform APIs Screen -->
-    <string name="platform_apis_title">Platform APIs</string>
     <string name="platform_apis_subtitle">Natívne integrácie cez expect/actual</string>
     <string name="platform_apis_share_title">Zdieľanie</string>
     <string name="platform_apis_share_action">Zdieľať text</string>
@@ -221,7 +217,6 @@
     <string name="platform_apis_demo_copy_text">Text skopírovaný z KMP Showcase</string>
 
     <!-- Scanner Screen -->
-    <string name="scanner_title">Skener</string>
     <string name="scanner_subtitle">Generovanie a skenovanie QR kódov a čiarových kódov</string>
     <string name="scanner_mode_generate">Generovať</string>
     <string name="scanner_mode_scan">Skenovať</string>
@@ -236,7 +231,6 @@
     <string name="scanner_scan_again">Skenovať znova</string>
 
     <!-- Notifications Screen -->
-    <string name="notifications_title">Notifikácie</string>
     <string name="notifications_subtitle">Test lokálnych a push notifikácií</string>
     <string name="notifications_permission_title">Povolenie</string>
     <string name="notifications_permission_granted">Stav: Povolené</string>

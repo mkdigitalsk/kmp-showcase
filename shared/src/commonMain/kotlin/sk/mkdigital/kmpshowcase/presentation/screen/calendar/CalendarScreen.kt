@@ -31,7 +31,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.calendar_selected_ran
 import sk.mkdigital.kmpshowcase.shared.generated.resources.calendar_single_date
 import sk.mkdigital.kmpshowcase.shared.generated.resources.calendar_start_date
 import sk.mkdigital.kmpshowcase.shared.generated.resources.calendar_subtitle
-import sk.mkdigital.kmpshowcase.shared.generated.resources.calendar_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

@@ -35,7 +35,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.storage_persistent_la
 import sk.mkdigital.kmpshowcase.shared.generated.resources.storage_session_hint
 import sk.mkdigital.kmpshowcase.shared.generated.resources.storage_session_label
 import sk.mkdigital.kmpshowcase.shared.generated.resources.storage_subtitle
-import sk.mkdigital.kmpshowcase.shared.generated.resources.storage_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

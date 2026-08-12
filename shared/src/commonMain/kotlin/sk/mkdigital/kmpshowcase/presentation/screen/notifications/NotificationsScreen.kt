@@ -58,7 +58,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.notifications_send_pr
 import sk.mkdigital.kmpshowcase.shared.generated.resources.notifications_send_reminder
 import sk.mkdigital.kmpshowcase.shared.generated.resources.notifications_send_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.notifications_subtitle
-import sk.mkdigital.kmpshowcase.shared.generated.resources.notifications_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.notifications_token
 import sk.mkdigital.kmpshowcase.shared.generated.resources.notifications_token_title
 import org.jetbrains.compose.resources.stringResource

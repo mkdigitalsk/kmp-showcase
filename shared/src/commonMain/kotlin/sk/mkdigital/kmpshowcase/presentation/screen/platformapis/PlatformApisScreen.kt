@@ -86,7 +86,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_locatio
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_share_action
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_share_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_subtitle
-import sk.mkdigital.kmpshowcase.shared.generated.resources.platform_apis_title
 import org.jetbrains.compose.resources.stringResource
 
 @Suppress("CyclomaticComplexMethod", "CognitiveComplexMethod")

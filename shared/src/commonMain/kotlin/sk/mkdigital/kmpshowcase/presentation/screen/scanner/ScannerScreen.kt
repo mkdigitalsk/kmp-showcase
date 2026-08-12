@@ -51,7 +51,6 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.scanner_result_title
 import sk.mkdigital.kmpshowcase.shared.generated.resources.scanner_scan_again
 import sk.mkdigital.kmpshowcase.shared.generated.resources.scanner_scanned_result
 import sk.mkdigital.kmpshowcase.shared.generated.resources.scanner_subtitle
-import sk.mkdigital.kmpshowcase.shared.generated.resources.scanner_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
