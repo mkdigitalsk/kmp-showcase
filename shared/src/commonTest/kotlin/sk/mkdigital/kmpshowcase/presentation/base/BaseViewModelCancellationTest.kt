@@ -28,7 +28,7 @@ class BaseViewModelCancellationTest : BaseViewModelTest() {
         )
     }
 
-    // Cancelling a ViewModel job must unwind it, not surface to the user as a failed operation.
+    // Cancelling a ViewModel job unwinds it; the user sees no failure.
     @Test
     fun `cancelling an operation reports neither success nor error`() = runTest {
         val viewModel = TestViewModel()
