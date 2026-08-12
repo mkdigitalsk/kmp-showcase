@@ -25,6 +25,7 @@ interface ScreenLifecycle {
     fun onPaused() {}
 }
 
+@Suppress("AbstractClassCanBeConcreteClass")
 abstract class BaseViewModel<STATE : Any>(
     defaultState: STATE,
 ) : ViewModel(), ScreenLifecycle, KoinComponent {
