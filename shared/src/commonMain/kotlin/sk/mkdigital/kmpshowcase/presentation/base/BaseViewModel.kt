@@ -2,7 +2,6 @@ package sk.mkdigital.kmpshowcase.presentation.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,6 +17,7 @@ import sk.mkdigital.kmpshowcase.domain.exceptions.base.UnknownException
 import sk.mkdigital.kmpshowcase.util.Logger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import sk.mkdigital.kmpshowcase.util.suspendRunCatching
 
 interface ScreenLifecycle {
     fun onCreated() {}
@@ -73,7 +73,6 @@ abstract class BaseViewModel<STATE : Any>(
         logger.d("Screen: $screenName")
     }
 
-    @Suppress("TooGenericExceptionCaught")
     protected fun <T> execute(
         action: suspend () -> T,
         onLoading: () -> Unit = {},
@@ -81,37 +80,27 @@ abstract class BaseViewModel<STATE : Any>(
         onError: (BaseException) -> Unit = {}
     ): Job = scope.launch {
         onLoading()
-        try {
-            onSuccess(action())
-        } catch (e: BaseException) {
-            logger.e("${tag}: ${e.message}", e)
-            onError(e)
-        } catch (e: Throwable) {
-            logger.e("${tag}: ${e.message}", e)
-            onError(UnknownException(e))
-        }
+        suspendRunCatching { action() }
+            .onSuccess(onSuccess)
+            .onFailure { report(it, onError) }
     }
 
-    @Suppress("TooGenericExceptionCaught")
+    private fun report(error: Throwable, onError: (BaseException) -> Unit) {
+        logger.e("${tag}: ${error.message}", error)
+        onError(error as? BaseException ?: UnknownException(error))
+    }
+
     protected fun <T> observe(
         onStart: (suspend () -> Unit)? = null,
         flow: Flow<T>,
         onEach: (T) -> Unit,
         onError: (BaseException) -> Unit = {}
     ): Job = scope.launch {
-        try {
-            onStart?.invoke()
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: BaseException) {
-            logger.e("${tag}: ${e.message}", e)
-            onError(e)
-            return@launch
-        } catch (e: Throwable) {
-            logger.e("${tag}: ${e.message}", e)
-            onError(UnknownException(e))
-            return@launch
-        }
+        suspendRunCatching { onStart?.invoke() }
+            .onFailure {
+                report(it, onError)
+                return@launch
+            }
         flow.catch { e ->
             when (e) {
                 is BaseException -> {
