@@ -33,7 +33,6 @@ import sk.mkdigital.kmpshowcase.presentation.component.LoadingView
 import sk.mkdigital.kmpshowcase.presentation.component.buttons.ContainedButton
 import sk.mkdigital.kmpshowcase.presentation.component.cards.AppElevatedCard
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer2
-import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
 import sk.mkdigital.kmpshowcase.presentation.component.text
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyLarge.TextBodyLargeNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80

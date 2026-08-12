@@ -2,7 +2,6 @@ package sk.mkdigital.kmpshowcase.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 
 interface DispatcherProvider {
     val io: CoroutineDispatcher

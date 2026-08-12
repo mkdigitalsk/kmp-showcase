@@ -11,7 +11,6 @@ import sk.mkdigital.kmpshowcase.domain.useCase.flashlight.TurnOffFlashlightUseCa
 import sk.mkdigital.kmpshowcase.domain.useCase.location.GetLastKnownLocationUseCase
 import sk.mkdigital.kmpshowcase.domain.useCase.location.ObserveLocationUpdatesUseCase
 import sk.mkdigital.kmpshowcase.presentation.base.BaseViewModel
-import sk.mkdigital.kmpshowcase.presentation.base.toAppError
 import sk.mkdigital.kmpshowcase.presentation.base.NavEvent
 
 @Suppress("LongParameterList", "TooManyFunctions")
