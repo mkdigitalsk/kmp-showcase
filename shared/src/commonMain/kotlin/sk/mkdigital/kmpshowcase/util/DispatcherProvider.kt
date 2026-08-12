@@ -9,6 +9,7 @@ interface DispatcherProvider {
     val main: CoroutineDispatcher
 }
 
+@Suppress("InjectDispatcher")
 class DefaultDispatcherProvider : DispatcherProvider {
     override val io: CoroutineDispatcher = Dispatchers.IO
     override val default: CoroutineDispatcher = Dispatchers.Default
