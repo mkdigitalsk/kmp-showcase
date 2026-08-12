@@ -59,14 +59,13 @@ exceptions:
 
 naming:
   BooleanPropertyNaming:
-    active: true
-    allowedPattern: '^(is|has|are|should|can|was)'
+    active: false
+  NonBooleanPropertyPrefixedWithIs:
+    active: false
   FunctionNaming:
     excludes: *test-sources
     ignoreAnnotated: ['Composable']
   LambdaParameterNaming:
-    active: true
-  NonBooleanPropertyPrefixedWithIs:
     active: true
 
 performance:
