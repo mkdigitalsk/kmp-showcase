@@ -51,7 +51,7 @@ private fun Route.getNote(noteService: NoteService) = get("/{id}") {
     val userId = call.userId() ?: return@get call.respond(HttpStatusCode.Unauthorized)
     val id = call.noteId() ?: return@get call.respond(HttpStatusCode.BadRequest)
     val note = noteService.getOwnedBy(id, userId) ?: return@get call.respond(HttpStatusCode.NotFound)
-    call.respondNote(note.toNoteResponseDTO())
+    respondNote(call, note.toNoteResponseDTO())
 }
 
 private fun Route.createNote(noteService: NoteService) = post {
@@ -77,7 +77,7 @@ private fun Route.updateNote(noteService: NoteService) = put("/{id}") {
     if (expected.isEmpty()) return@put call.respond(PreconditionRequired)
 
     when (val result = noteService.update(id, userId, expected, request.title, request.content)) {
-        is WriteResult.Written -> call.respondNote(result.note.toNoteResponseDTO())
+        is WriteResult.Written -> respondNote(call, result.note.toNoteResponseDTO())
         // The current row rides along so the client can show both versions and let the person choose.
         // Never merged for them — only they know which edit mattered.
         is WriteResult.Stale -> call.respond(HttpStatusCode.PreconditionFailed, result.current.toNoteResponseDTO())
@@ -94,9 +94,9 @@ private fun Route.deleteNote(noteService: NoteService) = delete("/{id}") {
 
 private fun ApplicationCall.noteId(): Long? = parameters["id"]?.toLongOrNull()
 
-private suspend fun ApplicationCall.respondNote(dto: NoteResponseDTO) {
-    response.header(HttpHeaders.ETag, dto.etag)
-    respond(dto)
+private suspend fun respondNote(call: ApplicationCall, dto: NoteResponseDTO) {
+    call.response.header(HttpHeaders.ETag, dto.etag)
+    call.respond(dto)
 }
 
 private fun CreateNoteRequestDTO.validate(): String? = validateFields(title, content)

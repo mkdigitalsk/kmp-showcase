@@ -1,5 +1,6 @@
 package sk.mkdigital.kmpshowcase.server
 
+import kotlinx.coroutines.CancellationException
 import sk.mkdigital.kmpshowcase.server.config.DatabaseConfig
 import sk.mkdigital.kmpshowcase.server.config.useH2
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
@@ -51,12 +52,20 @@ internal fun Application.module() {
     schedulePurge(dependencies)
 }
 
+// The loop outlives any one run: a purge that dies on an unanticipated exception stops retention
+// silently, and nothing else would notice until /purge-status went stale.
+@Suppress("TooGenericExceptionCaught")
 private fun Application.schedulePurge(dependencies: AppDependencies) {
     launch {
         while (isActive) {
-            runCatching { dependencies.inactiveAccountPurge.run() }
-                .onSuccess { removed -> if (removed > 0) logger.info("Purged $removed inactive account(s)") }
-                .onFailure { logger.error("Inactive account purge failed", it) }
+            try {
+                val removed = dependencies.inactiveAccountPurge.run()
+                if (removed > 0) logger.info("Purged $removed inactive account(s)")
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                logger.error("Inactive account purge failed", e)
+            }
             delay(PURGE_INTERVAL)
         }
     }
