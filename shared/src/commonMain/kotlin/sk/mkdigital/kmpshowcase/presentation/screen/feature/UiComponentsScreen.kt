@@ -129,7 +129,7 @@ fun UiComponentsScreen() {
     var textFieldValue by remember { mutableStateOf("") }
     var switchChecked by remember { mutableStateOf(false) }
     var selectedRadioOption by remember { mutableIntStateOf(0) }
-    var selectedChips by remember { mutableStateOf(setOf<Int>()) }
+    var selectedChips by remember { mutableStateOf(emptySet<Int>()) }
     var sliderValue by remember { mutableFloatStateOf(0.5f) }
     var selectedSegment by remember { mutableIntStateOf(0) }
     val snackbarHostState = LocalSnackbarHostState.current

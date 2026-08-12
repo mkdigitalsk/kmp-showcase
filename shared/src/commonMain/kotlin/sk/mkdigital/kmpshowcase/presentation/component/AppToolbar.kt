@@ -34,7 +34,7 @@ fun TopAppBar(
 ) {
     TopAppBar(
         modifier = modifier.fillMaxWidth().statusBarsPadding(),
-        title = { title?.let { Text(text = title, style = MaterialTheme.typography.titleLarge) } },
+        title = { if (title != null) Text(text = title, style = MaterialTheme.typography.titleLarge) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.appColorScheme.brandBar,
             titleContentColor = MaterialTheme.appColorScheme.onBrandBar,
@@ -42,7 +42,7 @@ fun TopAppBar(
             actionIconContentColor = MaterialTheme.appColorScheme.onBrandBar
         ),
         navigationIcon = {
-            navIcon?.let {
+            if (navIcon != null) {
                 Icon(
                     modifier = Modifier.size(space6).noRippleClickable(backClick),
                     imageVector = navIcon,

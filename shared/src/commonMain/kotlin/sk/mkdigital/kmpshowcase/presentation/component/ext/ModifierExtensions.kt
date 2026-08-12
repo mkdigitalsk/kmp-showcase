@@ -1,17 +1,10 @@
 package sk.mkdigital.kmpshowcase.presentation.component.ext
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 
-@Composable
-fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
-    this.clickable(
-        indication = null,
-        interactionSource = remember { MutableInteractionSource() },
-        onClick = onClick
-    )
-}
+fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = clickable(
+    interactionSource = null,
+    indication = null,
+    onClick = onClick
+)
