@@ -9,9 +9,12 @@ interface DispatcherProvider {
     val main: CoroutineDispatcher
 }
 
+/** Kotlin/Native declares `Dispatchers.IO` internal, so the blocking-work dispatcher is per platform. */
+expect val ioDispatcher: CoroutineDispatcher
+
 @Suppress("InjectDispatcher")
 class DefaultDispatcherProvider : DispatcherProvider {
-    override val io: CoroutineDispatcher = Dispatchers.IO
+    override val io: CoroutineDispatcher = ioDispatcher
     override val default: CoroutineDispatcher = Dispatchers.Default
     override val main: CoroutineDispatcher = Dispatchers.Main
 }
