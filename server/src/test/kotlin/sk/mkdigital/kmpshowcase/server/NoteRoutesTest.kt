@@ -4,12 +4,10 @@ import sk.mkdigital.kmpshowcase.contracts.ApiVersion
 import sk.mkdigital.kmpshowcase.contracts.note.CreateNoteRequestDTO
 import sk.mkdigital.kmpshowcase.contracts.note.NoteResponseDTO
 import sk.mkdigital.kmpshowcase.contracts.note.UpdateNoteRequestDTO
-import sk.mkdigital.kmpshowcase.server.config.DatabaseConfig
 import sk.mkdigital.kmpshowcase.server.core.security.JwtConfig
 import sk.mkdigital.kmpshowcase.server.di.AppDependencies
 import sk.mkdigital.kmpshowcase.server.feature.note.persistence.NotesTable
 import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UserRepositoryImpl
-import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UsersTable
 import sk.mkdigital.kmpshowcase.server.plugins.configureAuth
 import sk.mkdigital.kmpshowcase.server.plugins.configureRateLimit
 import sk.mkdigital.kmpshowcase.server.plugins.configureRouting
@@ -33,10 +31,8 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.deleteAll
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import org.testcontainers.containers.PostgreSQLContainer
 import java.util.UUID
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -45,19 +41,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 
-/**
- * ⚠ Real Postgres, not the H2 the other server tests use. The conditional update is one
- * `UPDATE … RETURNING`, which H2 does not have, and H2 answers a concurrent row update with error
- * 90131 where Postgres re-evaluates the predicate — so "no row returned means stale" would pass or
- * fail here for the wrong reason.
- */
 private val PreconditionRequired = HttpStatusCode(428, "Precondition Required")
 
 class NoteRoutesTest {
 
     companion object {
-        private val postgres = PostgreSQLContainer("postgres:16-alpine").apply { start() }
-        private var connected = false
         private val jwtConfig = JwtConfig(
             secret = "test-secret-at-least-32-bytes-long-for-hs256",
             issuer = "kmp-showcase",
@@ -65,31 +53,11 @@ class NoteRoutesTest {
         )
     }
 
-    // The schema comes from DatabaseConfig, the same call production boots with, rather than from a
-    // create() listing the tables this file happens to need. Listing them here would have passed while
-    // the app created no `notes` table at all — which is exactly what shipped.
     @BeforeTest
-    fun setup() {
-        if (!connected) {
-            DatabaseConfig.init(
-                MapApplicationConfig(
-                    "database.useH2" to "false",
-                    "database.url" to postgres.jdbcUrl,
-                    "database.user" to postgres.username,
-                    "database.password" to postgres.password,
-                ),
-            )
-            connected = true
-        }
-    }
+    fun setup() = PostgresTestDb.connect()
 
     @AfterTest
-    fun clear() {
-        transaction {
-            NotesTable.deleteAll()
-            UsersTable.deleteAll()
-        }
-    }
+    fun clear() = PostgresTestDb.clear()
 
     private fun signedIn(): String = runBlocking {
         val user = UserRepositoryImpl().create("note-${UUID.randomUUID()}@test.com", "password123")

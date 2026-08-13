@@ -70,5 +70,6 @@ dependencies {
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.content.negotiation)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.coroutines.test)
     testImplementation(libs.testcontainers.postgresql)
 }
