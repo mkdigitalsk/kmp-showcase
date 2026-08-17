@@ -32,7 +32,7 @@ fun CalendarView(
     var currentMonth by remember { mutableStateOf(initialMonth.month.number) }
 
     val calendarMonth = remember(currentYear, currentMonth, today, disabledDates, minDate, maxDate) {
-        CalendarUtils.generateMonth(
+        CalendarMonths.generateMonth(
             year = currentYear,
             month = currentMonth,
             today = today,
@@ -47,12 +47,12 @@ fun CalendarView(
             year = currentYear,
             month = currentMonth,
             onPreviousMonth = {
-                val (newYear, newMonth) = CalendarUtils.getPreviousMonth(currentYear, currentMonth)
+                val (newYear, newMonth) = CalendarMonths.getPreviousMonth(currentYear, currentMonth)
                 currentYear = newYear
                 currentMonth = newMonth
             },
             onNextMonth = {
-                val (newYear, newMonth) = CalendarUtils.getNextMonth(currentYear, currentMonth)
+                val (newYear, newMonth) = CalendarMonths.getNextMonth(currentYear, currentMonth)
                 currentYear = newYear
                 currentMonth = newMonth
             },

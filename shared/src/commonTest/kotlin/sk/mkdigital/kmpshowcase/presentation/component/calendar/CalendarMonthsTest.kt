@@ -8,12 +8,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CalendarUtilsTest {
+class CalendarMonthsTest {
 
     @Test
     fun `generateMonth returns 42 days for consistent height`() {
         val today = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
@@ -25,7 +25,7 @@ class CalendarUtilsTest {
     @Test
     fun `generateMonth correctly identifies current month days`() {
         val today = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
@@ -38,7 +38,7 @@ class CalendarUtilsTest {
     @Test
     fun `generateMonth correctly identifies today`() {
         val today = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
@@ -51,7 +51,7 @@ class CalendarUtilsTest {
     @Test
     fun `generateMonth correctly identifies weekends`() {
         val today = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
@@ -70,7 +70,7 @@ class CalendarUtilsTest {
     fun `generateMonth marks disabled dates correctly`() {
         val disabledDate = LocalDate(2024, 1, 10)
         val today = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
@@ -85,7 +85,7 @@ class CalendarUtilsTest {
     fun `generateMonth marks dates before minDate as disabled`() {
         val minDate = LocalDate(2024, 1, 15)
         val today = LocalDate(2024, 1, 20)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
@@ -102,7 +102,7 @@ class CalendarUtilsTest {
     fun `generateMonth marks dates after maxDate as disabled`() {
         val maxDate = LocalDate(2024, 1, 20)
         val today = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
@@ -117,7 +117,7 @@ class CalendarUtilsTest {
 
     @Test
     fun `getDaySelectionType returns NONE for empty range`() {
-        val result = CalendarUtils.getDaySelectionType(
+        val result = CalendarMonths.getDaySelectionType(
             date = LocalDate(2024, 1, 15),
             selectedRange = DateRange(),
         )
@@ -128,7 +128,7 @@ class CalendarUtilsTest {
     @Test
     fun `getDaySelectionType returns SINGLE when only start date is selected`() {
         val date = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.getDaySelectionType(
+        val result = CalendarMonths.getDaySelectionType(
             date = date,
             selectedRange = DateRange(startDate = date),
         )
@@ -139,7 +139,7 @@ class CalendarUtilsTest {
     @Test
     fun `getDaySelectionType returns SINGLE when start and end are same date`() {
         val date = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.getDaySelectionType(
+        val result = CalendarMonths.getDaySelectionType(
             date = date,
             selectedRange = DateRange(startDate = date, endDate = date),
         )
@@ -151,7 +151,7 @@ class CalendarUtilsTest {
     fun `getDaySelectionType returns START for start date of range`() {
         val startDate = LocalDate(2024, 1, 15)
         val endDate = LocalDate(2024, 1, 20)
-        val result = CalendarUtils.getDaySelectionType(
+        val result = CalendarMonths.getDaySelectionType(
             date = startDate,
             selectedRange = DateRange(startDate = startDate, endDate = endDate),
         )
@@ -163,7 +163,7 @@ class CalendarUtilsTest {
     fun `getDaySelectionType returns END for end date of range`() {
         val startDate = LocalDate(2024, 1, 15)
         val endDate = LocalDate(2024, 1, 20)
-        val result = CalendarUtils.getDaySelectionType(
+        val result = CalendarMonths.getDaySelectionType(
             date = endDate,
             selectedRange = DateRange(startDate = startDate, endDate = endDate),
         )
@@ -176,7 +176,7 @@ class CalendarUtilsTest {
         val startDate = LocalDate(2024, 1, 15)
         val endDate = LocalDate(2024, 1, 20)
         val middleDate = LocalDate(2024, 1, 17)
-        val result = CalendarUtils.getDaySelectionType(
+        val result = CalendarMonths.getDaySelectionType(
             date = middleDate,
             selectedRange = DateRange(startDate = startDate, endDate = endDate),
         )
@@ -189,7 +189,7 @@ class CalendarUtilsTest {
         val startDate = LocalDate(2024, 1, 15)
         val endDate = LocalDate(2024, 1, 20)
         val outsideDate = LocalDate(2024, 1, 25)
-        val result = CalendarUtils.getDaySelectionType(
+        val result = CalendarMonths.getDaySelectionType(
             date = outsideDate,
             selectedRange = DateRange(startDate = startDate, endDate = endDate),
         )
@@ -199,32 +199,32 @@ class CalendarUtilsTest {
 
     @Test
     fun `getPreviousMonth returns December of previous year when current is January`() {
-        val result = CalendarUtils.getPreviousMonth(2024, 1)
+        val result = CalendarMonths.getPreviousMonth(2024, 1)
         assertEquals(Pair(2023, 12), result)
     }
 
     @Test
     fun `getPreviousMonth returns previous month of same year`() {
-        val result = CalendarUtils.getPreviousMonth(2024, 6)
+        val result = CalendarMonths.getPreviousMonth(2024, 6)
         assertEquals(Pair(2024, 5), result)
     }
 
     @Test
     fun `getNextMonth returns January of next year when current is December`() {
-        val result = CalendarUtils.getNextMonth(2024, 12)
+        val result = CalendarMonths.getNextMonth(2024, 12)
         assertEquals(Pair(2025, 1), result)
     }
 
     @Test
     fun `getNextMonth returns next month of same year`() {
-        val result = CalendarUtils.getNextMonth(2024, 6)
+        val result = CalendarMonths.getNextMonth(2024, 6)
         assertEquals(Pair(2024, 7), result)
     }
 
     @Test
     fun `generateMonth starts week on Monday`() {
         val today = LocalDate(2024, 1, 15)
-        val result = CalendarUtils.generateMonth(
+        val result = CalendarMonths.generateMonth(
             year = 2024,
             month = 1,
             today = today,
