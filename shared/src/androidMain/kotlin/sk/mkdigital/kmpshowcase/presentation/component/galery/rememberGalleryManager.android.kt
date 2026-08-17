@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import sk.mkdigital.kmpshowcase.presentation.component.imagepicker.ImageResult
-import sk.mkdigital.kmpshowcase.util.BitmapUtils
+import sk.mkdigital.kmpshowcase.util.BitmapLoader
 
 @Composable
 actual fun rememberGalleryManager(onResult: (ImageResult?) -> Unit): GalleryManager {
@@ -22,7 +22,7 @@ actual fun rememberGalleryManager(onResult: (ImageResult?) -> Unit): GalleryMana
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            val byteArray = BitmapUtils.getByteArray(uri, contentResolver)
+            val byteArray = BitmapLoader.getByteArray(uri, contentResolver)
             val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
             if (bitmap != null) {
                 val result = ImageResult(byteArray, bitmap.asImageBitmap())

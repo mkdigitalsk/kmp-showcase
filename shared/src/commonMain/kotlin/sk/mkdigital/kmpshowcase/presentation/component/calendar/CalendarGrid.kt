@@ -18,13 +18,13 @@ fun CalendarGrid(
     colors: CalendarColors = CalendarColors.default(),
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        for (weekIndex in 0 until CalendarUtils.WEEKS_TO_DISPLAY) {
+        for (weekIndex in 0 until CalendarMonths.WEEKS_TO_DISPLAY) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                for (dayIndex in 0 until CalendarUtils.DAYS_PER_WEEK) {
-                    val index = weekIndex * CalendarUtils.DAYS_PER_WEEK + dayIndex
+                for (dayIndex in 0 until CalendarMonths.DAYS_PER_WEEK) {
+                    val index = weekIndex * CalendarMonths.DAYS_PER_WEEK + dayIndex
                     if (index < days.size) {
                         val day = days[index]
-                        val selectionType = CalendarUtils.getDaySelectionType(
+                        val selectionType = CalendarMonths.getDaySelectionType(
                             date = day.date,
                             selectedRange = selectedRange,
                         )

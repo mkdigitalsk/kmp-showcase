@@ -8,9 +8,9 @@ import android.net.Uri
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 
-object BitmapUtils {
+object BitmapLoader {
 
-    private const val TAG = "BitmapUtils"
+    private const val TAG = "BitmapLoader"
 
     private const val ROTATION_90 = 90f
     private const val ROTATION_180 = 180f
