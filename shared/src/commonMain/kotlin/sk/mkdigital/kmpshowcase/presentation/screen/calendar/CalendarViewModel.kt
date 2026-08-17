@@ -1,5 +1,6 @@
 package sk.mkdigital.kmpshowcase.presentation.screen.calendar
 
+import androidx.compose.runtime.Immutable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
@@ -106,6 +107,7 @@ class CalendarViewModel(
     }
 }
 
+@Immutable
 data class CalendarUiState(
     val today: LocalDate? = null,
     val selectionState: SelectionState = SelectionState.Empty,

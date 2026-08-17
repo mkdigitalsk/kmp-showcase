@@ -1,6 +1,5 @@
 package sk.mkdigital.kmpshowcase.presentation.screen.platformapis
 
-import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.Job
 import sk.mkdigital.kmpshowcase.domain.useCase.base.invoke
 import sk.mkdigital.kmpshowcase.domain.useCase.biometric.AuthenticateWithBiometricUseCase
@@ -146,7 +145,6 @@ class PlatformApisViewModel(
     }
 }
 
-@Immutable
 data class PlatformApisUiState(
     val copiedToClipboard: Boolean = false,
     val location: LocationUiModel? = null,
