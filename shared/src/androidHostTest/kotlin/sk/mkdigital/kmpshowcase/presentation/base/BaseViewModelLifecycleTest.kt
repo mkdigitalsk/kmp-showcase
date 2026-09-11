@@ -9,7 +9,7 @@ class BaseViewModelLifecycleTest {
         var creates = 0
             private set
 
-        override fun onCreated() {
+        override fun onCreate() {
             creates++
         }
     }
@@ -18,19 +18,19 @@ class BaseViewModelLifecycleTest {
     fun `the screen is created once, however often it re-enters composition`() {
         val screen = Screen()
 
-        screen.onEnteredComposition()
-        screen.onEnteredComposition()
-        screen.onEnteredComposition()
+        screen.onCreated()
+        screen.onCreated()
+        screen.onCreated()
 
         assertEquals(1, screen.creates)
     }
 
     @Test
     fun `a second screen creates on its own`() {
-        val first = Screen().apply { onEnteredComposition() }
+        val first = Screen().apply { onCreated() }
         val second = Screen()
 
-        second.onEnteredComposition()
+        second.onCreated()
 
         assertEquals(1, first.creates)
         assertEquals(1, second.creates)
