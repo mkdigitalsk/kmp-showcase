@@ -23,20 +23,25 @@ import org.koin.core.scope.Scope
 import org.koin.viewmodel.defaultExtras
 
 /**
- * ⚠ [onEnterComposition] is not a creation callback — a nav-back re-enters composition and fires it
- * again. Anchor "created" to something outliving the composition, such as the view model.
+ * A screen's lifecycle, shaped like an activity's: created once, then resumed and paused as it
+ * becomes interactive and stops being so — a navigation away and back included.
+ *
+ * ⚠ [onCreate] is signalled on every entry into composition, and a nav-back is one. The caller owes
+ * the "once" the name promises, anchored to something outliving the composition; [BaseViewModel]
+ * does that. The same code runs on iOS, where Compose Multiplatform maps the controller's events
+ * onto these, so both platforms answer alike.
  */
 @Composable
 fun ScreenLifecycleEffect(
     key: Any? = Unit,
-    onEnterComposition: () -> Unit = {},
+    onCreate: () -> Unit = {},
     onResume: () -> Unit = {},
     onPause: () -> Unit = {},
     onDispose: () -> Unit = {}
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val currentOnEnterComposition by rememberUpdatedState(onEnterComposition)
+    val currentOnCreate by rememberUpdatedState(onCreate)
     val currentOnResume by rememberUpdatedState(onResume)
     val currentOnPause by rememberUpdatedState(onPause)
     val currentOnDispose by rememberUpdatedState(onDispose)
@@ -44,7 +49,7 @@ fun ScreenLifecycleEffect(
     val screenLifecycle = remember(key) { ScreenLifecycleState() }
 
     LaunchedEffect(key) {
-        screenLifecycle.enterOnce(currentOnEnterComposition)
+        screenLifecycle.createOnce(currentOnCreate)
 
         if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
             screenLifecycle.resumeOnce(currentOnResume)
@@ -80,13 +85,13 @@ fun ScreenLifecycleEffect(
  * guarded here — without it a screen already RESUMED when it enters composition resumes twice.
  */
 private class ScreenLifecycleState {
-    private var hasEntered by mutableStateOf(false)
+    private var hasCreated by mutableStateOf(false)
     private var isResumed by mutableStateOf(false)
 
-    fun enterOnce(onEnterComposition: () -> Unit) {
-        if (hasEntered) return
-        hasEntered = true
-        onEnterComposition()
+    fun createOnce(onCreate: () -> Unit) {
+        if (hasCreated) return
+        hasCreated = true
+        onCreate()
     }
 
     fun resumeOnce(onResume: () -> Unit) {
@@ -126,7 +131,7 @@ inline fun <reified VM : BaseViewModel<*>> lifecycleAwareViewModel(
     )
     ScreenLifecycleEffect(
         key = viewModel,
-        onEnterComposition = viewModel::onEnteredComposition,
+        onCreate = viewModel::onCreated,
         onResume = viewModel::onResumed,
         onPause = viewModel::onPaused
     )

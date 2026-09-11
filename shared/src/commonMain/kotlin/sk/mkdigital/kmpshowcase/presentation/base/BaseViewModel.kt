@@ -45,19 +45,25 @@ abstract class BaseViewModel<STATE : Any>(
 
     protected open fun loadInitialData() {}
 
-    override fun onCreated() {
-        loadInitialData()
-        logScreenName()
+
+    final override fun onCreated() {
+        if (isCreated) return
+        isCreated = true
+        onCreate()
     }
 
     /**
-     * ⚠ A screen leaves composition when it navigates away, so the lifecycle runs its create step
-     * again on every nav-back. Only forwarding the first keeps [onCreated] meaning created.
+     * Once per screen, as an activity's is.
+     *
+     * ⚠ The lifecycle signals creation on every entry into composition, and a nav-back is one, so
+     * the guard above is what makes this a one-off. Resuming and pausing then carry the rest, alike
+     * on both platforms: a navigation away and back, and the app losing and regaining focus —
+     * backgrounded, or covered by a dialog, which Compose Multiplatform raises on iOS from
+     * `willResignActive` and `didBecomeActive`.
      */
-    fun onEnteredComposition() {
-        if (isCreated) return
-        isCreated = true
-        onCreated()
+    protected open fun onCreate() {
+        loadInitialData()
+        logScreenName()
     }
 
     override fun onResumed() {}
