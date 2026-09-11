@@ -33,7 +33,7 @@ abstract class BaseViewModel<STATE : Any>(
     private val logger: Logger by inject()
 
     protected val tag = this::class.simpleName
-    private var isInitialized = false
+    private var isCreated = false
 
     private val _state: MutableStateFlow<STATE> = MutableStateFlow(defaultState)
     val state: StateFlow<STATE> = _state.asStateFlow()
@@ -46,11 +46,18 @@ abstract class BaseViewModel<STATE : Any>(
     protected open fun loadInitialData() {}
 
     override fun onCreated() {
-        if (!isInitialized) {
-            isInitialized = true
-            loadInitialData()
-            logScreenName()
-        }
+        loadInitialData()
+        logScreenName()
+    }
+
+    /**
+     * ⚠ A screen leaves composition when it navigates away, so the lifecycle runs its create step
+     * again on every nav-back. Only forwarding the first keeps [onCreated] meaning created.
+     */
+    fun onEnteredComposition() {
+        if (isCreated) return
+        isCreated = true
+        onCreated()
     }
 
     override fun onResumed() {}
