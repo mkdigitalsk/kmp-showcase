@@ -19,3 +19,6 @@ database:
 
 cors:
   allowedHosts: "$CORS_ALLOWED_HOSTS:*"
+
+proxy:
+  key: "$PROXY_KEY:"

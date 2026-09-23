@@ -63,13 +63,16 @@ class UserRoutesTest {
         email to token
     }
 
-    private fun usersTest(block: suspend ApplicationTestBuilder.() -> Unit) = testApplication {
+    private fun usersTest(
+        proxyKey: String? = null,
+        block: suspend ApplicationTestBuilder.() -> Unit,
+    ) = testApplication {
         environment { config = MapApplicationConfig() }
         application {
             configureSerialization()
             configureStatusPages()
             configureAuth(jwtConfig)
-            configureRateLimit()
+            configureRateLimit(proxyKey)
             configureRouting(AppDependencies(jwtConfig))
         }
         block()
@@ -231,6 +234,40 @@ class UserRoutesTest {
             "sign-in must return 429 once the per-IP rate limit is exceeded",
         )
     }
+
+    @Test
+    fun `visitors behind our own proxy are counted apart`() = usersTest(proxyKey = PROXY_KEY) {
+        val statuses = (1..SIGN_IN_ATTEMPTS).map { visitor ->
+            client.post("${ApiVersion.BASE}/auth/sign-in") {
+                header("X-Visitor-IP", "203.0.113.$visitor")
+                header("X-Proxy-Key", PROXY_KEY)
+                contentType(ContentType.Application.Json)
+                setBody("""{"email":"spray@test.com","password":"wrong"}""")
+            }.status
+        }
+        assertTrue(
+            statuses.none { it == HttpStatusCode.TooManyRequests },
+            "each visitor named by our proxy must have a bucket of their own",
+        )
+    }
+
+    @Test
+    fun `a visitor header without the proxy key counts on the connection`() = usersTest(proxyKey = PROXY_KEY) {
+        val statuses = (1..SIGN_IN_ATTEMPTS).map { visitor ->
+            client.post("${ApiVersion.BASE}/auth/sign-in") {
+                header("X-Visitor-IP", "203.0.113.$visitor")
+                header("X-Proxy-Key", "a-guess")
+                contentType(ContentType.Application.Json)
+                setBody("""{"email":"spray@test.com","password":"wrong"}""")
+            }.status
+        }
+        assertTrue(
+            statuses.contains(HttpStatusCode.TooManyRequests),
+            "a caller who cannot present the proxy key must not choose its own bucket",
+        )
+    }
 }
 
 private const val SIGN_IN_ATTEMPTS = 15
+
+private const val PROXY_KEY = "test-proxy-key"

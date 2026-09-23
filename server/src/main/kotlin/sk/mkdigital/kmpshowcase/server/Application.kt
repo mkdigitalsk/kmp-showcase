@@ -47,7 +47,7 @@ internal fun Application.module() {
     configureStatusPages()
     configureCORS(config)
     configureAuth(jwtConfig)
-    configureRateLimit()
+    configureRateLimit(proxyKey = config.propertyOrNull("proxy.key")?.getString())
     configureRouting(dependencies)
     schedulePurge(dependencies)
 }
