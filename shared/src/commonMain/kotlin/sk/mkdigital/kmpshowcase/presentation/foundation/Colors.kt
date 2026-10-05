@@ -4,7 +4,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 import sk.mkdigital.designsystem.BrandBlue
 import sk.mkdigital.designsystem.BrandNavy
-import sk.mkdigital.designsystem.BrandTealDark
+import sk.mkdigital.designsystem.BrandGreenDark
 import sk.mkdigital.designsystem.DarkBrandBar
 import sk.mkdigital.designsystem.DarkError
 import sk.mkdigital.designsystem.DarkNeutral0
@@ -44,7 +44,7 @@ internal val Neutral100Light: Color = LightNeutral100
 internal val PrimaryLight: Color = LightPrimary
 internal val PrimaryContainerLight: Color = BrandBlue
 internal val SecondaryLight: Color = LightSecondary
-internal val SecondaryContainerLight: Color = BrandTealDark
+internal val SecondaryContainerLight: Color = BrandGreenDark
 internal val BackgroundLight: Color = Neutral0Light
 internal val SurfaceLight: Color = Neutral0Light
 internal val ErrorLight: Color = LightError
@@ -64,7 +64,7 @@ internal val Neutral100Dark: Color = DarkNeutral100
 internal val PrimaryDark: Color = DarkPrimary
 internal val PrimaryContainerDark: Color = BrandNavy
 internal val SecondaryDark: Color = DarkSecondary
-internal val SecondaryContainerDark: Color = BrandTealDark
+internal val SecondaryContainerDark: Color = BrandGreenDark
 internal val BackgroundDark: Color = Neutral0Dark
 internal val SurfaceDark: Color = Color(0xFF1E1E1E)
 internal val ErrorDark: Color = DarkError

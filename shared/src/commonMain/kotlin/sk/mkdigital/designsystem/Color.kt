@@ -6,11 +6,12 @@ import androidx.compose.ui.graphics.Color
 val BrandNavy = Color(0xFF0E2A47)
 val BrandBlue = Color(0xFF2F6DB0)
 val BrandBlueLight = Color(0xFF7FB0E0) // dark-mode lift of navy
-val BrandTeal = Color(0xFF37C2B4)
-val BrandTealDark = Color(0xFF1796A8) // pure teal fails contrast on light
+val BrandGreen = Color(0xFF3CCBB7)
+/** The green on a light ground — 3.5:1 on white, enough for a bar or a rule, never for text. */
+val BrandGreenDark = Color(0xFF0F9A8A)
 val BrandWhite = Color(0xFFFFFFFF)
 val LightPrimary = Color(0xFF0E2A47)
-val LightSecondary = Color(0xFF37C2B4)
+val LightSecondary = Color(0xFF0F9A8A)
 val LightError = Color(0xFFFF1A1A)
 val LightSuccess = Color(0xFF4CAF50)
 val LightWarning = Color(0xFFFF9800)
@@ -23,7 +24,7 @@ val LightNeutral60 = Color(0xFF5A5A5A)
 val LightNeutral80 = Color(0xFF232323)
 val LightNeutral100 = Color(0xFF000000)
 val DarkPrimary = Color(0xFF7FB0E0) // navy is too dark on a dark bg
-val DarkSecondary = Color(0xFF37C2B4)
+val DarkSecondary = Color(0xFF3CCBB7)
 val DarkError = Color(0xFFCF6679)
 val DarkSuccess = Color(0xFF81C784)
 val DarkWarning = Color(0xFFFFB74D)
