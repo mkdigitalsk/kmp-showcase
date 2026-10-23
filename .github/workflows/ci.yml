@@ -58,6 +58,9 @@ jobs:
       - name: Run Tests & Detekt
         run: ./gradlew :shared:testAndroidHostTest :server:test detekt --parallel
 
+      - name: Check OpenApi Specification
+        run: git diff --exit-code -- contracts/openapi.json
+
       - name: Verify Screenshot Tests
         # UTC or the rendered timestamps carry the runner's offset and nothing matches.
         env:

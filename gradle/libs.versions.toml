@@ -1,12 +1,12 @@
 [versions]
 # CORE - Shared across all modules
-kotlin = "2.3.0"
+kotlin = "2.4.20"
 kotlinx-coroutines = "1.11.0"
 turbine = "1.2.1"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.11.0"
 kotlinx-html = "0.12.0"
-ktor = "3.5.1"
+ktor = "3.6.0"
 koin = "4.2.2"
 
 # APP - Common (shared module)
@@ -24,10 +24,10 @@ datastore = "1.2.1"
 #noinspection UnusedVersionCatalogEntry
 androidMinSdk = "26"
 #noinspection UnusedVersionCatalogEntry
-androidCompileSdk = "36"
+androidCompileSdk = "37"
 #noinspection UnusedVersionCatalogEntry
 androidTargetSdk = "36"
-agp = "9.2.0"
+agp = "9.4.1"
 compose = "1.11.4"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
@@ -62,9 +62,18 @@ detekt = "2.0.0-alpha.5"
 detektCompose = "0.6.3"
 junit4 = "4.13.2"
 junitJupiter = "6.1.1"
-mokkery = "3.3.0"
+mokkery = "3.5.1"
 roborazzi = "1.65.0"
-robolectric = "4.16.1"
+robolectric = "4.17"
+
+# BUILD CLASSPATH - patched versions of libraries the plugins bring unpatched
+buildNetty = "4.1.139.Final"
+buildBouncyCastle = "1.86"
+buildJose4j = "0.9.7"
+buildJdom2 = "2.0.6.1"
+buildCommonsLang3 = "3.21.0"
+buildHttpClient = "4.5.14"
+buildOpenTelemetry = "1.67.0"
 
 [libraries]
 # CORE - KotlinX
@@ -166,6 +175,7 @@ ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", versio
 ktor-server-rate-limit = { module = "io.ktor:ktor-server-rate-limit", version.ref = "ktor" }
 ktor-server-forwarded-header = { module = "io.ktor:ktor-server-forwarded-header", version.ref = "ktor" }
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor" }
+ktor-server-routing-openapi = { module = "io.ktor:ktor-server-routing-openapi", version.ref = "ktor" }
 ktor-server-default-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
 ktor-server-hsts = { module = "io.ktor:ktor-server-hsts", version.ref = "ktor" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
@@ -202,6 +212,18 @@ roborazzi-junit-rule = { module = "io.github.takahirom.roborazzi:roborazzi-junit
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektCompose" }
 
+# BUILD CLASSPATH - constraints only, never an app dependency
+build-netty-bom = { module = "io.netty:netty-bom", version.ref = "buildNetty" }
+build-bouncycastle-bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "buildBouncyCastle" }
+build-bouncycastle-bcpkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "buildBouncyCastle" }
+build-bouncycastle-bcutil = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "buildBouncyCastle" }
+build-jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "buildJose4j" }
+build-jdom2 = { module = "org.jdom:jdom2", version.ref = "buildJdom2" }
+build-commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "buildCommonsLang3" }
+build-httpclient = { module = "org.apache.httpcomponents:httpclient", version.ref = "buildHttpClient" }
+build-opentelemetry-api = { module = "io.opentelemetry:opentelemetry-api", version.ref = "buildOpenTelemetry" }
+build-opentelemetry-context = { module = "io.opentelemetry:opentelemetry-context", version.ref = "buildOpenTelemetry" }
+
 [plugins]
 # CORE - Kotlin
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
@@ -224,6 +246,9 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 fb-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-distribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseDistribution" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+
+# SERVER
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 
 # TESTING
 detekt = { id = "dev.detekt", version.ref = "detekt" }

@@ -19,6 +19,10 @@ allOpen {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     android {
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
         namespace = "sk.mkdigital.kmpshowcase.shared"
@@ -62,10 +66,7 @@ kotlin {
                 optIn("kotlin.uuid.ExperimentalUuidApi")
                 optIn("kotlin.time.ExperimentalTime")
                 optIn("kotlinx.coroutines.FlowPreview")
-                optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.cinterop.BetaInteropApi")
-                optIn("kotlin.annotation.AnnotationTarget")
-                enableLanguageFeature("ExpectActualClasses")
             }
         }
 
@@ -120,7 +121,6 @@ kotlin {
             implementation(libs.activity.ktx)
             implementation(libs.activity.compose)
             implementation(libs.compose.ui.tooling)
-            implementation(libs.activity.compose)
 
             //            local storage
             implementation(libs.datastore.preferences)

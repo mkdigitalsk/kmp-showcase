@@ -14,6 +14,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
+import io.ktor.server.routing.openapi.describe
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
@@ -25,17 +26,19 @@ internal fun Route.userRoutes(userService: UserService) {
                 val user = userService.getById(userId) ?: return@get call.respond(HttpStatusCode.NotFound)
                 call.respond(user.toUserResponseDTO())
             }
-            // GDPR Art 17 — erasure is the account holder's to trigger, not only ours.
-            // https://eur-lex.europa.eu/eli/reg/2016/679/oj#art_17
-            //
-            // 204 whether or not the row was there: a bare 404 here is indistinguishable from the one
-            // Ktor returns for a route it does not have, so a client that read 404 as "already gone"
-            // would erase its local copy and report success against a live account.
             delete("/me") {
                 val userId = call.userId() ?: return@delete call.respond(HttpStatusCode.Unauthorized)
                 when (userService.delete(userId)) {
                     DeleteResult.Deleted -> call.respond(HttpStatusCode.NoContent)
                     DeleteResult.Refused -> throw ForbiddenException("A demo account cannot be deleted")
+                }
+            }.describe {
+                summary = "Deletes the signed-in account."
+                responses {
+                    HttpStatusCode.NoContent {
+                        description =
+                            "Deleted or already gone — never a 404, which a client cannot tell from a missing route."
+                    }
                 }
             }
             put("/me/theme-mode") {

@@ -47,25 +47,8 @@ service afterwards — it recreates the tables on boot.
 
 ## API Endpoints
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/auth/sign-up` | Create an account |
-| POST | `/v1/auth/sign-in` | Sign in |
-
-### Users (Protected)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/v1/users/me` | Get current user |
-
-### Notes (Protected)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/v1/notes` | Get all notes |
-| GET | `/v1/notes/{id}` | Get note by ID |
-| POST | `/v1/notes` | Create note |
-| PUT | `/v1/notes/{id}` | Update note |
-| DELETE | `/v1/notes/{id}` | Delete note |
+[`contracts/openapi.json`](../contracts/openapi.json) describes every route and its payloads. The server tests write it
+(`./gradlew :server:test`), and the gate fails when the committed one is behind the code.
 
 ## Configuration
 
@@ -88,7 +71,7 @@ Config lives in [`src/main/resources/application.yaml`](src/main/resources/appli
 ```bash
 curl -X POST http://localhost:8080/v1/auth/sign-up \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123","name":"Test User"}'
+  -d '{"email":"test@example.com","password":"password123"}'
 ```
 
 ### Sign in
