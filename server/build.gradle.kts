@@ -1,7 +1,16 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ktor)
     application
+}
+
+ktor {
+    openApi {
+        // Reads the routing tree at compile time; .describe {} fills what inference cannot see.
+        enabled = true
+        codeInferenceEnabled = true
+    }
 }
 
 application {
@@ -43,6 +52,7 @@ dependencies {
     implementation(libs.ktor.server.default.headers)
     implementation(libs.ktor.server.hsts)
     implementation(libs.ktor.server.config.yaml)
+    implementation(libs.ktor.server.routing.openapi)
     implementation(libs.ktor.serialization.kotlinx.json)
 
     // Database
@@ -72,4 +82,10 @@ dependencies {
     testImplementation(libs.kotlin.test)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.testcontainers.postgresql)
+}
+
+// The committed specification is an output of the test run that writes it — a build-cache hit restores it instead of
+// leaving a stale one on disk, and an edited one forces the run.
+tasks.test {
+    outputs.file(rootProject.file("contracts/openapi.json")).withPropertyName("spec")
 }

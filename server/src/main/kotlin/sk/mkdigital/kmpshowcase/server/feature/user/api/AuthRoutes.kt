@@ -25,7 +25,6 @@ private val logger = LoggerFactory.getLogger("AuthRoutes")
 
 internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
     route("${ApiVersion.BASE}/auth") {
-        // Throttle the credential-accepting endpoints per client IP (brute-force / spray defense).
         rateLimit(AuthRateLimit) {
             post("/sign-up") {
                 val request = call.receive<SignUpRequestDTO>()

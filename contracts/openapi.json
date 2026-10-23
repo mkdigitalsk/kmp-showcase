@@ -1,0 +1,781 @@
+{
+    "openapi": "3.1.1",
+    "info": {
+        "title": "KMP Showcase API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "summary": "",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/purge-status": {
+            "get": {
+                "summary": "503 when the sweep has stopped, so an ordinary uptime monitor alerts on its absence without\nknowing what a sweep is. A job that stops running never raises an error of its own.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "text/plain": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/assets/{**}": {
+            "get": {
+                "summary": "Public static assets (e.g. the email logo PNG) — no auth.",
+                "responses": {}
+            }
+        },
+        "/v1/auth/sign-up": {
+            "post": {
+                "summary": "",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignUpRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "headers": {
+                            "Location": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/sign-in": {
+            "post": {
+                "summary": "",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignInRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/token": {
+            "post": {
+                "summary": "",
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            }
+        },
+        "/v1/users/me": {
+            "delete": {
+                "summary": "GDPR Art 17 — erasure is the account holder's to trigger, not only ours.",
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            },
+            "get": {
+                "summary": "",
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            }
+        },
+        "/v1/users/me/theme-mode": {
+            "put": {
+                "summary": "",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateThemeModeRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            }
+        },
+        "/v1/users/me/locale": {
+            "put": {
+                "summary": "",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateLocaleRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            }
+        },
+        "/v1/notes": {
+            "post": {
+                "summary": "",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateNoteRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            },
+            "get": {
+                "summary": "",
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/NoteResponseDTO"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            }
+        },
+        "/v1/notes/{id}": {
+            "put": {
+                "summary": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "If-Match",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateNoteRequestDTO"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "428": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "412": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            },
+            "delete": {
+                "summary": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            },
+            "get": {
+                "summary": "",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "401": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "",
+                        "headers": {
+                            "ETag": {
+                                "content": {
+                                    "text/plain": {}
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoteResponseDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "auth-jwt": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SignUpRequestDTO": {
+                "type": "object",
+                "title": "SignUpRequestDTO",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AuthUserDTO": {
+                "type": "object",
+                "title": "AuthUserDTO",
+                "required": [
+                    "id",
+                    "email",
+                    "themeMode",
+                    "locale"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "themeMode": {
+                        "type": "string",
+                        "enum": [
+                            "system",
+                            "light",
+                            "dark"
+                        ]
+                    },
+                    "locale": {
+                        "type": "string"
+                    },
+                    "demo": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "AuthResponseDTO": {
+                "type": "object",
+                "title": "AuthResponseDTO",
+                "required": [
+                    "token",
+                    "user"
+                ],
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/AuthUserDTO"
+                    }
+                }
+            },
+            "SignInRequestDTO": {
+                "type": "object",
+                "title": "SignInRequestDTO",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserResponseDTO": {
+                "type": "object",
+                "title": "UserResponseDTO",
+                "required": [
+                    "id",
+                    "email",
+                    "createdAt",
+                    "themeMode",
+                    "locale"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer"
+                    },
+                    "themeMode": {
+                        "type": "string",
+                        "enum": [
+                            "system",
+                            "light",
+                            "dark"
+                        ]
+                    },
+                    "locale": {
+                        "type": "string"
+                    },
+                    "demo": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "UpdateThemeModeRequestDTO": {
+                "type": "object",
+                "title": "UpdateThemeModeRequestDTO",
+                "required": [
+                    "themeMode"
+                ],
+                "properties": {
+                    "themeMode": {
+                        "type": "string",
+                        "enum": [
+                            "system",
+                            "light",
+                            "dark"
+                        ]
+                    }
+                }
+            },
+            "UpdateLocaleRequestDTO": {
+                "type": "object",
+                "title": "UpdateLocaleRequestDTO",
+                "required": [
+                    "locale"
+                ],
+                "properties": {
+                    "locale": {
+                        "type": "string"
+                    }
+                }
+            },
+            "NoteResponseDTO": {
+                "type": "object",
+                "title": "NoteResponseDTO",
+                "required": [
+                    "id",
+                    "title",
+                    "content",
+                    "createdAt",
+                    "updatedAt",
+                    "etag"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "integer"
+                    },
+                    "updatedAt": {
+                        "type": "integer"
+                    },
+                    "etag": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UpdateNoteRequestDTO": {
+                "type": "object",
+                "title": "UpdateNoteRequestDTO",
+                "required": [
+                    "title",
+                    "content"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateNoteRequestDTO": {
+                "type": "object",
+                "title": "CreateNoteRequestDTO",
+                "required": [
+                    "title",
+                    "content"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "auth-jwt": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "JWT Bearer Authentication",
+                "type": "http"
+            }
+        }
+    }
+}
