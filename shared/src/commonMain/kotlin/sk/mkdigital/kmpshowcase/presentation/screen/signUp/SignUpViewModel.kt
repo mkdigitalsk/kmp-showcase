@@ -128,9 +128,12 @@ data class SignUpUiState(
     val confirmPasswordError: SignUpConfirmPasswordError? = null,
     val isLoading: Boolean = false,
     val error: AppError? = null,
+    val dataController: String = DATA_CONTROLLER,
 )
 
 private const val PRIVACY_URL = "https://showcase.mkdigital.sk/privacy"
+
+private const val DATA_CONTROLLER = "MK Digital s. r. o."
 
 sealed interface SignUpNavEvent : NavEvent {
     data object ToHome : SignUpNavEvent

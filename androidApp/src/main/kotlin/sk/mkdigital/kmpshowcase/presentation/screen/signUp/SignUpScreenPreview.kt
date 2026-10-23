@@ -22,7 +22,7 @@ internal class SignUpScreenPreviewParams : PreviewParameterProvider<SignUpUiStat
     override val values = sequenceOf(
         SignUpUiState(),
         SignUpUiState(
-            email = "john@example.com",
+            email = "dana@example.com",
             password = "password123",
             confirmPassword = "password123"
         ),

@@ -25,7 +25,7 @@ class SignUpUseCaseTest : BaseTest<SignUpUseCase>() {
 
     @Test
     fun `invoke signs up user and returns auth session`() = runTest {
-        val email = "john@example.com"
+        val email = "dana@example.com"
         val password = "Test123!"
         val expectedSession = AuthSession(
             token = "jwt-token",
@@ -50,7 +50,7 @@ class SignUpUseCaseTest : BaseTest<SignUpUseCase>() {
 
     @Test
     fun `invoke throws exception when sign up fails`() = runTest {
-        val email = "john@example.com"
+        val email = "dana@example.com"
         val password = "Test123!"
         val exception = RuntimeException("Sign up failed")
 

@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import sk.mkdigital.kmpshowcase.presentation.base.CollectNavEvents
 import sk.mkdigital.kmpshowcase.presentation.base.NavRouter
@@ -37,6 +38,7 @@ import sk.mkdigital.kmpshowcase.presentation.component.image.AppIconNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer4
 import sk.mkdigital.kmpshowcase.presentation.component.spacers.ColumnSpacer.Spacer8
 import sk.mkdigital.kmpshowcase.presentation.component.text.bodyMedium.TextBodyMediumNeutral80
+import sk.mkdigital.kmpshowcase.presentation.component.text.bodySmall.TextBodySmallNeutral80
 import sk.mkdigital.kmpshowcase.presentation.component.text.titleLarge.TextTitleLargePrimary
 import sk.mkdigital.kmpshowcase.presentation.foundation.space2
 import sk.mkdigital.kmpshowcase.presentation.foundation.space4
@@ -54,6 +56,7 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_email_label
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_email_placeholder
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_has_account
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_privacy
+import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_privacy_summary
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_sign_in
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_empty
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_label
@@ -205,9 +208,27 @@ fun SignUpScreen(
             AppTextButtonPrimary(text = stringResource(Res.string.sign_up_sign_in), onClick = onToSignIn)
         }
 
-        AppTextButtonPrimary(text = stringResource(Res.string.sign_up_privacy), onClick = onPrivacy)
+        Spacer4()
+
+        PrivacyNotice(dataController = state.dataController, onPrivacy = onPrivacy)
 
         Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+/**
+ * The privacy notice's first layer, above the link to the full notice —
+ * [WP 260 rev. 01 — Usmernenia k transparentnosti podľa nariadenia 2016/679, odseky 35 a 36](https://dataprotection.gov.sk/files/metod-edpb/10_usmernenia_k_transparentnosti.pdf#page=19),
+ * [GDPR čl. 13 ods. 1](https://eur-lex.europa.eu/legal-content/SK/TXT/HTML/?uri=CELEX:32016R0679#013.001).
+ */
+@Composable
+private fun PrivacyNotice(dataController: String, onPrivacy: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        TextBodySmallNeutral80(
+            text = stringResource(Res.string.sign_up_privacy_summary, dataController),
+            textAlign = TextAlign.Center,
+        )
+        AppTextButtonPrimary(text = stringResource(Res.string.sign_up_privacy), onClick = onPrivacy)
     }
 }
 
