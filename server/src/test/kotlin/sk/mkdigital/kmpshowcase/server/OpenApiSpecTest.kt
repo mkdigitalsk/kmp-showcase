@@ -24,9 +24,8 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
- * Writes the specification the compiler plugin infers from the routing tree to contracts/openapi.json. Committed, so a
+ * Writes the specification the compiler plugin infers from the routing tree to contracts/openapi.json — committed, so a
  * changed path or payload lands as a diff there rather than as an undefined field in a consumer months later.
- * Regenerate by running the tests.
  */
 class OpenApiSpecTest {
 
@@ -74,7 +73,7 @@ class OpenApiSpecTest {
 
     /**
      * A route typed Any publishes no schema, and the gap only shows up as an untyped payload in a consumer. The message
-     * carries the route, which a convention could not.
+     * names the type that did not resolve.
      */
     private fun assertEverySchemaResolved(spec: String) {
         assertFalse(
@@ -101,6 +100,9 @@ class OpenApiSpecTest {
     /**
      * The generator gives a type referenced both nullable and non-null a second, numbered component — `NoteResponseDTO2`
      * — and a consumer then types one payload under two names.
+     *
+     * [KTOR-9895](https://youtrack.jetbrains.com/issue/KTOR-9895) — "Nullability belongs to the referencing property, but
+     * it is written into the shared component"
      */
     private fun assertEachTypePublishedOnce(spec: String) {
         val names = schemasOf(spec).keys

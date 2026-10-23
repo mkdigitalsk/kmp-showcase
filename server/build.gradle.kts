@@ -7,7 +7,8 @@ plugins {
 
 ktor {
     openApi {
-        // Reads the routing tree at compile time; .describe {} fills what inference cannot see.
+        // The compiler reads each route's description off the routing tree.
+        // A .describe {} on a route adds what it cannot infer.
         enabled = true
         codeInferenceEnabled = true
     }
