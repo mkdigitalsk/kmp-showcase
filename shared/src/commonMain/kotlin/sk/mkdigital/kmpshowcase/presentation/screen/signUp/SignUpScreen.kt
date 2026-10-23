@@ -63,6 +63,8 @@ import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_labe
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_placeholder
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_short
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_password_weak
+import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_terms
+import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_terms_link
 import sk.mkdigital.kmpshowcase.shared.generated.resources.sign_up_title
 import org.jetbrains.compose.resources.stringResource
 
@@ -81,6 +83,7 @@ fun SignUpScreen(
         onSignUp = viewModel::signUp,
         onToSignIn = viewModel::toSignIn,
         onPrivacy = viewModel::openPrivacy,
+        onTerms = viewModel::openTerms,
     )
 }
 
@@ -93,6 +96,7 @@ fun SignUpScreen(
     onSignUp: () -> Unit = {},
     onToSignIn: () -> Unit = {},
     onPrivacy: () -> Unit = {},
+    onTerms: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -210,9 +214,26 @@ fun SignUpScreen(
 
         Spacer4()
 
+        TermsNotice(onTerms = onTerms)
+
+        Spacer4()
+
         PrivacyNotice(dataController = state.dataController, onPrivacy = onPrivacy)
 
         Spacer(modifier = Modifier.weight(1f))
+    }
+}
+
+/**
+ * The line naming the terms the sign-up concludes a contract on, with the link that opens them — the contract the
+ * privacy notice gives as its legal basis for the email and the password hash
+ * ([GDPR čl. 6 ods. 1 písm. b)](https://eur-lex.europa.eu/legal-content/SK/TXT/HTML/?uri=CELEX:32016R0679#006.001)).
+ */
+@Composable
+private fun TermsNotice(onTerms: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        TextBodySmallNeutral80(text = stringResource(Res.string.sign_up_terms), textAlign = TextAlign.Center)
+        AppTextButtonPrimary(text = stringResource(Res.string.sign_up_terms_link), onClick = onTerms)
     }
 }
 
@@ -249,6 +270,8 @@ private fun SignUpNavEvents(
             is SignUpNavEvent.ToSignIn -> router.onBack()
 
             is SignUpNavEvent.OpenPrivacy -> router.openLink(event.url)
+
+            is SignUpNavEvent.OpenTerms -> router.openLink(event.url)
         }
     }
 }
