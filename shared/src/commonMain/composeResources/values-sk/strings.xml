@@ -276,7 +276,7 @@
     <!-- Settings -->
     <string name="settings_profile">Môj profil</string>
     <string name="settings_profile_photo">Profilová fotka</string>
-    <string name="settings_profile_photo_hint">Klepni pre zmenu</string>
+    <string name="settings_profile_photo_hint">Klepnite pre zmenu</string>
     <string name="settings_appearance">Vzhľad</string>
     <string name="settings_theme">Téma</string>
     <string name="settings_theme_light">Svetlá</string>
