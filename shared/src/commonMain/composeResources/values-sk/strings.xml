@@ -338,6 +338,8 @@
     <string name="sign_up_button">Vytvoriť účet</string>
     <string name="sign_up_has_account">Už máte účet?</string>
     <string name="sign_up_sign_in">Prihlásiť sa</string>
+    <string name="sign_up_terms">Vytvorením účtu uzatvárate s nami zmluvu o používaní aplikácie podľa podmienok používania.</string>
+    <string name="sign_up_terms_link">Podmienky používania</string>
     <string name="sign_up_privacy">Ochrana osobných údajov</string>
     <string name="sign_up_privacy_summary">%1$s zodpovedá za vaše údaje. Uchovávame váš email a podobu vášho hesla, ktorú nikto nedokáže prečítať. Potrebujeme ich na vytvorenie a vedenie vášho účtu v rámci našej zmluvy s vami. Ak váš účet nikto neotvorí 30 dní, zmažeme ho aj s poznámkami v ňom. Pod odkazom nižšie nájdete celé oznámenie vrátane vášho práva údaje vidieť, opraviť či vymazať.</string>
 

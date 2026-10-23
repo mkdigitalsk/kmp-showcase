@@ -339,6 +339,8 @@
     <string name="sign_up_button">Sign Up</string>
     <string name="sign_up_has_account">Already have an account?</string>
     <string name="sign_up_sign_in">Sign In</string>
+    <string name="sign_up_terms">By creating an account you enter into a contract with us to use the app on the terms of use.</string>
+    <string name="sign_up_terms_link">Terms of use</string>
     <string name="sign_up_privacy">Privacy</string>
     <string name="sign_up_privacy_summary">%1$s is responsible for your data. We store your email and a form of your password that no one can read. We need them to create and run your account, as part of our contract with you. If nobody opens your account for 30 days, we delete it and the notes in it. The link below opens the full notice, including your right to see, correct or delete your data.</string>
 
