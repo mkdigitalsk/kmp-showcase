@@ -1,23 +1,25 @@
 [versions]
 # CORE - Shared across all modules
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 kotlinx-coroutines = "1.11.0"
 turbine = "1.2.1"
-kotlinx-datetime = "0.7.1"
-kotlinx-serialization = "1.11.0"
+kotlinx-datetime = "0.8.0"
+kotlinx-serialization = "1.13.0"
 kotlinx-html = "0.12.0"
-ktor = "3.6.0"
+ktor = "3.6.1"
 koin = "4.2.2"
 
 # APP - Common (shared module)
+# Held on the 1.11 line: material3 1.11.0-alpha07 breaks against foundation 1.12 (AbstractMethodError on
+# CustomStyle), and the material3 built for 1.12 is a pre-release. Coil 3.6 requires 1.12, so Coil waits too.
 composeMultiplatform = "1.11.1"
 composeMaterial3 = "1.11.0-alpha07"
 composeMaterialIcons = "1.7.3"
-lifecycle = "2.10.0"
-navigation3 = "1.1.1"
-coil = "3.4.0"
-sqldelight = "2.3.2"
-datastore = "1.2.1"
+lifecycle = "2.11.0"
+navigation3 = "1.2.0"
+coil = "3.5.0"
+sqldelight = "2.4.1"
+datastore = "1.3.0"
 
 # APP - Android
 # Read as libs.versions.*.get(), which IntelliJ's unused-entry check does not follow.
@@ -27,31 +29,31 @@ androidMinSdk = "26"
 androidCompileSdk = "37"
 #noinspection UnusedVersionCatalogEntry
 androidTargetSdk = "36"
-agp = "9.4.1"
+agp = "9.5.1"
 compose = "1.11.4"
 activityCompose = "1.13.0"
 coreSplashscreen = "1.2.0"
 androidMaterial = "1.14.0"
 material3Android = "1.4.0"
 biometric = "1.1.0"
-cameraX = "1.6.1"
-firebaseBom = "34.15.0"
-firebaseCrashlytics = "3.0.6"
-firebaseDistribution = "5.2.0"
-googleServices = "4.4.4"
-googleServicesLocation = "21.3.0"
+cameraX = "1.6.2"
+firebaseBom = "35.2.0"
+firebaseCrashlytics = "3.0.8"
+firebaseDistribution = "5.3.1"
+googleServices = "4.6.0"
+googleServicesLocation = "21.4.0"
 accompanistPermissions = "0.37.3"
 mlKitBarcode = "17.3.0"
 zxing = "3.5.4"
 
 # SERVER
-logback = "1.5.37"
-exposed = "1.3.1"
-postgresql = "42.7.12"
-h2 = "2.4.240"
-testcontainers = "1.21.3"
+logback = "1.6.6"
+exposed = "1.6.1"
+postgresql = "42.7.14"
+h2 = "2.5.252"
+testcontainers = "2.0.5"
 hikari = "7.1.0"
-angusMail = "2.0.3"
+angusMail = "2.0.5"
 bcrypt = "0.10.2"
 
 # TESTING
@@ -59,21 +61,21 @@ bcrypt = "0.10.2"
 # https://github.com/detekt/detekt/issues/8865
 # compose-rules must match detekt's major — on the other line it registers a service path detekt never scans.
 detekt = "2.0.0-alpha.5"
-detektCompose = "0.6.3"
+detektCompose = "0.6.8"
 junit4 = "4.13.2"
-junitJupiter = "6.1.1"
-mokkery = "3.5.1"
-roborazzi = "1.65.0"
-robolectric = "4.17"
+junitJupiter = "6.1.3"
+mokkery = "3.6.0"
+roborazzi = "1.79.0"
+robolectric = "4.18"
 
 # BUILD CLASSPATH - patched versions of libraries the plugins bring unpatched
-buildNetty = "4.1.139.Final"
-buildBouncyCastle = "1.86"
+buildNetty = "4.1.140.Final"
+buildBouncyCastle = "1.87"
 buildJose4j = "0.9.7"
 buildJdom2 = "2.0.6.1"
-buildCommonsLang3 = "3.21.0"
+buildCommonsLang3 = "3.22.0"
 buildHttpClient = "4.5.14"
-buildOpenTelemetry = "1.67.0"
+buildOpenTelemetry = "1.68.0"
 
 [libraries]
 # CORE - KotlinX
@@ -186,7 +188,7 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exp
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
-testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
 
 # SERVER - Email (Jakarta Mail / Eclipse Angus)

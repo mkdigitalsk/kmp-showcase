@@ -43,6 +43,22 @@ plugins {
     alias(libs.plugins.firebase.distribution) apply false
 }
 
+/**
+ * detekt skips type-resolution rules silently, so each per-compilation task has to run, and the source-set ones are
+ * what reaches Kotlin/Native.
+ * Read by name, so no other task is created: AGP's Compose Preview task refuses creation where
+ * Android resources are left out of unit tests.
+ */
+fun Project.detektCompilationTaskNames(): Provider<List<String>> =
+    provider {
+        tasks.names.filter { name ->
+            name.startsWith("detekt") &&
+                name != "detekt" &&
+                !name.startsWith("detektBaseline") &&
+                !name.startsWith("detektGenerateConfig")
+        }
+    }
+
 subprojects {
     plugins.withId("org.jetbrains.kotlin.jvm") {
         extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
@@ -58,17 +74,8 @@ subprojects {
     // Per subproject: detekt derives type-resolution tasks from Kotlin compilations, and the root has none.
     apply(plugin = "dev.detekt")
 
-    // detekt skips type-resolution rules silently, so the per-compilation tasks matter; the source-set
-    // ones are what reaches Kotlin/Native.
     tasks.named("detekt") {
-        dependsOn(
-            tasks.matching { task ->
-                task.name.startsWith("detekt") &&
-                    task.name != "detekt" &&
-                    !task.name.startsWith("detektBaseline") &&
-                    !task.name.startsWith("detektGenerateConfig")
-            }
-        )
+        dependsOn(detektCompilationTaskNames())
     }
 
     extensions.configure<DetektExtension> {

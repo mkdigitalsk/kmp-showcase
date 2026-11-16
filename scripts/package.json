@@ -4,6 +4,6 @@
   "type": "module",
   "description": "Local DB/admin scripts (Neon).",
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.4"
+    "@neondatabase/serverless": "^1.2.1"
   }
 }

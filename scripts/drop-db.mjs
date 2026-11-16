@@ -17,9 +17,16 @@ if (!process.argv.includes('--yes')) {
 
 const tables = await sql`SELECT tablename FROM pg_tables WHERE schemaname = 'public'`
 for (const { tablename } of tables) {
-  await sql(`DROP TABLE IF EXISTS "${tablename}" CASCADE`)
+  await dropTable(tablename)
 }
 
 const left = await sql`SELECT tablename FROM pg_tables WHERE schemaname = 'public'`
 console.log(`Dropped ${tables.length} table(s) on ${branch}. Remaining:`, left.map((r) => r.tablename))
 console.log('Redeploy or restart the server to rebuild them.')
+
+/**
+ * A name read from pg_tables, never typed in: a template would bind it as a value, which DROP TABLE takes none of.
+ */
+function dropTable(name) {
+  return sql.query(`DROP TABLE IF EXISTS "${name}" CASCADE`)
+}

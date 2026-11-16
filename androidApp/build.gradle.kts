@@ -47,6 +47,9 @@ android {
             all { test ->
                 test.useJUnitPlatform()
                 test.systemProperties["robolectric.pixelCopyRenderMode"] = "hardware"
+                // The JVM's zone from its start: preview states are built before any JUnit rule runs, and
+                // the screenshot baselines are drawn in UTC.
+                test.systemProperties["user.timezone"] = "UTC"
             }
         }
     }

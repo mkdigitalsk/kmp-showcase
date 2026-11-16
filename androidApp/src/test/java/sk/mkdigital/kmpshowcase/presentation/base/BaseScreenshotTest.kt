@@ -7,7 +7,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.captureRoboImage
 import sk.mkdigital.kmpshowcase.presentation.base.rule.LocaleRule
-import sk.mkdigital.kmpshowcase.presentation.base.rule.TimezoneRule
 import sk.mkdigital.kmpshowcase.presentation.foundation.AppTheme
 import sk.mkdigital.kmpshowcase.presentation.foundation.ThemeMode
 import org.junit.After
@@ -42,9 +41,6 @@ abstract class BaseScreenshotTest<T>(
 
     @get:Rule
     val localeRule: LocaleRule = LocaleRule()
-
-    @get:Rule
-    val timezoneRule: TimezoneRule = TimezoneRule()
 
     @After
     fun tearDown() {

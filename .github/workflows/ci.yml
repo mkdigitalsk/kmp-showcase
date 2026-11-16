@@ -62,9 +62,6 @@ jobs:
         run: git diff --exit-code -- contracts/openapi.json
 
       - name: Verify Screenshot Tests
-        # UTC or the rendered timestamps carry the runner's offset and nothing matches.
-        env:
-          TZ: UTC
         run: ./gradlew :androidApp:verifyRoborazziDebug
 
       - name: Upload test results

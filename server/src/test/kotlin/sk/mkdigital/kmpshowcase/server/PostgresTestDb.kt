@@ -6,7 +6,7 @@ import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UsersTable
 import io.ktor.server.config.MapApplicationConfig
 import org.jetbrains.exposed.v1.jdbc.deleteAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 
 /**
  * ⚠ Postgres, not the H2 the account tests use: H2 has no `UPDATE … RETURNING` and raises 90131 where

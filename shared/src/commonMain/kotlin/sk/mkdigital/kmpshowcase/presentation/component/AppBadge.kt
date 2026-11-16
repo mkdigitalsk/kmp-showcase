@@ -6,6 +6,7 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.ui.Modifier
 import sk.mkdigital.kmpshowcase.presentation.foundation.appColorScheme
 
@@ -29,6 +30,7 @@ fun AppBadge(
 }
 
 @Composable
+@NonRestartableComposable
 fun AppBadgedBox(
     badge: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
