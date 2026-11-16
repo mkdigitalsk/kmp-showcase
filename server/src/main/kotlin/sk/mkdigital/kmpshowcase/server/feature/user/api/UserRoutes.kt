@@ -1,7 +1,7 @@
 package sk.mkdigital.kmpshowcase.server.feature.user.api
 
 import sk.mkdigital.kmpshowcase.contracts.ApiVersion
-import sk.mkdigital.kmpshowcase.contracts.user.UpdateLocaleRequestDTO
+import sk.mkdigital.kmpshowcase.contracts.user.UpdateLanguageRequestDTO
 import sk.mkdigital.kmpshowcase.contracts.user.UpdateThemeModeRequestDTO
 import sk.mkdigital.kmpshowcase.server.core.auth.userId
 import sk.mkdigital.kmpshowcase.server.feature.user.service.DeleteResult
@@ -50,8 +50,8 @@ internal fun Route.userRoutes(userService: UserService) {
             }
             put("/me/locale") {
                 val userId = call.userId() ?: return@put call.respond(HttpStatusCode.Unauthorized)
-                val request = call.receive<UpdateLocaleRequestDTO>()
-                val user = userService.updateLocale(userId, request.locale)
+                val request = call.receive<UpdateLanguageRequestDTO>()
+                val user = userService.updateLanguage(userId, request.language.toLanguage())
                     ?: return@put call.respond(HttpStatusCode.NotFound)
                 call.respond(user.toUserResponseDTO())
             }

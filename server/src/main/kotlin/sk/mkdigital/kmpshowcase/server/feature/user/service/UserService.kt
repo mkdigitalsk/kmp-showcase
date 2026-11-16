@@ -28,7 +28,7 @@ internal class UserService(
 
     suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = repository.updateThemeMode(id, themeMode)
 
-    suspend fun updateLocale(id: Long, locale: String): User? = repository.updateLocale(id, locale)
+    suspend fun updateLanguage(id: Long, language: Language): User? = repository.updateLanguage(id, language)
 
     suspend fun delete(id: Long): DeleteResult {
         val user = repository.findById(id) ?: return DeleteResult.Deleted

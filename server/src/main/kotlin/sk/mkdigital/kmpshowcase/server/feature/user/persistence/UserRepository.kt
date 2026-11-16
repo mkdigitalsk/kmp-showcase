@@ -1,5 +1,6 @@
 package sk.mkdigital.kmpshowcase.server.feature.user.persistence
 
+import sk.mkdigital.kmpshowcase.server.feature.user.service.Language
 import sk.mkdigital.kmpshowcase.server.feature.user.service.ThemeMode
 import sk.mkdigital.kmpshowcase.server.feature.user.service.User
 
@@ -9,7 +10,7 @@ internal interface UserRepository {
     suspend fun create(email: String, password: String): User
     suspend fun authenticate(email: String, password: String): User?
     suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User?
-    suspend fun updateLocale(id: Long, locale: String): User?
+    suspend fun updateLanguage(id: Long, language: Language): User?
     suspend fun delete(id: Long): Boolean
     suspend fun touchLastSeen(id: Long)
     suspend fun deleteInactiveSince(cutoff: Long, keep: Set<String>): Int

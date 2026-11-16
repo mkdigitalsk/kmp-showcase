@@ -1,6 +1,6 @@
 package sk.mkdigital.kmpshowcase.data.repository.user
 
-import sk.mkdigital.kmpshowcase.contracts.user.ThemeModeDTO
+import sk.mkdigital.kmpshowcase.contracts.ThemeModeDTO
 import sk.mkdigital.kmpshowcase.contracts.user.UserResponseDTO
 import sk.mkdigital.kmpshowcase.data.client.UserClient
 import sk.mkdigital.kmpshowcase.data.repository.UserRepositoryImpl
@@ -53,11 +53,9 @@ private fun testUserResponseDTO(
     email: String = "test@example.com",
     createdAt: Long = 0L,
     themeMode: ThemeModeDTO = ThemeModeDTO.SYSTEM,
-    locale: String = "en-GB",
 ) = UserResponseDTO(
     id = id,
     email = email,
     createdAt = createdAt,
     themeMode = themeMode,
-    locale = locale,
 )

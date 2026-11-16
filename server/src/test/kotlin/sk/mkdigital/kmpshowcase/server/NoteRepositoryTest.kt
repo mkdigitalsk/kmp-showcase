@@ -30,7 +30,7 @@ class NoteRepositoryTest {
     fun clear() = PostgresTestDb.clear()
 
     private suspend fun owner(): Long =
-        UserRepositoryImpl().create("note-repo-${UUID.randomUUID()}@test.com", "password123").id
+        UserRepositoryImpl().create("dana-${UUID.randomUUID()}@example.com", "password123").id
 
     private suspend fun note(ownerId: Long, title: String = "Buy milk"): Note =
         repository.create(ownerId, title, "two litres")

@@ -238,7 +238,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdateLocaleRequestDTO"
+                                "$ref": "#/components/schemas/UpdateLanguageRequestDTO"
                             }
                         }
                     }
@@ -581,8 +581,7 @@
                 "required": [
                     "id",
                     "email",
-                    "themeMode",
-                    "locale"
+                    "themeMode"
                 ],
                 "properties": {
                     "id": {
@@ -599,8 +598,12 @@
                             "dark"
                         ]
                     },
-                    "locale": {
-                        "type": "string"
+                    "language": {
+                        "type": "string",
+                        "enum": [
+                            "SK",
+                            "EN"
+                        ]
                     },
                     "demo": {
                         "type": "boolean"
@@ -646,8 +649,7 @@
                     "id",
                     "email",
                     "createdAt",
-                    "themeMode",
-                    "locale"
+                    "themeMode"
                 ],
                 "properties": {
                     "id": {
@@ -667,8 +669,12 @@
                             "dark"
                         ]
                     },
-                    "locale": {
-                        "type": "string"
+                    "language": {
+                        "type": "string",
+                        "enum": [
+                            "SK",
+                            "EN"
+                        ]
                     },
                     "demo": {
                         "type": "boolean"
@@ -692,15 +698,19 @@
                     }
                 }
             },
-            "UpdateLocaleRequestDTO": {
+            "UpdateLanguageRequestDTO": {
                 "type": "object",
-                "title": "UpdateLocaleRequestDTO",
+                "title": "UpdateLanguageRequestDTO",
                 "required": [
-                    "locale"
+                    "language"
                 ],
                 "properties": {
-                    "locale": {
-                        "type": "string"
+                    "language": {
+                        "type": "string",
+                        "enum": [
+                            "SK",
+                            "EN"
+                        ]
                     }
                 }
             },
