@@ -175,7 +175,7 @@ class SettingsViewModelTest : BaseViewModelTest() {
     }
 
     @Test
-    fun `LanguageState fromTag returns SK for sk-SK tag`() {
+    fun `LanguageState fromTag returns SK for sk SK tag`() {
         assertEquals(LanguageState.SK, LanguageState.fromTag("sk-SK"))
     }
 
@@ -185,7 +185,7 @@ class SettingsViewModelTest : BaseViewModelTest() {
     }
 
     @Test
-    fun `LanguageState fromTag returns EN for en-US tag`() {
+    fun `LanguageState fromTag returns EN for en US tag`() {
         assertEquals(LanguageState.EN, LanguageState.fromTag("en-US"))
     }
 

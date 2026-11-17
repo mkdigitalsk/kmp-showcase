@@ -14,16 +14,7 @@ import java.util.UUID
 import org.slf4j.event.Level
 
 internal fun Application.configureCallLogging() {
-    // Correlation id per request (backend conventions → Config & observability). CallId must install
-// BEFORE CallLogging so the MDC
-    // value exists for every log line the request produces; the id is echoed as X-Request-Id so a
-    // client-visible error can be matched to its full server trace.
-    install(CallId) {
-        retrieveFromHeader(HttpHeaders.XRequestId)
-        generate { UUID.randomUUID().toString().take(CALL_ID_LENGTH) }
-        verify { it.isNotBlank() }
-        replyToHeader(HttpHeaders.XRequestId)
-    }
+    installCallId()
     install(CallLogging) {
         level = Level.INFO
         callIdMdc("call-id")
@@ -39,6 +30,19 @@ internal fun Application.configureCallLogging() {
             val path = call.request.path()
             path.startsWith(ApiVersion.BASE)
         }
+    }
+}
+
+/**
+ * Installed before [CallLogging], so the MDC value exists for every log line the request produces.
+ * Echoed as X-Request-Id, so a client-visible error can be matched to its full server trace.
+ */
+private fun Application.installCallId() {
+    install(CallId) {
+        retrieveFromHeader(HttpHeaders.XRequestId)
+        generate { UUID.randomUUID().toString().take(CALL_ID_LENGTH) }
+        verify { it.isNotBlank() }
+        replyToHeader(HttpHeaders.XRequestId)
     }
 }
 

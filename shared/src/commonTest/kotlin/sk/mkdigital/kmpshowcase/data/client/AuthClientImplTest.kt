@@ -4,10 +4,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestData
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import kotlinx.coroutines.test.runTest
 import sk.mkdigital.kmpshowcase.BuildType
+import sk.mkdigital.kmpshowcase.contracts.LanguageDTO
 import sk.mkdigital.kmpshowcase.data.network.applyCommonConfig
 import sk.mkdigital.kmpshowcase.domain.exceptions.base.ApiException
 import sk.mkdigital.kmpshowcase.fake.NoOpLogger
@@ -31,6 +35,36 @@ class AuthClientImplTest {
             }
         }
     )
+
+    private fun clientSigningIn(language: String) = AuthClientImpl(
+        HttpClient(MockEngine) {
+            applyCommonConfig("example.invalid", BuildType.DEBUG, NoOpLogger)
+            engine {
+                addHandler {
+                    respond(
+                        content = """{"token":"t0k3n","user":{"id":1,"email":"dana@example.com",""" +
+                            """"themeMode":"system","language":"$language"}}""",
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                    )
+                }
+            }
+        }
+    )
+
+    @Test
+    fun `sign in reads the account language by its key`() = runTest {
+        val response = clientSigningIn(language = "SK").signIn("dana@example.com", "Password1@")
+
+        assertEquals(LanguageDTO.SK, response.user.language)
+    }
+
+    @Test
+    fun `sign in answering a language this build does not know opens in English`() = runTest {
+        val response = clientSigningIn(language = "FR").signIn("dana@example.com", "Password1@")
+
+        assertEquals(LanguageDTO.EN, response.user.language)
+    }
 
     @Test
     fun `delete account sends DELETE to the versioned me route`() = runTest {

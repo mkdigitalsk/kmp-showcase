@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import sk.mkdigital.kmpshowcase.contracts.auth.AuthResponseDTO
 import sk.mkdigital.kmpshowcase.contracts.auth.AuthUserDTO
-import sk.mkdigital.kmpshowcase.contracts.user.ThemeModeDTO
+import sk.mkdigital.kmpshowcase.contracts.ThemeModeDTO
 import sk.mkdigital.kmpshowcase.data.client.AuthClient
 import sk.mkdigital.kmpshowcase.data.local.preferences.PersistentPreferences
 import sk.mkdigital.kmpshowcase.data.local.preferences.PersistentPreferencesImpl
@@ -155,7 +155,6 @@ class AuthRepositoryImplTest : BaseTest<AuthRepositoryImpl>() {
             id = 1L,
             email = EMAIL,
             themeMode = ThemeModeDTO.SYSTEM,
-            locale = "en",
             demo = demo,
         ),
     )
@@ -179,7 +178,7 @@ class AuthRepositoryImplTest : BaseTest<AuthRepositoryImpl>() {
 
     private companion object {
         const val TOKEN = "jwt-token"
-        const val EMAIL = "demo01@mkdigital.sk"
+        const val EMAIL = "dana@example.com"
         const val PASSWORD = "MKDigitalTest1@"
         const val FCM_TOKEN = "fcm-token"
         const val PERSISTENT_COUNTER = 7

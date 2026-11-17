@@ -1,17 +1,16 @@
 package sk.mkdigital.kmpshowcase.server.core
 
-// PII discipline (backend conventions → Config & observability): emails identify clients across this
-// schema — log them masked.
+/** An email identifies a person, so only its first character and its domain are left. */
 internal fun String.maskEmail(): String {
     val at = indexOf('@')
     if (at < 1) return "***"
     return "${take(1)}***${substring(at)}"
 }
 
-// Matches plain and URL-encoded (%40) emails — request paths carry both (/v1/users/a%40b.com).
+/** An email plain or URL-encoded (%40) — a request path carries either. */
 private val EMAIL_IN_TEXT = Regex("""[A-Za-z0-9._+-]+(@|%40)[A-Za-z0-9.-]+\.[A-Za-z]{2,}""")
 
-// Masks every email found in free text (log messages, request paths) — first char + *** + domain.
+/** [maskEmail] for each email inside a longer text. */
 internal fun String.maskEmails(): String = EMAIL_IN_TEXT.replace(this) { match ->
     val separator = match.groupValues[1]
     val local = match.value.substringBefore(separator)

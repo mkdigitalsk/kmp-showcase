@@ -24,13 +24,19 @@ internal object DatabaseConfig {
             SchemaUtils.createMissingTablesAndColumns(UsersTable, NotesTable)
             logger.info("Database tables created/verified")
 
-            // An added column arrives at its default, and a last_seen_at of 0 is older than any cutoff —
-            // so without this the first inactivity sweep would delete every account that predates it.
-            val backfilled = UsersTable.update({ UsersTable.lastSeenAt eq 0 }) {
-                it[lastSeenAt] = System.currentTimeMillis()
-            }
-            if (backfilled > 0) logger.info("Backfilled last_seen_at for $backfilled account(s)")
+            backfillLastSeen()
         }
+    }
+
+    /**
+     * An added column arrives at its default, and a last_seen_at of 0 is older than any cutoff — so without this the
+     * first inactivity sweep would delete every account that predates it.
+     */
+    private fun backfillLastSeen() {
+        val backfilled = UsersTable.update({ UsersTable.lastSeenAt eq 0 }) {
+            it[lastSeenAt] = System.currentTimeMillis()
+        }
+        if (backfilled > 0) logger.info("Backfilled last_seen_at for $backfilled account(s)")
     }
 
     private fun hikari(appConfig: ApplicationConfig): HikariDataSource {
@@ -46,27 +52,34 @@ internal object DatabaseConfig {
             } else {
                 logger.info("Using PostgreSQL database (production)")
                 driverClassName = "org.postgresql.Driver"
-                val url = appConfig.property("database.url").getString()
-                // A Neon URL carries the password, and Hikari prints the whole URL when it fails.
-                require(url.startsWith("jdbc:postgresql://")) {
-                    "database.url must be a JDBC URL (jdbc:postgresql://host/db?sslmode=require), " +
-                        "with the user and password in database.user and database.password"
-                }
-                jdbcUrl = url
+                jdbcUrl = requireJdbcUrl(appConfig.property("database.url").getString())
                 username = appConfig.property("database.user").getString()
                 password = appConfig.property("database.password").getString()
             }
             maximumPoolSize = MAX_POOL_SIZE
-            // Neon scales the compute to zero after ~5 min idle. Hikari's default fixed pool
-            // (minimumIdle == maxPoolSize) keeps connections open and recycles them under that
-            // window, so the compute never suspends and burns CU-hours 24/7. Drain to zero when
-            // idle so Neon can suspend too.
-            minimumIdle = MIN_IDLE
-            idleTimeout = IDLE_TIMEOUT_MS
+            drainWhenIdle()
             isAutoCommit = false
             validate()
         }
         return HikariDataSource(config)
+    }
+
+    /** A Neon URL carries the password, and Hikari prints the whole URL when it fails. */
+    private fun requireJdbcUrl(url: String): String {
+        require(url.startsWith("jdbc:postgresql://")) {
+            "database.url must be a JDBC URL (jdbc:postgresql://host/db?sslmode=require), " +
+                "with the user and password in database.user and database.password"
+        }
+        return url
+    }
+
+    /**
+     * Hikari's default is a [fixed-size pool](https://github.com/brettwooldridge/HikariCP#frequently-used) held open,
+     * so Neon's compute never [scales to zero](https://neon.com/docs/introduction/scale-to-zero) — drained, it can.
+     */
+    private fun HikariConfig.drainWhenIdle() {
+        minimumIdle = MIN_IDLE
+        idleTimeout = IDLE_TIMEOUT_MS
     }
 
     private const val MAX_POOL_SIZE = 10

@@ -60,7 +60,7 @@ class NoteRoutesTest {
     fun clear() = PostgresTestDb.clear()
 
     private fun signedIn(): String = runBlocking {
-        val user = UserRepositoryImpl().create("note-${UUID.randomUUID()}@test.com", "password123")
+        val user = UserRepositoryImpl().create("dana-${UUID.randomUUID()}@example.com", "password123")
         jwtConfig.generateToken(user.id, user.email)
     }
 
@@ -88,7 +88,7 @@ class NoteRoutesTest {
     }
 
     @Test
-    fun `a note round-trips and comes back with its tag`() = notesTest {
+    fun `a note round trips and comes back with its tag`() = notesTest {
         val token = signedIn()
         val created = createNote(token)
         assertEquals("Buy milk", created.title)

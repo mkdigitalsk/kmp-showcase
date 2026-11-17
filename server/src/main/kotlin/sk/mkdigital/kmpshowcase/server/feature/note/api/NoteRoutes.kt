@@ -22,14 +22,10 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
-// Ktor's HttpStatusCode stops short of 428, so the code RFC 6585 §3 assigns is named here rather than
-// left as a bare number at the call site.
-// https://www.rfc-editor.org/rfc/rfc6585#section-3
+/** The 428 of [RFC 6585 §3](https://www.rfc-editor.org/rfc/rfc6585#section-3), absent from Ktor's [HttpStatusCode]. */
 private val PreconditionRequired = HttpStatusCode(428, "Precondition Required")
 
-// The remote half of the showcase's notes: the same object the Database screen keeps on the device,
-// kept on the server instead. Every route is scoped to the caller, so this is also what replaced the
-// unscoped user list the Networking screen used to read.
+/** The server's copy of the notes the device keeps — every route is scoped to the caller. */
 internal fun Route.noteRoutes(noteService: NoteService) {
     route("${ApiVersion.BASE}/notes") {
         authenticate("auth-jwt") {
@@ -103,7 +99,7 @@ private fun CreateNoteRequestDTO.validate(): String? = validateFields(title, con
 
 private fun UpdateNoteRequestDTO.validate(): String? = validateFields(title, content)
 
-// A stable code rather than prose, because it reaches the client as a field error it has to branch on.
+/** A stable code rather than prose, because it reaches the client as a field error it has to branch on. */
 private fun validateFields(title: String, content: String): String? = when {
     title.isBlank() -> "note.title.blank"
     title.length > NotesTable.TITLE_LENGTH -> "note.title.tooLong"

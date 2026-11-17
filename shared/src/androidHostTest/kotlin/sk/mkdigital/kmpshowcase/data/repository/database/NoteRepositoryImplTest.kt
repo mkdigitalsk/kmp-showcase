@@ -47,7 +47,7 @@ class NoteRepositoryImplTest {
     }
 
     @Test
-    fun `getById returns null for non-existent id`() = runTest {
+    fun `getById returns null for non existent id`() = runTest {
         val result = repository.getById(999)
         assertNull(result)
     }
@@ -227,7 +227,7 @@ class NoteRepositoryImplTest {
     }
 
     @Test
-    fun `multiple inserts generate unique auto-incremented ids`() = runTest {
+    fun `multiple inserts generate unique auto incremented ids`() = runTest {
         repository.insert(createNote(title = "Note 1"))
         repository.insert(createNote(title = "Note 2"))
         repository.insert(createNote(title = "Note 3"))

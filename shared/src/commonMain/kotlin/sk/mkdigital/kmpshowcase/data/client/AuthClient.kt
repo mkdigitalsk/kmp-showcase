@@ -43,8 +43,10 @@ class AuthClientImpl(
         }.body()
     }
 
-    // The client is built without expectSuccess, so a rejected delete arrives as a response rather than
-    // as a throw, and an unchecked status would report a live account as deleted.
+    /**
+     * The client is built without expectSuccess, so a rejected delete arrives as a response rather than as a throw,
+     * and an unchecked status would report a live account as deleted.
+     */
     override suspend fun deleteAccount() = handleApiCall {
         val response = client.delete("users/me")
         if (!response.status.isSuccess()) {

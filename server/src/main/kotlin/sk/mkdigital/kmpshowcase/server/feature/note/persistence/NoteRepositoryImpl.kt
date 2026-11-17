@@ -14,8 +14,10 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.updateReturning
 
-// The owner is part of every predicate rather than checked after the read, so a caller can never reach
-// or enumerate another account's rows — including through the list, which filters by absence.
+/**
+ * The owner is part of every predicate rather than checked after the read, so a caller can never reach or enumerate
+ * another account's rows — including through the list, which filters by absence.
+ */
 internal class NoteRepositoryImpl : NoteRepository {
 
     override suspend fun findAllByOwner(ownerId: Long): List<Note> = suspendTransaction {

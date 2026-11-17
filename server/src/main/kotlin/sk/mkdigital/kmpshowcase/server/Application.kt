@@ -52,8 +52,10 @@ internal fun Application.module() {
     schedulePurge(dependencies)
 }
 
-// The loop outlives any one run: a purge that dies on an unanticipated exception stops retention
-// silently, and nothing else would notice until /purge-status went stale.
+/**
+ * The loop outlives any one run: a purge that dies on an unanticipated exception stops retention silently, and
+ * nothing else would notice until /purge-status went stale.
+ */
 @Suppress("TooGenericExceptionCaught")
 private fun Application.schedulePurge(dependencies: AppDependencies) {
     launch {

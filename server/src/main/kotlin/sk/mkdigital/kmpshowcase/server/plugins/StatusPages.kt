@@ -41,7 +41,7 @@ internal class ForbiddenException(message: String) : Exception(message)
 private val problemJson = Json { explicitNulls = false }
 private val problemContentType = ContentType("application", "problem+json")
 
-// Ktor's ApplicationCall happens to implement CoroutineScope; the receiver is the call, not a scope to launch in.
+/** Ktor's ApplicationCall happens to implement CoroutineScope; the receiver is the call, not a scope to launch in. */
 @Suppress("SuspendFunWithCoroutineScopeReceiver")
 private suspend fun ApplicationCall.respondProblem(
     status: HttpStatusCode,

@@ -2,6 +2,7 @@ package sk.mkdigital.kmpshowcase.server.feature.user.persistence
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 import sk.mkdigital.kmpshowcase.server.core.persistence.mapToSingleOrNull
+import sk.mkdigital.kmpshowcase.server.feature.user.service.Language
 import sk.mkdigital.kmpshowcase.server.feature.user.service.ThemeMode
 import sk.mkdigital.kmpshowcase.server.feature.user.service.User
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -41,6 +42,7 @@ internal class UserRepositoryImpl : UserRepository {
                 it[createdAt] = now
                 it[updatedAt] = now
                 it[lastSeenAt] = now
+                it[language] = UsersTable.DEFAULT_LANGUAGE
             } get UsersTable.id
 
             User(
@@ -48,7 +50,7 @@ internal class UserRepositoryImpl : UserRepository {
                 email = email,
                 createdAt = now,
                 themeMode = ThemeMode.SYSTEM,
-                locale = UsersTable.DEFAULT_LOCALE,
+                language = UsersTable.DEFAULT_LANGUAGE,
             )
         }
 
@@ -65,9 +67,9 @@ internal class UserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun updateLocale(id: Long, locale: String): User? = suspendTransaction {
+    override suspend fun updateLanguage(id: Long, language: Language): User? = suspendTransaction {
         val updated = UsersTable.update({ UsersTable.id eq id }) {
-            it[UsersTable.locale] = locale
+            it[UsersTable.language] = language
         }
         if (updated > 0) {
             UsersTable.selectAll()
@@ -114,7 +116,7 @@ internal class UserRepositoryImpl : UserRepository {
         email = this[UsersTable.email],
         createdAt = this[UsersTable.createdAt],
         themeMode = this[UsersTable.themeMode],
-        locale = this[UsersTable.locale],
+        language = this[UsersTable.language],
     )
 
     private companion object {

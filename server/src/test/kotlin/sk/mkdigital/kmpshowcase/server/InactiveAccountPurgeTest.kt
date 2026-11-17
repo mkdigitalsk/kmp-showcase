@@ -2,6 +2,7 @@ package sk.mkdigital.kmpshowcase.server
 
 import sk.mkdigital.kmpshowcase.server.feature.user.service.INACTIVITY_LIMIT
 import sk.mkdigital.kmpshowcase.server.feature.user.service.InactiveAccountPurge
+import sk.mkdigital.kmpshowcase.server.feature.user.service.Language
 import sk.mkdigital.kmpshowcase.server.feature.user.service.ThemeMode
 import sk.mkdigital.kmpshowcase.server.feature.user.persistence.UserRepository
 import sk.mkdigital.kmpshowcase.server.feature.user.service.User
@@ -26,7 +27,7 @@ class InactiveAccountPurgeTest {
     @Test
     fun `an account nobody has opened past the limit is removed`() = runTest {
         val longGone = utc("2026-01-31") - (INACTIVITY_LIMIT + 2.days).inWholeMilliseconds
-        repository.add("dormant@test.com", lastSeenAt = longGone)
+        repository.add("dormant@example.com", lastSeenAt = longGone)
 
         purge.run()
 
@@ -36,15 +37,15 @@ class InactiveAccountPurgeTest {
     @Test
     fun `an account opened inside the limit is kept`() = runTest {
         val recent = utc("2026-01-31") - (INACTIVITY_LIMIT - 1.days).inWholeMilliseconds
-        repository.add("active@test.com", lastSeenAt = recent)
+        repository.add("active@example.com", lastSeenAt = recent)
 
         purge.run()
 
-        assertEquals(listOf("active@test.com"), repository.emails())
+        assertEquals(listOf("active@example.com"), repository.emails())
     }
 
     @Test
-    fun `a dormant demo account survives, because the sign-in screen hands it out`() = runTest {
+    fun `a dormant demo account survives, because the sign in screen hands it out`() = runTest {
         val forever = utc("2026-01-31") - (INACTIVITY_LIMIT * 10).inWholeMilliseconds
         repository.add("test01@mkdigital.sk", lastSeenAt = forever)
 
@@ -54,12 +55,12 @@ class InactiveAccountPurgeTest {
     }
 
     @Test
-    fun `a late-night visit still counts as that whole day`() = runTest {
-        repository.add("night-owl@test.com", lastSeenAt = utc("2026-01-01", "23:55"))
+    fun `a late night visit still counts as that whole day`() = runTest {
+        repository.add("night-owl@example.com", lastSeenAt = utc("2026-01-01", "23:55"))
 
         clock = utc("2026-01-31", "12:00")
         purge.run()
-        assertEquals(listOf("night-owl@test.com"), repository.emails(), "thirty days have not passed in full")
+        assertEquals(listOf("night-owl@example.com"), repository.emails(), "thirty days have not passed in full")
 
         clock = utc("2026-02-01", "00:01")
         purge.run()
@@ -105,7 +106,7 @@ private class FakeUserRepository : UserRepository {
     override suspend fun create(email: String, password: String): User = unused()
     override suspend fun authenticate(email: String, password: String): User? = unused()
     override suspend fun updateThemeMode(id: Long, themeMode: ThemeMode): User? = unused()
-    override suspend fun updateLocale(id: Long, locale: String): User? = unused()
+    override suspend fun updateLanguage(id: Long, language: Language): User? = unused()
     override suspend fun delete(id: Long): Boolean = unused()
     override suspend fun touchLastSeen(id: Long) = unused()
 

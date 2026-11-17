@@ -8,6 +8,6 @@ internal fun User.toAuthUserDTO() =
         id = id,
         email = email,
         themeMode = themeMode.toThemeModeDTO(),
-        locale = locale,
+        language = language.toLanguageDTO(),
         demo = demo,
     )

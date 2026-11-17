@@ -50,17 +50,21 @@ internal fun Route.authRoutes(userService: UserService, jwtConfig: JwtConfig) {
         }
 
         authenticate("auth-jwt") {
-            // POST, not GET: this issues a new bearer, and a private cache may store a GET response
-            // carrying one (RFC 9110 §9.2.1, RFC 9111 §3.5). Read the user from GET /v1/users/me.
-            post("/token") {
-                val userId = call.userId()
-                    ?: return@post call.respond(HttpStatusCode.Unauthorized)
-                val user = userService.getById(userId)
-                    ?: return@post call.respond(HttpStatusCode.NotFound)
-                userService.markSeen(user.id)
-                logger.info("Token renewed: ${user.id} (${user.email.maskEmail()})")
-                call.respond(AuthResponseDTO(jwtConfig.generateToken(user.id, user.email), user.toAuthUserDTO()))
-            }
+            renewToken(userService, jwtConfig)
         }
     }
+}
+
+/**
+ * POST, not GET: issuing a new bearer is not [safe](https://www.rfc-editor.org/rfc/rfc9110#section-9.2.1), and a GET
+ * response carrying one is barred [from a shared cache only](https://www.rfc-editor.org/rfc/rfc9111#section-3.5).
+ */
+private fun Route.renewToken(userService: UserService, jwtConfig: JwtConfig) = post("/token") {
+    val userId = call.userId()
+        ?: return@post call.respond(HttpStatusCode.Unauthorized)
+    val user = userService.getById(userId)
+        ?: return@post call.respond(HttpStatusCode.NotFound)
+    userService.markSeen(user.id)
+    logger.info("Token renewed: ${user.id} (${user.email.maskEmail()})")
+    call.respond(AuthResponseDTO(jwtConfig.generateToken(user.id, user.email), user.toAuthUserDTO()))
 }
