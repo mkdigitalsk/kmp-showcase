@@ -22,7 +22,10 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
-/** The 428 of [RFC 6585 §3](https://www.rfc-editor.org/rfc/rfc6585#section-3), absent from Ktor's [HttpStatusCode]. */
+/**
+ * The 428 of [RFC 6585 §3](https://www.rfc-editor.org/rfc/rfc6585#section-3), absent from Ktor's [HttpStatusCode].
+ * It guards against the lost update — applied unconditioned, the last writer wins and the other edit is gone, untold.
+ */
 private val PreconditionRequired = HttpStatusCode(428, "Precondition Required")
 
 /** The server's copy of the notes the device keeps — every route is scoped to the caller. */
@@ -65,17 +68,11 @@ private fun Route.updateNote(noteService: NoteService) = put("/{id}") {
     val request = call.receive<UpdateNoteRequestDTO>()
     request.validate()?.let { return@put call.respond(HttpStatusCode.BadRequest, it) }
 
-    // Refused rather than applied: without a precondition the last writer silently wins and the other
-    // edit is gone with nobody told. `*` and a `W/` tag parse to nothing usable and are refused the
-    // same way — `*` matches merely because the row exists, and a gzipping proxy is what turns a strong
-    // tag weak in transit.
     val expected = call.request.headers[HttpHeaders.IfMatch].orEmpty().toExpectedVersions()
     if (expected.isEmpty()) return@put call.respond(PreconditionRequired)
 
     when (val result = noteService.update(id, userId, expected, request.title, request.content)) {
         is WriteResult.Written -> respondNote(call, result.note.toNoteResponseDTO())
-        // The current row rides along so the client can show both versions and let the person choose.
-        // Never merged for them — only they know which edit mattered.
         is WriteResult.Stale -> call.respond(HttpStatusCode.PreconditionFailed, result.current.toNoteResponseDTO())
         WriteResult.NotFound -> call.respond(HttpStatusCode.NotFound)
     }

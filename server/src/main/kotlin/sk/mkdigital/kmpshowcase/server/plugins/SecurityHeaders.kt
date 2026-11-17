@@ -3,10 +3,11 @@ package sk.mkdigital.kmpshowcase.server.plugins
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
+import io.ktor.server.plugins.defaultheaders.DefaultHeadersConfig
 import io.ktor.server.plugins.hsts.HSTS
 
 /**
- * The OWASP secure-headers baseline for a JSON API (backend conventions → Abuse controls).
+ * The OWASP secure-headers baseline for a JSON API.
  *
  * Deliberate deviations, all grounded:
  *  - COOP/COEP/CORP omitted — OWASP: "very related to browsers, may not make sense for REST APIs";
@@ -32,10 +33,12 @@ internal fun Application.configureSecurityHeaders() {
         header("X-Frame-Options", "DENY")
         header("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
         header("Permissions-Policy", "geolocation=(), microphone=(), camera=(), browsing-topics=()")
-        // Authenticated JSON API — never let a browser or shared cache retain a response.
-        header("Cache-Control", "no-store")
+        neverStored()
     }
 }
+
+/** An authenticated JSON API — no browser or shared cache keeps a response. */
+private fun DefaultHeadersConfig.neverStored() = header("Cache-Control", "no-store")
 
 /**
  * Two years — the value OWASP writes into its own example header.

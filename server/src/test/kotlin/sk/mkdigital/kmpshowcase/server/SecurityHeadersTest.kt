@@ -13,8 +13,10 @@ import kotlin.test.assertTrue
 
 class SecurityHeadersTest {
 
-    // HSTS is intentionally not asserted: it is only emitted over HTTPS, and testApplication runs over
-    // plain HTTP (no X-Forwarded-Proto), so its absence here is correct, not a regression.
+    /**
+     * HSTS is intentionally not asserted: it is only emitted over HTTPS, and testApplication runs over plain HTTP (no
+     * X-Forwarded-Proto), so its absence here is correct, not a regression.
+     */
     @Test
     fun `every response carries the OWASP security header baseline`() = testApplication {
         application {

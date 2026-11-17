@@ -93,8 +93,10 @@ private class FakeUserRepository : UserRepository {
 
     fun emails(): List<String> = rows.keys.sorted()
 
-    // The predicate the SQL runs, not a simplification of it: a fake that ignores either half would let
-    // every one of these tests pass while the sweep deleted the wrong rows.
+    /**
+     * The predicate the SQL runs, not a simplification of it: a fake that ignores either half would let every one of
+     * these tests pass while the sweep deleted the wrong rows.
+     */
     override suspend fun deleteInactiveSince(cutoff: Long, keep: Set<String>): Int {
         val doomed = rows.filter { (email, lastSeenAt) -> lastSeenAt < cutoff && email !in keep }.keys
         doomed.forEach(rows::remove)

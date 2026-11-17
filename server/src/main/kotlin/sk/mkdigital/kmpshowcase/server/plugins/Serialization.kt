@@ -8,13 +8,17 @@ import kotlinx.serialization.json.Json
 
 internal fun Application.configureSerialization() {
     install(ContentNegotiation) {
-        json(Json {
-            prettyPrint = true
-            isLenient = true
-            ignoreUnknownKeys = true
-            // Off by default, which drops every property equal to its declared default — so a contract
-            // field written as `= false` reaches a client that does not share the contract as absent.
-            encodeDefaults = true
-        })
+        json(wireJson)
     }
+}
+
+/**
+ * `encodeDefaults` sends every property, its default included — off, a contract field written as `= false` reaches a
+ * client that does not share the contract as absent.
+ */
+private val wireJson = Json {
+    prettyPrint = true
+    isLenient = true
+    ignoreUnknownKeys = true
+    encodeDefaults = true
 }

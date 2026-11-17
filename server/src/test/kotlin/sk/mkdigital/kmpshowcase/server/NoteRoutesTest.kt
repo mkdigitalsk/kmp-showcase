@@ -101,8 +101,10 @@ class NoteRoutesTest {
         assertEquals(listOf(created.id), listed.map { it.id })
     }
 
-    // The filter proven by absence. A 404 on a direct fetch would only prove object-level scoping;
-    // this is the assertion that a lower-privilege caller cannot enumerate.
+    /**
+     * The filter proven by absence — a 404 on a direct fetch would only prove object-level scoping.
+     * This is the assertion that a lower-privilege caller cannot enumerate.
+     */
     @Test
     fun `the list never carries another account's notes`() = notesTest {
         val mine = signedIn()
@@ -154,17 +156,18 @@ class NoteRoutesTest {
         val token = signedIn()
         val created = createNote(token)
         val client = createClient { install(ContentNegotiation) { json() } }
+        val tagReadBeforeTheFirstWrite = created.etag
 
         client.put("${ApiVersion.BASE}/notes/${created.id}") {
             header(HttpHeaders.Authorization, "Bearer $token")
-            header(HttpHeaders.IfMatch, created.etag)
+            header(HttpHeaders.IfMatch, tagReadBeforeTheFirstWrite)
             contentType(ContentType.Application.Json)
             setBody(UpdateNoteRequestDTO(title = "First", content = "won"))
         }
 
         val second = client.put("${ApiVersion.BASE}/notes/${created.id}") {
             header(HttpHeaders.Authorization, "Bearer $token")
-            header(HttpHeaders.IfMatch, created.etag) // the tag they read before the first write landed
+            header(HttpHeaders.IfMatch, tagReadBeforeTheFirstWrite)
             contentType(ContentType.Application.Json)
             setBody(UpdateNoteRequestDTO(title = "Second", content = "lost"))
         }
@@ -186,8 +189,10 @@ class NoteRoutesTest {
         assertEquals(PreconditionRequired, response.status)
     }
 
-    // `*` matches whenever the row exists, so honouring it would be last-write-wins wearing the
-    // precondition's uniform — it has to read as no precondition at all.
+    /**
+     * `*` matches whenever the row exists, so honouring it would be last-write-wins wearing the precondition's uniform
+     * — it has to read as no precondition at all.
+     */
     @Test
     fun `an update preconditioned on star is refused`() = notesTest {
         val token = signedIn()
@@ -203,8 +208,10 @@ class NoteRoutesTest {
         assertEquals(PreconditionRequired, response.status)
     }
 
-    // If-Match compares strongly, so a weak tag can never match — and a gzipping proxy is what turns a
-    // strong tag weak in transit, which is the case this guards.
+    /**
+     * If-Match compares strongly, so a weak tag can never match — and a gzipping proxy is what turns a strong tag weak
+     * in transit, which is the case this guards.
+     */
     @Test
     fun `an update preconditioned on a weak tag is refused`() = notesTest {
         val token = signedIn()
@@ -271,8 +278,10 @@ class NoteRoutesTest {
         )
     }
 
-    // Art 17 is only satisfied if erasure reaches what the account owns, so the cascade is asserted
-    // rather than assumed from the schema.
+    /**
+     * Erasure reaches what the account owns — the cascade is asserted, never assumed from the schema.
+     * [Regulation (EU) 2016/679, Art. 17](https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R0679#art_17)
+     */
     @Test
     fun `deleting the account takes its notes with it`() = notesTest {
         val token = signedIn()

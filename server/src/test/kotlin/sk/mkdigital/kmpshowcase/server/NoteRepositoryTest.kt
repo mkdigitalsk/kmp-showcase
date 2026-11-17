@@ -44,7 +44,7 @@ class NoteRepositoryTest {
         assertEquals(created, repository.findByIdAndOwner(created.id, ownerId))
     }
 
-    // Proven by absence: a null from findByIdAndOwner would only show object-level scoping.
+    /** Proven by absence: a null from findByIdAndOwner would only show object-level scoping. */
     @Test
     fun `the list carries only the caller's rows`() = runTest {
         val mine = owner()
@@ -85,7 +85,7 @@ class NoteRepositoryTest {
         assertEquals(2, updated?.version)
     }
 
-    // The bump is relative to what is stored, not to whichever version of the list matched.
+    /** The bump is relative to what is stored, not to whichever version of the list matched. */
     @Test
     fun `a precondition naming several versions matches on any of them`() = runTest {
         val ownerId = owner()
@@ -104,8 +104,11 @@ class NoteRepositoryTest {
         assertNull(repository.update(stored.id, ownerId, emptySet(), "impossible", "content"))
     }
 
-    // Fails if the version is ever read-then-compared instead of matched in the `UPDATE` predicate.
-    @Suppress("InjectDispatcher") // nothing to inject: the racers need real threads, runTest has one
+    /**
+     * Fails if the version is ever read, then compared, instead of matched in the `UPDATE` predicate.
+     * Nothing to inject: the racers need real threads, and runTest has one.
+     */
+    @Suppress("InjectDispatcher")
     @Test
     fun `two writers at the same version, one wins`() = runTest {
         val ownerId = owner()

@@ -21,9 +21,7 @@ internal fun Application.configureCORS(config: ApplicationConfig) {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
 
-        // "*" (or unset) = permissive — for local dev and the staging env, where callers are Vercel
-        // preview URLs (unpredictable hashes). Production sets CORS_ALLOWED_HOSTS to an explicit list.
-        if (allowedHosts.isBlank() || allowedHosts == "*") {
+        if (allowsAnyHost(allowedHosts)) {
             anyHost()
         } else {
             allowedHosts.split(",")
@@ -33,3 +31,9 @@ internal fun Application.configureCORS(config: ApplicationConfig) {
         }
     }
 }
+
+/**
+ * `*` or unset — local dev and staging, whose callers are Vercel preview URLs with unpredictable hashes.
+ * Production names its hosts in CORS_ALLOWED_HOSTS.
+ */
+private fun allowsAnyHost(allowedHosts: String) = allowedHosts.isBlank() || allowedHosts == "*"

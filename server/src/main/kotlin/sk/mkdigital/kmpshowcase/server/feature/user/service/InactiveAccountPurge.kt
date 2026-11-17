@@ -23,20 +23,19 @@ internal class InactiveAccountPurge(
         private set
 
     suspend fun run(): Int {
-        val deleted = repository.deleteInactiveSince(
-            cutoff = startOfDayUtc(now()) - INACTIVITY_LIMIT.inWholeMilliseconds,
-            keep = demoAccountEmails(),
-        )
+        val deleted = repository.deleteInactiveSince(cutoff = cutoff(), keep = demoAccountEmails())
         lastRunAt = now()
         return deleted
     }
 
-    // seen 01-01 23:55 → kept through 01-31 → gone 02-01 00:00
+    /** Whole UTC days — seen 01-01 23:55, kept through 01-31, gone 02-01 00:00. */
+    private fun cutoff(): Long = startOfDayUtc(now()) - INACTIVITY_LIMIT.inWholeMilliseconds
+
     private fun startOfDayUtc(millis: Long): Long =
         Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate().atStartOfDay(ZoneOffset.UTC)
             .toInstant().toEpochMilli()
 
-    // Absence is the failure worth alerting on: a job that stops running never raises an error.
+    /** Absence is the failure worth alerting on — a job that stops running never raises an error. */
     fun isOverdue(): Boolean {
         val last = lastRunAt ?: return true
         return now() - last > (PURGE_INTERVAL * OVERDUE_TOLERANCE).inWholeMilliseconds

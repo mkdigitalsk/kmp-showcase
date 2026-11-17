@@ -9,6 +9,11 @@ import sk.mkdigital.kmpshowcase.server.feature.note.persistence.NoteRepository
  */
 internal sealed interface WriteResult {
     data class Written(val note: Note) : WriteResult
+
+    /**
+     * The row as it stands, returned whole so both versions can be compared — never merged, as only the person knows
+     * which edit mattered.
+     */
     data class Stale(val current: Note) : WriteResult
     data object NotFound : WriteResult
 }
@@ -32,8 +37,14 @@ internal class NoteService(private val repository: NoteRepository) {
         val updated = repository.update(id, ownerId, expectedVersions, title.trim(), content.trim())
         if (updated != null) return WriteResult.Written(updated)
 
-        // The write matched nothing, so re-read to learn why. Absent means gone or never theirs; present
-        // means someone else has written since they read it, and they get the row back to compare.
+        return whyNotWritten(id, ownerId)
+    }
+
+    /**
+     * The write matched nothing, so the row is read again — absent, it is gone or never theirs.
+     * Present, someone else has written it since they read it, and it comes back for them to compare.
+     */
+    private suspend fun whyNotWritten(id: Long, ownerId: Long): WriteResult {
         val current = repository.findByIdAndOwner(id, ownerId) ?: return WriteResult.NotFound
         return WriteResult.Stale(current)
     }

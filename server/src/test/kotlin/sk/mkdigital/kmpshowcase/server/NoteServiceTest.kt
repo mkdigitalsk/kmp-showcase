@@ -42,7 +42,7 @@ class NoteServiceTest {
         assertEquals(stored, stale.current)
     }
 
-    // ⚠ Scoping only the write would leak existence as a 412 — the re-read carries the owner too.
+    /** ⚠ Scoping only the write would leak existence as a 412 — the re-read carries the owner too. */
     @Test
     fun `an update to another account's note is not found, never stale`() = runTest {
         val result = service(stored).update(stored.id, ownerId = 99, setOf(2), "theirs", "no")

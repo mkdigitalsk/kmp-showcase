@@ -54,6 +54,10 @@ internal class NoteRepositoryImpl : NoteRepository {
         )
     }
 
+    /**
+     * One statement — the precondition is the WHERE and the bump the SET, so no other writer fits between them.
+     * The row comes back from that statement — queried again, it could move first.
+     */
     override suspend fun update(
         id: Long,
         ownerId: Long,
@@ -61,9 +65,6 @@ internal class NoteRepositoryImpl : NoteRepository {
         title: String,
         content: String,
     ): Note? = suspendTransaction {
-        // One statement: the precondition is the WHERE clause and the bump is the SET, so no other
-        // writer fits between them. Read back rather than re-queried, or the row could move again first.
-        // The bump is relative because the caller may have named several versions.
         NotesTable.updateReturning(
             where = {
                 val scoped = (NotesTable.id eq id) and (NotesTable.userId eq ownerId)
