@@ -88,7 +88,7 @@ class NoteRoutesTest {
     }
 
     @Test
-    fun `a note round-trips and comes back with its tag`() = notesTest {
+    fun `a note round trips and comes back with its tag`() = notesTest {
         val token = signedIn()
         val created = createNote(token)
         assertEquals("Buy milk", created.title)

@@ -42,6 +42,7 @@ internal class UserRepositoryImpl : UserRepository {
                 it[createdAt] = now
                 it[updatedAt] = now
                 it[lastSeenAt] = now
+                it[language] = UsersTable.DEFAULT_LANGUAGE
             } get UsersTable.id
 
             User(

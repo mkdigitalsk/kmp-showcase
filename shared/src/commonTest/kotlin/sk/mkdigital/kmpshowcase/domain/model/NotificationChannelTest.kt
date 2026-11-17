@@ -37,14 +37,14 @@ class NotificationChannelTest {
     }
 
     @Test
-    fun `all channels have non-empty names`() {
+    fun `all channels have non empty names`() {
         NotificationChannel.entries.forEach { channel ->
             assertTrue(channel.channelName.isNotBlank())
         }
     }
 
     @Test
-    fun `all channels have non-empty descriptions`() {
+    fun `all channels have non empty descriptions`() {
         NotificationChannel.entries.forEach { channel ->
             assertTrue(channel.description.isNotBlank())
         }

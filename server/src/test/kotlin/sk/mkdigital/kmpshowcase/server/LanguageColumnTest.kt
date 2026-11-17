@@ -11,8 +11,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Real Postgres, booted as a deploy meets production — an insert leaves the column to the default the database holds,
- * so a database made while the column held a free tag would store that tag for every new account.
+ * Real Postgres, booted as a deploy meets production — a database made while the column held a free tag defaults it
+ * to that tag, which every insert leaving the column out would store.
  */
 class LanguageColumnTest {
 
@@ -24,17 +24,35 @@ class LanguageColumnTest {
 
     @Test
     fun `boot gives a column made for a free tag the key as its default`() = runTest {
+        defaultTheColumnToAFreeTag()
+
+        PostgresTestDb.boot()
+        val email = "dana-${UUID.randomUUID()}@example.com"
         transaction {
             exec(
-                "ALTER TABLE ${identity(UsersTable)} ALTER COLUMN ${identity(UsersTable.language)} " +
-                    "SET DEFAULT '$FREE_TAG_DEFAULT'",
+                "INSERT INTO ${identity(UsersTable)} (${identity(UsersTable.email)}, " +
+                    "${identity(UsersTable.passwordHash)}, ${identity(UsersTable.createdAt)}, " +
+                    "${identity(UsersTable.updatedAt)}) VALUES ('$email', '', 0, 0)",
             )
         }
 
-        PostgresTestDb.boot()
+        assertEquals("EN", StoredAccounts.languageOf(email))
+    }
+
+    @Test
+    fun `a new account stores the key while the database default is a free tag`() = runTest {
+        defaultTheColumnToAFreeTag()
+
         val account = UserRepositoryImpl().create("dana-${UUID.randomUUID()}@example.com", "password123")
 
         assertEquals("EN", StoredAccounts.languageOf(account.email))
+    }
+
+    private fun defaultTheColumnToAFreeTag() = transaction {
+        exec(
+            "ALTER TABLE ${identity(UsersTable)} ALTER COLUMN ${identity(UsersTable.language)} " +
+                "SET DEFAULT '$FREE_TAG_DEFAULT'",
+        )
     }
 }
 

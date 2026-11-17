@@ -15,7 +15,7 @@ class BaseViewModelLifecycleTest {
     }
 
     @Test
-    fun `the screen is created once, however often it re-enters composition`() {
+    fun `the screen is created once, however often it reenters composition`() {
         val screen = Screen()
 
         screen.onCreated()

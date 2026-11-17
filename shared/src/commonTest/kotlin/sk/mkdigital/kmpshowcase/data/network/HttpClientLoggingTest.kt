@@ -51,7 +51,7 @@ private fun client(
 class HttpClientLoggingTest {
 
     @Test
-    fun `sign-in never reaches the log, in either build`() = runTest {
+    fun `sign in never reaches the log, in either build`() = runTest {
         for (buildType in BuildType.entries) {
             val logger = RecordingLogger()
             client(buildType, logger).post("auth/sign-in") { setBody("""{"password":"$PASSWORD"}""") }

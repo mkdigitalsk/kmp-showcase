@@ -24,13 +24,19 @@ internal object DatabaseConfig {
             SchemaUtils.createMissingTablesAndColumns(UsersTable, NotesTable)
             logger.info("Database tables created/verified")
 
-            // An added column arrives at its default, and a last_seen_at of 0 is older than any cutoff —
-            // so without this the first inactivity sweep would delete every account that predates it.
-            val backfilled = UsersTable.update({ UsersTable.lastSeenAt eq 0 }) {
-                it[lastSeenAt] = System.currentTimeMillis()
-            }
-            if (backfilled > 0) logger.info("Backfilled last_seen_at for $backfilled account(s)")
+            backfillLastSeen()
         }
+    }
+
+    /**
+     * An added column arrives at its default, and a last_seen_at of 0 is older than any cutoff — so without this the
+     * first inactivity sweep would delete every account that predates it.
+     */
+    private fun backfillLastSeen() {
+        val backfilled = UsersTable.update({ UsersTable.lastSeenAt eq 0 }) {
+            it[lastSeenAt] = System.currentTimeMillis()
+        }
+        if (backfilled > 0) logger.info("Backfilled last_seen_at for $backfilled account(s)")
     }
 
     private fun hikari(appConfig: ApplicationConfig): HikariDataSource {
